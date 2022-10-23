@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int  @id @default(autoincrement())
+  twentyFourId    String  @unique
+  username        String? @unique
+  customName      String?
+  email           String?
+  avatarUrl       String?
+  firstTime       Boolean @default(true)
+  isTwoFactorAuthenticationEnabled Boolean @default(false)
+  twoFactorAuthenticationCode String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  FriendTo Friend[] @relation("fk_user1")
+  FriendWith Friend[] @relation("fk_user2")
+  Blocked BlockedUser[] @relation("fk_blocker")
+  BlockedBy BlockedUser[] @relation("fk_blocked")
+  UserRooms RoomUser[] @relation()
+  @@map("users")
+}
+
+model Friend {
+  user1Id Int
+  user1 User @relation(name:"fk_user1", fields: [user1Id], references: [id])
+  user2Id Int
+  user2 User @relation(name:"fk_user2", fields: [user2Id], references: [id])
+  status Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@id([user1Id, user2Id])
+  @@map("friendships")
+}
+
+model BlockedUser {
+  blockerId Int
+  blocker User @relation(name:"fk_blocker", fields: [blockerId], references: [id])
+  blockedId Int
+  blocked User @relation(name:"fk_blocked", fields: [blockedId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@id([blockerId, blockedId])
+  @@map("blocked_users")
+}
+
+model ChatRooms {
+	id Int @id @default(autoincrement())
+	name String @unique
+	status RoomStatus @default(Opened)
+	access RoomAccess  @default(Public)
+	password String?
+	createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  RoomUsers RoomUser[] @relation()
+  @@map("chat_rooms")
+}
+
+model RoomUser {
+	roomId Int
+	userId Int
+	role RoomUserRole @default(User)
+	ban Boolean @default(false)
+	mute Boolean @default(false)
+  status RoomUserStatus @default(Member)
+	room ChatRooms @relation(fields: [roomId], references: [id])
+	user User @relation(fields: [userId], references: [id])
+	@@id([roomId, userId])
+	createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  msgs RoomUserMsg[] @relation()
+  @@map("rooms_users")
+}
+
+model RoomUserMsg {
+	id Int @id @default(autoincrement())
+	roomId Int
+	userId Int
+  roomUser RoomUser @relation(fields: [roomId, userId], references: [roomId, userId])
+	msg String
+	createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum RoomAccess {
+  Private
+  Protected
+  Public
+}
+
+enum RoomStatus {
+  Opened
+  Closed
+  Deleted
+}
+
+enum RoomUserRole {
+  Owner
+  Admin
+  User
+}
+
+enum RoomUserStatus {
+  Invit
+  Member
+  ExMember
+}

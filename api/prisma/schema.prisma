@@ -11,23 +11,21 @@ datasource db {
 }
 
 model User {
-  id              Int  @id @default(autoincrement())
-  twentyFourId    String  @unique
-  username        String? @unique
-  customName      String?
-  email           String?
-  avatarUrl       String?
+  id              Int  @id
+  login           String
+  email           String @unique
+  imageUrl        String?
   firstTime       Boolean @default(true)
-  isTwoFactorAuthenticationEnabled Boolean @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   twoFactorAuthenticationCode String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isTwoFactorAuthenticationEnabled Boolean @default(false)
 
-  FriendTo Friend[] @relation("fk_user1")
-  FriendWith Friend[] @relation("fk_user2")
-  Blocked BlockedUser[] @relation("fk_blocker")
-  BlockedBy BlockedUser[] @relation("fk_blocked")
-  UserRooms RoomUser[] @relation()
+  FriendTo    Friend[] @relation("fk_user1")
+  FriendWith  Friend[] @relation("fk_user2")
+  Blocked     BlockedUser[] @relation("fk_blocker")
+  BlockedBy   BlockedUser[] @relation("fk_blocked")
+  UserRooms   RoomUser[] @relation()
   @@map("users")
 }
 

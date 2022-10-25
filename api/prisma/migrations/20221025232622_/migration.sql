@@ -12,17 +12,15 @@ CREATE TYPE "RoomUserStatus" AS ENUM ('Invit', 'Member', 'ExMember');
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" SERIAL NOT NULL,
-    "twentyFourId" TEXT NOT NULL,
-    "username" TEXT,
-    "customName" TEXT,
-    "email" TEXT,
-    "avatarUrl" TEXT,
+    "id" INTEGER NOT NULL,
+    "login" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "imageUrl" TEXT,
     "firstTime" BOOLEAN NOT NULL DEFAULT true,
-    "isTwoFactorAuthenticationEnabled" BOOLEAN NOT NULL DEFAULT false,
-    "twoFactorAuthenticationCode" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "twoFactorAuthenticationCode" TEXT,
+    "isTwoFactorAuthenticationEnabled" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -88,10 +86,7 @@ CREATE TABLE "RoomUserMsg" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_twentyFourId_key" ON "users"("twentyFourId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "chat_rooms_name_key" ON "chat_rooms"("name");

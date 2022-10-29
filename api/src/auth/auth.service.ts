@@ -13,7 +13,7 @@ export class AuthService {
           expiresIn: '7d',
           secret: this.configService.get<string>('JWT_SECRET')
         });
-        res.send(token);
-        res.end();
+        // set the cookie
+        res.redirect('http://localhost:3000/home');
     }
 }

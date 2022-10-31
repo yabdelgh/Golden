@@ -14,6 +14,6 @@ export class AuthController {
   @Get('42/callback')
   @UseGuards(Passport42AuthGuard)
   async callback(@Req() req, @Res() res) {
-    return this.authService.callback(req.user, res);    
+    return this.authService.callback(req.user, res);
   }
 }

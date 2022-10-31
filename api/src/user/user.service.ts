@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async validateUser(user: any) {
     return await this.prisma.user.upsert({
@@ -13,12 +13,13 @@ export class UserService {
       },
       update: {
         email: user.email,
+        imageUrl: user.imageUrl
       },
       create: {
         id: user.id,
         login: user.login,
         email: user.email,
-   //     imageUrl: user.imageUrl,
+        imageUrl: user.imageUrl,
       },
       select: {
         id: true,
@@ -55,6 +56,8 @@ export class UserService {
       select: {
         id: true,
         login: true,
+        email: true,
+        imageUrl: true
       }
     });
     /* if (user === null)
@@ -149,7 +152,7 @@ export class UserService {
     });
   }
 
-  /* async upload(file, user): Promise<any> {
+  async upload(file, user): Promise<any> {
     const { id } = user;
     console.log(file, id);
     const us = await this.prisma.user.update({
@@ -157,24 +160,22 @@ export class UserService {
         id,
       },
       data: {
-        avatarUrl: '/uploads/' + file.filename,
+        imageUrl: '/uploads/' + file.filename,
       },
     });
-    return us.avatarUrl;
-  }*/
+    return us.imageUrl;
+  }
 
-/*  async changeUsername(body, user): Promise<any> {
+  async changeUsername(body, user): Promise<any> {
     const { id } = user;
     const { username } = body;
-    console.log(body);
     const us = await this.prisma.user.update({
       where: {
         id,
       },
       data: {
-        username,
+        login: user.login
       },
-    });
-    return us;
-  }*/
+    })
+  }
 }

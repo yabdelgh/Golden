@@ -15,6 +15,30 @@ export class RoomService {
     return hash;
   }
 
+  async getRooms(userId: number) { 
+    return this.prisma.roomUser.findMany({
+      where: {
+        userId,
+        room: {
+          NOT: { status: RoomStatus.Deleted },
+        }
+      },
+      select: {
+        role: true,
+        ban: true,
+        mute: true,
+        room: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            access: true,
+          }
+        }
+      },
+    })
+  }
+
   async createRoom(room: ChatRooms, ownerId: number) {
     try {
       const ret = await this.prisma.roomUser.create({

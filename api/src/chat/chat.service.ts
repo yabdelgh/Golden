@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { RoomUserStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { mySocket } from './chat.gateway';
+import { RoomService } from './room/room.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService,
+              private roomService: RoomService) { }
 
   async join(socket: mySocket) {
     const rooms = await this.prisma.chatRooms.findMany({

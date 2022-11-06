@@ -1,11 +1,25 @@
 import React from "react";
 import { Box, Button, Container, Text, Link } from "@chakra-ui/react";
 import { FiArrowRight } from "react-icons/fi";
+import { useEffect } from "react";
+import { ChatState } from "../Context/ChatProvider";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const submitHandler = () => {
     fetch("http://localhost:3333/api/auth/login");
   };
+
+  const { user } = ChatState();
+  
+  const Navigate = useNavigate();
+  
+  useEffect(() => {
+    if (Object.keys(user).length !== 0) { 
+     Navigate("/chat");
+    };
+  }, [user]);
+
   return (
     <Container maxW="xl">
       <Box

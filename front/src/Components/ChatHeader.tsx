@@ -1,29 +1,33 @@
-import React from "react";
-import { Box, Text, Button, Input, effect, IconButton } from "@chakra-ui/react";
-import { AiOutlineUserAdd, AiOutlineUsergroupAdd } from "react-icons/ai";
-import { BsChevronDown } from "react-icons/bs";
+import { Box, Text, Button, IconButton } from "@chakra-ui/react";
 import { IoMdNotifications } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
-import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-} from "@chakra-ui/react";
+import { Avatar } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import ProfileModal from "./ProfileModal";
+import { ChatState } from "../Context/ChatProvider";
+import axios from "axios";
+
 const ChatHeader = () => {
+  const Navigate = useNavigate();
+  const { user, setUser} = ChatState();
+
+  const logoutHandler =  () => {
+    axios.get("/api/auth/logout");
+    setUser({});
+    Navigate('/')
+  };
+
   return (
     <Box
       border="5px white solid"
       bg="white"
       height="60px"
+      width="100%"
       display="flex"
       justifyContent="space-around"
       alignItems="center"
+      position="fixed"
     >
       <Text
         color="#4267B2"
@@ -33,41 +37,35 @@ const ChatHeader = () => {
       >
         Pong-chat
       </Text>
-      <Button leftIcon={<BsSearch />} fontFamily="Inter" width="40%">
+      <Button leftIcon={<BsSearch />} fontFamily="Inter" width="50%">
         Search Pong
       </Button>
-      <Box width='110px' display='flex' justifyContent='space-between'>
-        <Menu>
-          <MenuButton  isRound='true' as={IconButton}>
-            <IoMdNotifications size='40px'/>
+      <Box width="110px" display="flex" justifyContent="space-between">
+        <Menu offset={[20, 8]}>
+          <MenuButton size="35px" variant="unstyled" as={IconButton}>
+            <IoMdNotifications size="35px" />
           </MenuButton>
-          <MenuList>
-            <MenuItem>Download</MenuItem>
-            <MenuItem>Create a Copy</MenuItem>
-            <MenuItem>Mark as Draft</MenuItem>
-            <MenuItem>Delete</MenuItem>
-            <MenuItem>Attend a Workshop</MenuItem>
+          <MenuList zIndex="dropdown">
+            <MenuItem>Msg</MenuItem>
           </MenuList>
         </Menu>
-      <Box>
-        <Menu>
-          <MenuButton isRound='true' as={IconButton}>
+        <Menu offset={[20,8]}  >
+          <MenuButton isRound="true" as={IconButton} placement="0">
             <Avatar
+              bg="#4267B2"
+              color="white"
               size="md"
               cursor="pointer"
-              name='yassine' // change it
+              name={user.login}
             />
           </MenuButton>
-          <MenuList>
-            <MenuItem>Download</MenuItem>
-            <MenuItem>Create a Copy</MenuItem>
-            <MenuItem>Mark as Draft</MenuItem>
-            <MenuItem>Delete</MenuItem>
-            <MenuItem>Attend a Workshop</MenuItem>
+          <MenuList zIndex="dropdown">
+            <ProfileModal user={user}>
+              <MenuItem>Profile</MenuItem>
+            </ProfileModal>
+            <MenuItem onClick={logoutHandler}>Log out</MenuItem>
           </MenuList>
         </Menu>
-      </Box>
-
       </Box>
     </Box>
   );

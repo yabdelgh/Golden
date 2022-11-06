@@ -8,7 +8,7 @@ const ChatProvider = ({ children }: any) => {
   const [user, setUser] = useState({});
   const [chats, setChats] = useState({});
   const [rooms, setRooms] = useState([]);
-  const [selectedRoom, setSelectedRoom] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState();
 
   const Navigate = useNavigate();
 
@@ -20,7 +20,13 @@ const ChatProvider = ({ children }: any) => {
     axios
       .get("/api/chat/rooms")
       .then((data) => setRooms(data.data))
+      .catch(() => { Navigate('/')});
+   /* 
+    axios
+      .get("/api/chat/msg")
+      .then((data) => setRooms(data.data))
       .catch(() => console.log("error"));
+    */
   }, [Navigate]);
 
   return (

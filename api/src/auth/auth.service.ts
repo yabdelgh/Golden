@@ -25,4 +25,19 @@ export class AuthService {
     });
     res.redirect('http://localhost:3000/chat');
   }
+
+  async logout(res: any) { 
+    const payload = {
+      login: null,
+      sub: null,
+      email: null,
+      imageUrl: null,
+    };
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn: -100,
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+    res.cookie('access_token', token, { httpOnly: true });
+    res.end();
+  }
 }

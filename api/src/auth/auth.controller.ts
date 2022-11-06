@@ -16,4 +16,10 @@ export class AuthController {
   async callback(@Req() req, @Res() res) {
     return this.authService.callback(req.user, res);
   }
+  
+  @Get('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Res() res) {
+    return this.authService.logout(res);
+  }
 }

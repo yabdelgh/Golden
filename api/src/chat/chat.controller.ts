@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { RoomService } from './room/room.service';
 
@@ -11,4 +11,9 @@ export class ChatController {
     async getMyChats(@Req() { user }) { 
         return this.roomService.getRooms(user.id);
     }
+
+    @Post('/newRoom')
+    async createRoom(@Req() { user }, @Body() room) { 
+        return this.roomService.createRoom(room, user.id)
+    };
 }

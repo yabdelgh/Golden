@@ -47,7 +47,6 @@ export class RoomService {
           room: {
             create: {
               name: room.name,
-              status: room.status,
               access: RoomAccess[room.access],
               password: await this.hash(room.password),
             },
@@ -61,7 +60,6 @@ export class RoomService {
       });
       return ret;
     } catch (err) {
-      console.log(err);
       if (err instanceof PrismaClientKnownRequestError)
         if (err.code === 'P2002')
           throw new ForbiddenException('Credentials taken');

@@ -37,7 +37,7 @@ const ChatHeader = () => {
       >
         Pong-chat
       </Text>
-      <Button leftIcon={<BsSearch />} fontFamily="Inter" width="50%">
+      <Button leftIcon={<BsSearch />} display={{base: 'none', md: "flex"}} fontFamily="Inter" width="50%">
         Search Pong
       </Button>
       <Box width="110px" display="flex" justifyContent="space-between">

@@ -2,13 +2,15 @@ import {
   Avatar,
   AvatarBadge,
   Box,
+  Button,
   Stack,
   StackDivider,
 } from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 import ChatLoading from "./ChatLoading";
-
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import CreateGroupModal from "./CreateGroupModal";
 const ChatList = () => {
   const { rooms, selectedRoom, setSelectedRoom } = ChatState();
   return (
@@ -20,17 +22,24 @@ const ChatList = () => {
       w={{ base: "100%", md: "35%" }}
       borderRadius="lg"
       borderWidth="1px"
-      minWidth="250px"
+      minWidth="370px"
     >
-      <Text
-        width="100%"
-        fontSize={{ base: "28px", md: "30px" }}
-        fontFamily="Work sans"
-        height="50px"
-        mb="5px"
-      >
-        Contacts
-      </Text>
+      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+        <Text
+          fontSize="25px"
+          fontFamily="Work sans"
+          height="50px"
+          mb="5px"
+          ml="5px"
+        >
+          Contacts
+        </Text>
+        <CreateGroupModal>
+          <Button ml="20px" leftIcon={<AiOutlineUsergroupAdd size="25px" />}>
+            create new group
+          </Button>
+        </CreateGroupModal>
+      </Box>
       {rooms ? (
         <Stack
           width="100%"
@@ -39,7 +48,7 @@ const ChatList = () => {
           css={{
             "::-webkit-scrollbar": {
               width: "0px",
-            }
+            },
           }}
           divider={<StackDivider borderColor="gray.200" />}
           borderBottom="1px #EEEEEE solid"

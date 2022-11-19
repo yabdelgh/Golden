@@ -6,9 +6,5 @@ export class chatMsgDto {
 
   @IsString()
   @IsNotEmpty()
-  roomName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  message: string;
+  msg: string;
 }

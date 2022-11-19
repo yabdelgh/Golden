@@ -9,11 +9,18 @@ import { chatMsgDto } from '../dtos/chatMsg.dto';
 export class MsgService {
   constructor(private prisma: PrismaService) {}
 
+  formatDate(date: Date): string {
+    const current: Date = new Date();
+    if (date.toLocaleDateString() === current.toLocaleDateString())
+      return date.toLocaleTimeString();
+    return date.toLocaleDateString();
+  }
+
   async addMsg(user: UserDto, payload: chatMsgDto) {
-    const ret = this.prisma.roomUser.findFirst({
+    const ret = await this.prisma.roomUser.findFirst({
       where: {
         userId: user.id,
-        roomId: user.id,
+        roomId: payload.roomId,
         ban: false,
         mute: false,
         status: RoomUserStatus.Member,
@@ -25,17 +32,16 @@ export class MsgService {
       },
     });
     if (ret) {
-      const message = this.prisma.roomUserMsg
-        .create({
-          data: {
-            roomId: payload.roomId,
-            userId: user.id,
-            msg: payload.message,
-          },
-        })
-        .then((data) => console.log(data))
-        .catch(() => console.log('error'));
-      return ret;
+      const message: any = await this.prisma.roomUserMsg.create({
+        data: {
+          roomId: payload.roomId,
+          userId: user.id,
+          msg: payload.msg,
+        },
+      });
+     // message.createdAt = message.createdAt.toDatestring();
+      message.createdAt = this.formatDate(message.createdAt);
+      return message;
     } else throw new WsException('Unauthorized');
   }
 

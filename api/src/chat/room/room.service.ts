@@ -5,6 +5,10 @@ import { RoomUserRole, RoomStatus, RoomAccess } from '@prisma/client';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
+interface Room {
+  [key: string]: any;
+}
+
 @Injectable()
 export class RoomService {
   constructor(private prisma: PrismaService) {}
@@ -15,45 +19,60 @@ export class RoomService {
     return hash;
   }
 
-  async getRooms(userId: number) { 
-    return this.prisma.roomUser.findMany({
+  async getRooms(userId: number) {
+    const rooms: Room = await this.prisma.chatRooms.findMany({
       where: {
-        userId,
-        room: {
-          NOT: { status: RoomStatus.Deleted },
-        }
+        NOT: { status: RoomStatus.Deleted },
+        RoomUsers: {
+          some: {
+            userId,
+          },
+        },
       },
       select: {
-        role: true,
-        ban: true,
-        mute: true,
-        room: {
+        id: true,
+        name: true,
+        status: true,
+        access: true,
+        RoomUsers: {
           select: {
-            id: true,
-            name: true,
-            status: true,
-            access: true,
-          }
-        }
+            userId: true,
+            role: true,
+            ban: true,
+            mute: true,
+          },
+        },
       },
-    })
+    });
+
+    return rooms;
   }
 
   async createRoom(room: ChatRooms, ownerId: number) {
     try {
-      const ret = await this.prisma.roomUser.create({
+      const ret = await this.prisma.chatRooms.create({
         data: {
-          role: RoomUserRole.Owner,
-          room: {
+          name: room.name,
+          access: RoomAccess[room.access],
+          password: await this.hash(room.password),
+          RoomUsers: {
             create: {
-              name: room.name,
-              access: RoomAccess[room.access],
-              password: await this.hash(room.password),
+              role: RoomUserRole.Owner,
+              userId: ownerId,
             },
           },
-          user: {
-            connect: {
-              id: ownerId,
+        },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          access: true,
+          RoomUsers: {
+            select: {
+              userId: true,
+              role: true,
+              ban: true,
+              mute: true,
             },
           },
         },
@@ -62,12 +81,13 @@ export class RoomService {
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError)
         if (err.code === 'P2002')
-          throw new ForbiddenException('Credentials taken');
+          throw new ForbiddenException('room name already exist');
     }
   }
 
   async updateRoom(room: ChatRooms, userId: number) {
-    const ret = await this.prisma.chatRooms.findFirst({
+    try{
+    const ret1 = await this.prisma.chatRooms.findFirst({
       where: {
         id: room.id,
         RoomUsers: {
@@ -81,20 +101,41 @@ export class RoomService {
         },
       },
     });
-
-    if (room)
-      await this.prisma.chatRooms.update({
+    if (ret1)
+    {
+      const ret2 = await this.prisma.chatRooms.update({
         where: {
-          id: room.id,
+          id: ret1.id,
         },
         data: {
           name: room.name,
           status: room.status,
           access: RoomAccess[room.access],
-          password: await argon.hash(room.password),
+          password: ( room.password ? await argon.hash(room.password) : ret1.password)
+        },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          access: true,
+          RoomUsers: {
+            select: {
+              userId: true,
+              role: true,
+              ban: true,
+              mute: true,
+            },
+          },
         },
       });
+      return ret2;
+    }
     else throw new ForbiddenException('Ambiguous credentials');
+    } catch (err) {
+      if (err instanceof PrismaClientKnownRequestError)
+        if (err.code === 'P2002')
+          throw new ForbiddenException('room name already exist');
+    }
   }
 
   async addAdmin(ownerId: number, roomId: number, adminId: number) {
@@ -271,5 +312,14 @@ export class RoomService {
         status: RoomUserStatus.ExMember,
       },
     });
+  }
+
+  async getRoomName(roomId: number) { 
+    const ret = await this.prisma.chatRooms.findFirst({
+      where: {
+        id: roomId
+      }
+    })
+    return ret.name;
   }
 }

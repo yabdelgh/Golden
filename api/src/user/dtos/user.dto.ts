@@ -10,6 +10,10 @@ import {
 export class UserDto {
   @IsOptional()
   @IsNumber()
+  sub?: number;
+  
+  @IsOptional()
+  @IsNumber()
   id?: number;
 
   @IsOptional()

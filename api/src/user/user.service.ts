@@ -1,6 +1,7 @@
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RoomStatus } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -63,6 +64,34 @@ export class UserService {
     /* if (user === null)
       throw new BadRequestException('user not found');*/
     return user;
+  }
+
+  
+  async getUsers(id: number) { 
+    const users = await this.prisma.user.findMany({
+      where:{
+        UserRooms: {
+          some: {
+            room: {
+              NOT: { status: RoomStatus.Deleted },
+              RoomUsers: {
+                some: {
+                  userId: id
+                }
+              }
+            }
+          }
+        },
+        NOT: {id}
+      },
+      select: {
+        id: true,
+        login: true,
+        email: true,
+        imageUrl: true,
+      }
+    });
+    return users;
   }
 
   async deleteUser(id: number) {

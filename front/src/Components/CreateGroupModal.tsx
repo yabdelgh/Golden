@@ -18,17 +18,18 @@ import {
   Radio,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useState } from "react";
-import { errorToast, successToast, warningToast } from "../Utils/Toast";
+import { ChatState } from "../Context/ChatProvider";
+import { warningToast } from "../Utils/Toast";
 
 const CreateGroupModal = ({ children }: any) => {
+  const { socket } = ChatState();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [name, setName] = useState("");
   const [show, setShow] = useState(false);
   const [access, setAccess] = useState("private");
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
 
   const createNewGroup = () => {
     if (name === "")
@@ -36,15 +37,7 @@ const CreateGroupModal = ({ children }: any) => {
     else if (access === "protected" && password === "")
       warningToast(toast, "Please enter a password");
     else
-      axios
-        .post("/api/chat/newRoom", { name, access, password })
-        .then(() => {
-          successToast(toast, "group created successfully");
-          onClose();
-        })
-        .catch(() => {
-          errorToast(toast, "group name already exist");
-        });
+      socket.emit('addRoom', { name, access, password });
   };
 
   return (
@@ -113,6 +106,7 @@ const CreateGroupModal = ({ children }: any) => {
               mb="5px"
               bg="green.300"
               onClick={createNewGroup}
+              autoFocus
             >
               create
             </Button>

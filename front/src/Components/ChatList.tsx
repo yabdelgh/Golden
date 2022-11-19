@@ -1,18 +1,28 @@
 import {
+  Box,
+  Text,
+  Stack,
+  Button,
   Avatar,
   AvatarBadge,
-  Box,
-  Button,
-  Stack,
   StackDivider,
 } from "@chakra-ui/react";
-import { Text } from "@chakra-ui/react";
-import { ChatState } from "../Context/ChatProvider";
 import ChatLoading from "./ChatLoading";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import CreateGroupModal from "./CreateGroupModal";
+import { ChatState } from "../Context/ChatProvider";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
+
 const ChatList = () => {
-  const { rooms, selectedRoom, setSelectedRoom } = ChatState();
+  const {
+    rooms,
+    selectedRoom,
+    setSelectedRoom,
+  } = ChatState();
+
+  const setChatBoxData = async (room: any) => {
+    setSelectedRoom(room);
+  };
+
   return (
     <Box
       display={{ base: selectedRoom ? "none" : "flex", md: "flex" }}
@@ -63,22 +73,22 @@ const ChatList = () => {
               bg={selectedRoom === room ? "#EEEEEE" : "white"}
               borderRadius="5px"
               p="5px"
-              key={room.room.id}
               fontFamily="Inter"
               fontWeight="bold"
               fontSize="17px"
-              onClick={() => setSelectedRoom(room)}
+              onClick={() => setChatBoxData(room)}
+              key={room.id}
             >
-              <Avatar name={room.room.name}>
+              <Avatar borderRadius='5px' color='white' bg='#4267B2' name={room.name}>
                 <AvatarBadge
                   bg={selectedRoom !== room ? "#FF0000" : "#00FF00"}
                   boxSize="0.9em"
                 />
               </Avatar>
               <Box ml="20px" display="flex" flexDirection="column">
-                <Text p="4px 0px">{room.room.name}</Text>
+                <Text p="4px 0px">{room.name}</Text>
                 <Text fontSize="15px" fontFamily={"work sans"} color="gray.400">
-                  hello {room.room.name}
+                  hello {room.name}
                 </Text>
               </Box>
             </Box>

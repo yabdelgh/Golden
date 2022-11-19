@@ -6,10 +6,7 @@ import { ChatState } from "../Context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const submitHandler = () => {
-    fetch("http://localhost:3333/api/auth/login");
-  };
-
+  
   const { user } = ChatState();
   
   const Navigate = useNavigate();

@@ -14,8 +14,8 @@ const socket = io("http://localhost:3333/chat",{ withCredentials: true });
 const ChatContext = createContext<any | null>(null);
 
 const ChatProvider = ({ children }: any) => {
-  const [user, setUser] : any= useState({});
-  const [users, setUsers]: any= useState([]);
+  const [user, setUser]: any = useState({});
+  const [users, setUsers]: any = useState([]);
   const [rooms, setRooms]: any = useState([]);
   const [msgs, setMsgs]: any = useState([]);
   const [selectedRoom, setSelectedRoom] = useState();

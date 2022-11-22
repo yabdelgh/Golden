@@ -37,7 +37,7 @@ const CreateGroupModal = ({ children }: any) => {
     else if (access === "protected" && password === "")
       warningToast(toast, "Please enter a password");
     else
-      socket.emit('addRoom', {id: 0 , name, access, password });
+      socket.emit('addRoom', {id: 0, name, access, password });
   };
 
   return (

@@ -11,10 +11,12 @@ import { BsSearch } from "react-icons/bs";
 import { ChatState } from "../Context/ChatProvider";
 import User from "./User";
 import { VscChromeClose } from "react-icons/vsc";
+import { useState } from "react";
 
 const UsersList = () => {
+  const [searchKey, setSearchKey] = useState('');
   const { users, selectedRoom, usersList, setUsersList } = ChatState();
-
+  
   return (
     <Box
       display={{
@@ -33,9 +35,9 @@ const UsersList = () => {
       color="gray.500"
     >
       <Box display="flex" alignItems={"center"} justifyContent="space-between">
-        <FormControl height="30px" width="60%" margin="20px">
+        <FormControl height="30px" width="80%" margin="20px">
           <InputGroup>
-            <Input placeholder="Search" />
+            <Input placeholder="Search" value={searchKey} onChange={(e) => setSearchKey(e.target.value)} />
             <InputRightElement>
               <IconButton
                 variant={"unstyled"}
@@ -67,7 +69,7 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
+            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} setSearchKey={ searchKey} />
           ))
         ) : (
           <></>
@@ -86,7 +88,7 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={false} key={roomUser.userId} />
+            <User id={roomUser.userId} isOnline={false} key={roomUser.userId} searchKey={ searchKey } />
           ))
         ) : (
           <></>

@@ -26,16 +26,17 @@ function App() {
         return !value;
       });
     });
-    socket.on("isOnline", (payload: any) => { 
+   socket.on("isOnline", (payload: any) => { 
       setUsers((value: any) => {
         if (value !== undefined)
         {
           const index = value.findIndex((ele: any) => ele.id === payload.userId)
-          value[index].isOnline = payload.status;
+          if (index !== -1)
+            value[index].isOnline = payload.status;
         }
+        console.log(payload);
         return [...value];
       })
-      console.log(payload);
     });
     socket.on("me", (payload: any) => setUser(payload));
     socket.on("rooms", (payload: any) => {

@@ -2,18 +2,21 @@ import { Avatar, Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
-const User = ({ id, isOnline }: any) => {
-  const [user, setUser] = useState({ login: "notFound" });
+const User = ({ id, isOnline, searchKey }: any) => {
+  const [user, setUser]: any[] = useState({login: "not found"});
   const { users } = ChatState();
 
   useEffect(() => {
     const tmp: any = users.find((ele: any) => {
       return (ele.id === id && ele.isOnline === isOnline)
     });
-    setUser(tmp);
-  }, [users]);
+    if (tmp && tmp.login.includes(searchKey))
+      setUser(tmp);
+    else
+      setUser(undefined)
+  }, [users, searchKey, id, isOnline]);
 
-  return user ? (
+  return( user ? (
     <Box display="flex" alignItems="center">
       <Avatar
         color="white"
@@ -28,8 +31,8 @@ const User = ({ id, isOnline }: any) => {
       </Text>
     </Box>
   ) : (
-    <></>
-  );
+    <></>)
+  )
 };
 
 export default User;

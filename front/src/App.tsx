@@ -8,14 +8,12 @@ import { errorToast, successToast } from "./Utils/Toast";
 
 function App() {
   const {
-    isOnline,
     setIsOnline,
     setMsgs,
     setUser,
     setRooms,
     setUsers,
     socket,
-    users,
     toast,
     setUsersList,
     setSelectedRoom,
@@ -23,18 +21,27 @@ function App() {
 
   useEffect(() => {
     document.addEventListener("visibilitychange", () => {
-      setIsOnline(!isOnline);
-      socket.emit('isOnline', isOnline);
+      setIsOnline((value: boolean) => {
+        socket.emit('isOnline', !value);
+        return !value;
+      });
+    });
+    socket.on("isOnline", (payload: any) => { 
+      setUsers((value: any) => {
+        if (value !== undefined)
+        {
+          const index = value.findIndex((ele: any) => ele.id === payload.userId)
+          value[index].isOnline = payload.status;
+        }
+        return [...value];
+      })
+      console.log(payload);
     });
     socket.on("me", (payload: any) => setUser(payload));
     socket.on("rooms", (payload: any) => {
-      console.log(payload);
       setRooms(payload);
     });
     socket.on("users", (payload: any) => {
-      payload.forEach((element: any) => {
-        element.isOnline = false;
-      });
       setUsers(payload)
     });
     socket.on("addRoom", (payload: any) => {
@@ -90,6 +97,7 @@ function App() {
       socket.off("deleteRoom");
       socket.off("updateRoom");
       socket.off("chatMsg");
+      socket.off("isOnline");
 
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

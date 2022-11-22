@@ -183,7 +183,6 @@ export class UserService {
 
   async upload(file, user): Promise<any> {
     const { id } = user;
-    console.log(file, id);
     const us = await this.prisma.user.update({
       where: {
         id,

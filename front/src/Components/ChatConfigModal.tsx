@@ -25,7 +25,6 @@ const ChatConfigModal = ({ children }: any) => {
     socket.emit("deleteRoom", selectedRoom);
   };
   const updateRoom = () => {
-    console.log('ask to update'); 
     socket.emit("updateRoom", { id: selectedRoom.id, name: groupName, });
   };
 

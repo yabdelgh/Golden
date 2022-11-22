@@ -16,14 +16,27 @@ export class AuthController {
   @UseGuards(Passport42AuthGuard)
   async login() { }
  
-  @Get('sos')
-  async pop(@Res() res) { 
-    const id: number = 18;
+  @Get('yabdelgh')
+  async yabdelgh(@Res() res) { 
     const payload = {
       login: 'yabdelgh',
-      sub: id,
-      email: 'yassine.abdou.1998@gmail.com',
-      imageUrl: 'undefined',
+      id: 18,
+    };
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+    res.cookie('access_token', token, {
+      httpOnly: true,
+    });
+    res.redirect('http://localhost:3000/chat');
+  }
+  
+  @Get('samira')
+  async samira(@Res() res) { 
+    const payload = {
+      login: 'karima',
+      id: 66,
     };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '7d',

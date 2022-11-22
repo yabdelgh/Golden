@@ -12,7 +12,7 @@ export class AuthService {
   async callback(user: any, res: any) {
     const payload = {
       login: user.login,
-      sub: user.id,
+      id: user.id,
       email: user.email,
       imageUrl: user.imageUrl,
     };
@@ -29,7 +29,7 @@ export class AuthService {
   async logout(res: any) { 
     const payload = {
       login: null,
-      sub: null,
+      id: null,
       email: null,
       imageUrl: null,
     };

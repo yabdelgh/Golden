@@ -16,11 +16,11 @@ export class MsgService {
     return date.toLocaleDateString();
   }
 
-  async addMsg(user: UserDto, payload: chatMsgDto) {
+  async addMsg(msg: chatMsgDto) {
     const ret = await this.prisma.roomUser.findFirst({
       where: {
-        userId: user.id,
-        roomId: payload.roomId,
+        userId: msg.userId,
+        roomId: msg.roomId,
         ban: false,
         mute: false,
         status: RoomUserStatus.Member,
@@ -34,12 +34,11 @@ export class MsgService {
     if (ret) {
       const message: any = await this.prisma.roomUserMsg.create({
         data: {
-          roomId: payload.roomId,
-          userId: user.id,
-          msg: payload.msg,
+          roomId: msg.roomId,
+          userId: msg.userId,
+          msg: msg.msg,
         },
       });
-     // message.createdAt = message.createdAt.toDatestring();
       message.createdAt = this.formatDate(message.createdAt);
       return message;
     } else throw new WsException('Unauthorized');

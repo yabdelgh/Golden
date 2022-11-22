@@ -8,9 +8,6 @@ import {
 } from 'class-validator';
 
 export class UserDto {
-  @IsOptional()
-  @IsNumber()
-  sub?: number;
   
   @IsOptional()
   @IsNumber()
@@ -33,6 +30,10 @@ export class UserDto {
   @IsOptional()
   @IsBoolean()
   isTwoFactorAuthenticationEnabled?: boolean;
+  
+  @IsOptional()
+  @IsBoolean()
+  isOnline?: boolean;
 
   @IsOptional()
   @IsString()

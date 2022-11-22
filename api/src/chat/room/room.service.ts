@@ -1,13 +1,10 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ChatRooms, RoomUserStatus } from '@prisma/client';
+import { RoomUserStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RoomUserRole, RoomStatus, RoomAccess } from '@prisma/client';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-
-interface Room {
-  [key: string]: any;
-}
+import { chatRoomDto } from '../dtos/chatRoom.dto';
 
 @Injectable()
 export class RoomService {
@@ -19,8 +16,8 @@ export class RoomService {
     return hash;
   }
 
-  async getRooms(userId: number) {
-    const rooms: Room = await this.prisma.chatRooms.findMany({
+  async getRooms(userId: number) : Promise<chatRoomDto[]> {
+    const rooms: chatRoomDto[] = await this.prisma.chatRooms.findMany({
       where: {
         NOT: { status: RoomStatus.Deleted },
         RoomUsers: {
@@ -32,7 +29,6 @@ export class RoomService {
       select: {
         id: true,
         name: true,
-        status: true,
         access: true,
         RoomUsers: {
           select: {
@@ -48,7 +44,7 @@ export class RoomService {
     return rooms;
   }
 
-  async createRoom(room: ChatRooms, ownerId: number) {
+  async createRoom(room: chatRoomDto, ownerId: number) {
     try {
       const ret = await this.prisma.chatRooms.create({
         data: {
@@ -85,7 +81,7 @@ export class RoomService {
     }
   }
 
-  async updateRoom(room: ChatRooms, userId: number) {
+  async updateRoom(room: chatRoomDto, userId: number) {
     try{
     const ret1 = await this.prisma.chatRooms.findFirst({
       where: {
@@ -109,14 +105,13 @@ export class RoomService {
         },
         data: {
           name: room.name,
-          status: room.status,
           access: RoomAccess[room.access],
+          status: RoomStatus[room.status],
           password: ( room.password ? await argon.hash(room.password) : ret1.password)
         },
         select: {
           id: true,
           name: true,
-          status: true,
           access: true,
           RoomUsers: {
             select: {

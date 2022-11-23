@@ -14,8 +14,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { useState } from "react";
 
 const UsersList = () => {
-  const [searchKey, setSearchKey] = useState('');
-  const { users, selectedRoom, usersList, setUsersList } = ChatState();
+  const { searchKey,setSearchKey, users, selectedRoom, usersList, setUsersList } = ChatState();
   
   return (
     <Box
@@ -69,7 +68,7 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} setSearchKey={ searchKey} />
+            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
           ))
         ) : (
           <></>
@@ -88,7 +87,7 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={false} key={roomUser.userId} searchKey={ searchKey } />
+            <User id={roomUser.userId} isOnline={false} key={roomUser.userId}/>
           ))
         ) : (
           <></>

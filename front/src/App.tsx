@@ -86,6 +86,12 @@ function App() {
       setMsgs((value: any) => { 
         return [...value, payload];
       });
+      setRooms((value: any) => { 
+        const ret = value.findIndex((ele: any) => { return ele.id === payload.roomId });
+        value[ret].lastMsg = payload;
+        console.log(value[ret]);
+        return value;
+      });
     });
 
     socket.on("error", (error: string) => errorToast(toast, error));

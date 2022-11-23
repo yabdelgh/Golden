@@ -2,19 +2,14 @@ import { useToast } from "@chakra-ui/react";
 import io from "socket.io-client";
 import { createContext, useContext, useState } from "react";
  
-/* 
-  const [msgs, setMsgs]= useState([]);
-  const [roomMsgs, setRoomMsgs] = useState();
-  const [roomUsers, setRoomUsers] = useState();
-  const toast = useToast();
-*/
-
 const socket = io("http://localhost:3333/chat",{ withCredentials: true });
 
 const ChatContext = createContext<any | null>(null);
 
 const ChatProvider = ({ children }: any) => {
+
   const [user, setUser]: any = useState({});
+  const [searchKey, setSearchKey] = useState('');
   const [users, setUsers]: any = useState([]);
   const [rooms, setRooms]: any = useState([]);
   const [msgs, setMsgs]: any = useState([]);
@@ -27,6 +22,8 @@ const ChatProvider = ({ children }: any) => {
   return (
     <ChatContext.Provider
       value={{
+        searchKey,
+        setSearchKey,
         isOnline,
         setIsOnline,
         msgs,

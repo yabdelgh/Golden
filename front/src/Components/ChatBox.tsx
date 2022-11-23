@@ -3,19 +3,16 @@ import { Avatar, AvatarBadge, Box, IconButton, Input } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 import { Text } from "@chakra-ui/react";
 import { BsGear } from "react-icons/bs";
-import ChatConfigModal from "./ChatConfigModal";
 import { useState } from "react";
-import ScrollableFeed from "react-scrollable-feed";
-import "./mystyle.module.css";
+import ChatConfigModal from "./ChatConfigModal";
 import { VscChromeClose } from "react-icons/vsc";
-import { setConstantValue } from "typescript";
+import "./mystyle.module.css";
 
 const ChatBox = () => {
   const {
     user,
     socket,
     users,
-    setUsers,
     selectedRoom,
     setSelectedRoom,
     usersList,

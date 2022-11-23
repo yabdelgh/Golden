@@ -4,7 +4,6 @@ import {
   Stack,
   Button,
   Avatar,
-  AvatarBadge,
   StackDivider,
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
@@ -79,16 +78,12 @@ const ChatList = () => {
               onClick={() => setChatBoxData(room)}
               key={room.id}
             >
-              <Avatar borderRadius='5px' color='white' bg='#4267B2' name={room.name}>
-                <AvatarBadge
-                  bg={selectedRoom !== room ? "#FF0000" : "#00FF00"}
-                  boxSize="0.9em"
-                />
-              </Avatar>
+              <Avatar borderRadius='5px' color='white' bg='#4267B2' name={room.name} />
               <Box ml="20px" display="flex" flexDirection="column">
                 <Text p="4px 0px">{room.name}</Text>
                 <Text fontSize="15px" fontFamily={"work sans"} color="gray.400">
-                  hello {room.name}
+                  {room.lastMsg && room.lastMsg.msg.slice(0, 20)}
+                  {(room.lastMsg && room.lastMsg.msg.length > 20) ? ' ...' : '' }
                 </Text>
               </Box>
             </Box>

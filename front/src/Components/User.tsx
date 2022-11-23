@@ -2,9 +2,9 @@ import { Avatar, Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
-const User = ({ id, isOnline, searchKey }: any) => {
-  const [user, setUser]: any[] = useState({login: "not found"});
-  const { users } = ChatState();
+const User = ({ id, isOnline}: any) => {
+  const [user, setUser]: any[] = useState({ login: "not found" });
+  const { users, searchKey } = ChatState();
 
   useEffect(() => {
     const tmp: any = users.find((ele: any) => {

@@ -30,7 +30,7 @@ const ChatHeader = () => {
       position="fixed"
     >
       <Text
-        color="#4267B2"
+        color="teal"
         fontSize="2xl"
         fontFamily="Work sans"
         fontWeight="bold"
@@ -52,7 +52,7 @@ const ChatHeader = () => {
         <Menu offset={[20,8]}  >
           <MenuButton isRound="true" as={IconButton} placement="0">
             <Avatar
-              bg="#4267B2"
+              bg="teal"
               color="white"
               size="md"
               cursor="pointer"

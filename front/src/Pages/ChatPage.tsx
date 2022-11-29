@@ -3,11 +3,13 @@ import ChatBox from "../Components/ChatBox";
 import ChatHeader from "../Components/ChatHeader";
 import ChatList from "../Components/ChatList";
 import UsersList from "../Components/UsersList";
-import io from "socket.io-client";
-import { useEffect } from "react";
+import RightEle from "../Components/RightEle";
+import UserProfile from "../Components/UserProfile";
 import { ChatState } from "../Context/ChatProvider";
-const ChatPage = () => {
 
+const ChatPage = () => {
+  const { showUP } = ChatState();
+  
   return (
     <Box
       width="100%"
@@ -28,7 +30,9 @@ const ChatPage = () => {
       >
         <ChatList />
         <ChatBox />
-        <UsersList />
+        <RightEle>
+          {showUP ? <UserProfile/> : <UsersList/>}
+        </RightEle>
       </Box>
     </Box>
   );

@@ -10,11 +10,15 @@ const ChatProvider = ({ children }: any) => {
 
   const [user, setUser]: any = useState({});
   const [searchKey, setSearchKey] = useState('');
+  const [Friends, setFriends]: any = useState([]);
   const [users, setUsers]: any = useState([]);
   const [rooms, setRooms]: any = useState([]);
+  const [dMRooms, setDMRooms]: any = useState([]);
   const [msgs, setMsgs]: any = useState([]);
+  const [selectedUser, setSelectedUser] = useState();
   const [selectedRoom, setSelectedRoom] = useState();
   const [usersList, setUsersList] = useState(false);
+  const [showUP, setShowUP] = useState(undefined);
   const [isOnline, setIsOnline] = useState(true);
   const toast = useToast();
   
@@ -22,6 +26,14 @@ const ChatProvider = ({ children }: any) => {
   return (
     <ChatContext.Provider
       value={{
+        dMRooms,
+        setDMRooms,
+        Friends,
+        setFriends,
+        showUP,
+        setShowUP,
+        selectedUser,
+        setSelectedUser,
         searchKey,
         setSearchKey,
         isOnline,

@@ -5,6 +5,7 @@ import ChatPage from "./Pages/ChatPage";
 import { ChatState } from "./Context/ChatProvider";
 import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
+import FriendsPage from "./Pages/FriendsPage";
 
 function App() {
   const {
@@ -17,6 +18,7 @@ function App() {
     toast,
     setUsersList,
     setSelectedRoom,
+    setFriends,
   } = ChatState();
 
   useEffect(() => {
@@ -26,7 +28,10 @@ function App() {
         return !value;
       });
     });
-   socket.on("isOnline", (payload: any) => { 
+
+    socket.on("me", (payload: any) => setUser(payload));
+    
+    socket.on("isOnline", (payload: any) => { 
       setUsers((value: any) => {
         if (value !== undefined)
         {
@@ -38,12 +43,18 @@ function App() {
         return [...value];
       })
     });
-    socket.on("me", (payload: any) => setUser(payload));
-    socket.on("rooms", (payload: any) => {
-      setRooms(payload);
-    });
     socket.on("users", (payload: any) => {
       setUsers(payload)
+    });
+    socket.on("rooms", (payload: any) => {
+      for (const ele of payload)
+        ele.isGroupChat = true;
+      setRooms((value: any) => [...value, ...payload]);
+    });
+    socket.on("dMRooms", (payload: any) => {
+      for (const ele of payload)
+        ele.isGroupChat = false;
+      setRooms((value: any) => [...value, ...payload]);
     });
     socket.on("addRoom", (payload: any) => {
       setRooms((value: any) => [...value, payload]);
@@ -83,18 +94,21 @@ function App() {
     });
     
     socket.on('chatMsg', (payload: any) => { 
+      console.log(payload);
       setMsgs((value: any) => { 
         return [...value, payload];
       });
       setRooms((value: any) => { 
         const ret = value.findIndex((ele: any) => { return ele.id === payload.roomId });
         value[ret].lastMsg = payload;
-        console.log(value[ret]);
         return value;
       });
     });
 
     socket.on("error", (error: string) => errorToast(toast, error));
+    socket.on('friends', (payload: any) => {
+      setFriends(payload); 
+    });
     return () => {
       socket.off("me");
       socket.off("rooms");
@@ -105,7 +119,8 @@ function App() {
       socket.off("updateRoom");
       socket.off("chatMsg");
       socket.off("isOnline");
-
+      socket.off('friends'); 
+      socket.off('dMRooms'); 
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -115,6 +130,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/friends" element={<FriendsPage />} />
       </Routes>
     </div>
   );

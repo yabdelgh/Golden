@@ -1,4 +1,4 @@
-import { HiUsers } from "react-icons/hi";
+import { ImUsers, ImUser } from "react-icons/im";
 import { Avatar, AvatarBadge, Box, IconButton, Input } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
 import { Text } from "@chakra-ui/react";
@@ -11,6 +11,7 @@ import "./mystyle.module.css";
 const ChatBox = () => {
   const {
     user,
+    setShowUP,
     socket,
     users,
     selectedRoom,
@@ -20,18 +21,31 @@ const ChatBox = () => {
     msgs,
   } = ChatState();
   const [msg, setMsg] = useState("");
+  
   const sendMessage = () => {
+    console.log(msg);
     socket.emit("chatMsg", { roomId: selectedRoom.id, msg });
   };
   const getUserName = (id: number) => {
     const ret = users.find((user: any) => {
       return user.id === id;
     });
-    if (!ret)
-      return user.login;
+    if (!ret) return user.login;
     return ret.login;
+  };
+
+  const thereIsSomeOneOnline = (roomUsers: any): boolean => {
+    return roomUsers.some(({ userId }: any) => {
+      return users.some((ele: any) => {
+        return ele.id === userId && ele.isOnline === true;
+      });
+    });
+  };
+
+  const getFirstUser = () => {
+    return users.find((ele: any) => ele.id === selectedRoom.RoomUsers[0].userId);
   }
- // const props: any = useState({ forceScroll: true, className: "hamid" });
+
   return (
     <Box
       display={{
@@ -67,12 +81,16 @@ const ChatBox = () => {
           >
             <Box display="flex" alignItems="center">
               <Avatar
-                bg="#4267B2"
+                bg="teal"
                 color="white"
                 borderRadius={"5px"}
                 name={selectedRoom.name}
               >
-                <AvatarBadge boxSize="0.9em" bg="#00FF00" />
+                {thereIsSomeOneOnline(selectedRoom.RoomUsers) ? (
+                  <AvatarBadge boxSize="0.9em" bg="#00FF00" />
+                ) : (
+                  <AvatarBadge boxSize="0.9em" bg="#FF0000" />
+                )}
               </Avatar>
               <Text ml="18px">{selectedRoom.name}</Text>
             </Box>
@@ -94,8 +112,18 @@ const ChatBox = () => {
               <IconButton
                 variant={"ghost"}
                 aria-label="Member List"
-                onClick={() => setUsersList(!usersList)}
-                icon={<HiUsers size="25px" />}
+                onClick={() =>
+                  selectedRoom.isGroupChat
+                    ? setUsersList(!usersList)
+                    : setShowUP((value: any) => { setUsersList(!usersList); return getFirstUser();})
+                }
+                icon={
+                  selectedRoom.isGroupChat ? (
+                    <ImUsers size="25px" />
+                  ) : (
+                    <ImUser size="25px" />
+                  )
+                }
               />
               <IconButton
                 aria-label="close"
@@ -107,8 +135,8 @@ const ChatBox = () => {
               />
             </Box>
           </Box>
-          <Box width='100%' height='82%' overflow={'scroll'} overflowX='hidden'>
-            {msgs &&
+          <Box width="100%" height="82%" overflow={"scroll"} overflowX="hidden">
+           {(msgs.length !== 0) ?
               msgs.map((msg: any) => {
                 if (msg.roomId === selectedRoom.id)
                   return (
@@ -128,28 +156,30 @@ const ChatBox = () => {
                       </Box>
                       {msg.msg}
                     </Box>
-                  );
-                return <></>;
-              })}
+                  )
+                else
+                  return undefined;
+              }): <></>}
           </Box>
-            <Input
-              fontFamily={"Inter"}
-              fontWeight="bolder"
-              bg="white"
-              height="8%"
-              minHeight="50px"
-              width="98%"
-              m="10px"
-              value={msg}
-              placeholder="Type a message"
-              focusBorderColor="gray.100"
-              onChange={(e) => setMsg(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  sendMessage();
-                  setMsg("");
-                }
-              }}/>
+          <Input
+            fontFamily={"Inter"}
+            fontWeight="bolder"
+            bg="white"
+            height="8%"
+            minHeight="50px"
+            width="98%"
+            m="10px"
+            value={msg}
+            placeholder="Type a message"
+            focusBorderColor="gray.100"
+            onChange={(e) => setMsg(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                sendMessage();
+                setMsg("");
+              }
+            }}
+          />
         </>
       ) : (
         <Text fontSize="20px" color="blackAlpha.500">

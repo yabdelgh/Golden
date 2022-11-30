@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   IconButton,
   Input,
@@ -11,32 +12,27 @@ import { BsSearch } from "react-icons/bs";
 import { ChatState } from "../Context/ChatProvider";
 import User from "./User";
 import { VscChromeClose } from "react-icons/vsc";
-import { useState } from "react";
 
 const UsersList = () => {
-  const { searchKey,setSearchKey, users, selectedRoom, usersList, setUsersList } = ChatState();
-  
+  const {
+    searchKey,
+    setSearchKey,
+    users,
+    selectedRoom,
+    usersList,
+    setUsersList,
+  } = ChatState();
+
   return (
-    <Box
-      display={{
-        base: selectedRoom && usersList ? "flex" : "none",
-        md: usersList ? "flex" : "none",
-        xl: usersList ? "flex" : "none",
-      }}
-      ml="5px"
-      bg="white"
-      minWidth="400px"
-      width={{ base: "100%", xl: "30%" }}
-      borderRadius="5px"
-      flexDirection="column"
-      fontFamily={"Inter"}
-      fontWeight="bold"
-      color="gray.500"
-    >
+    <>
       <Box display="flex" alignItems={"center"} justifyContent="space-between">
         <FormControl height="30px" width="80%" margin="20px">
           <InputGroup>
-            <Input placeholder="Search" value={searchKey} onChange={(e) => setSearchKey(e.target.value)} />
+            <Input
+              placeholder="Search"
+              value={searchKey}
+              onChange={(e) => setSearchKey(e.target.value)}
+            />
             <InputRightElement>
               <IconButton
                 variant={"unstyled"}
@@ -57,18 +53,21 @@ const UsersList = () => {
       </Box>
       <Text m="10px" color="green.400">
         online __{" "}
-        {selectedRoom ? 
-          users.filter((obj: any) => {
-            return (obj.isOnline && selectedRoom.RoomUsers.some((ele: any) => { 
-              return ele.userId === obj.id
-            }));
-          }).length : 0
-        }
+        {selectedRoom
+          ? users.filter((obj: any) => {
+              return (
+                obj.isOnline &&
+                selectedRoom.RoomUsers.some((ele: any) => {
+                  return ele.userId === obj.id;
+                })
+              );
+            }).length
+          : 0}
       </Text>
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
+              <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
           ))
         ) : (
           <></>
@@ -76,24 +75,27 @@ const UsersList = () => {
       </Box>
       <Text m="10px" color="gray.400">
         offline __{" "}
-        {selectedRoom ? 
-          users.filter((obj: any) => {
-            return (!obj.isOnline && selectedRoom.RoomUsers.some((ele: any) => { 
-              return ele.userId === obj.id
-            }));
-          }).length : 0
-        }
+        {selectedRoom
+          ? users.filter((obj: any) => {
+              return (
+                !obj.isOnline &&
+                selectedRoom.RoomUsers.some((ele: any) => {
+                  return ele.userId === obj.id;
+                })
+              );
+            }).length
+          : 0}
       </Text>
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={false} key={roomUser.userId}/>
+            <User id={roomUser.userId} isOnline={false} key={roomUser.userId} />
           ))
         ) : (
           <></>
         )}
       </Box>
-    </Box>
+    </>
   );
 };
 

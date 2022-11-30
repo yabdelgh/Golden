@@ -1,38 +1,45 @@
-import { Avatar, Box, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
 
-const User = ({ id, isOnline}: any) => {
+const User = ({ id, isOnline }: any) => {
   const [user, setUser]: any[] = useState({ login: "not found" });
-  const { users, searchKey } = ChatState();
+  const { users, searchKey, showUP, setShowUP } = ChatState();
 
   useEffect(() => {
     const tmp: any = users.find((ele: any) => {
-      return (ele.id === id && ele.isOnline === isOnline)
+      return ele.id === id && ele.isOnline === isOnline;
     });
-    if (tmp && tmp.login.includes(searchKey))
-      setUser(tmp);
-    else
-      setUser(undefined)
+    if (tmp && tmp.login.includes(searchKey)) setUser(tmp);
+    else setUser(undefined);
   }, [users, searchKey, id, isOnline]);
 
-  return( user ? (
-    <Box display="flex" alignItems="center">
+  return user ? (
+    <Button
+      display="flex"
+      alignItems='center'
+      justifyContent='flex-start'
+      pl='10px'
+      onClick={() => {
+        setShowUP(user);
+      }}
+      variant='unstyled'
+      height='53px'
+    >
       <Avatar
         color="white"
-        bg="#4267B2"
+        bg="teal"
         border="3px solid white"
-        ml="10px"
         borderRadius="10px"
         name={user ? user.login : ""}
       />
       <Text fontWeight={"bold"} ml="10px">
         {user.login}
       </Text>
-    </Box>
+    </Button>
   ) : (
-    <></>)
-  )
+    <></>
+  );
 };
 
 export default User;

@@ -5,6 +5,7 @@ import {
   Button,
   Avatar,
   StackDivider,
+  AvatarBadge,
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
 import CreateGroupModal from "./CreateGroupModal";
@@ -12,14 +13,26 @@ import { ChatState } from "../Context/ChatProvider";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 const ChatList = () => {
-  const {
-    rooms,
-    selectedRoom,
-    setSelectedRoom,
-  } = ChatState();
+  const {setShowUP, rooms, users, selectedRoom, setSelectedRoom, usersList } = ChatState();
+  
+  const getFirstUser = (room: any) => {
+    return users.find((ele: any) => ele.id === room.RoomUsers[0].userId);
+  }
 
   const setChatBoxData = async (room: any) => {
     setSelectedRoom(room);
+    if (room.isGroupChat && usersList)
+      setShowUP(undefined);
+    else if (usersList)
+      setShowUP(() => getFirstUser(room));
+  };
+
+  const thereIsSomeOneOnline = (roomUsers: any): boolean => {
+    return roomUsers.some(({ userId }: any) => {
+      return users.some((ele: any) => {
+        return ele.id === userId && ele.isOnline === true;
+      });
+    });
   };
 
   return (
@@ -78,12 +91,23 @@ const ChatList = () => {
               onClick={() => setChatBoxData(room)}
               key={room.id}
             >
-              <Avatar borderRadius='5px' color='white' bg='#4267B2' name={room.name} />
+              <Avatar
+                borderRadius="5px"
+                color="white"
+                bg="teal"
+                name={room.name}
+              >
+                {thereIsSomeOneOnline(room.RoomUsers) ? (
+                  <AvatarBadge boxSize="0.9em" bg="#00FF00" />
+                ) : (
+                  <AvatarBadge boxSize="0.9em" bg="#FF0000" />
+                )}
+              </Avatar>
               <Box ml="20px" display="flex" flexDirection="column">
                 <Text p="4px 0px">{room.name}</Text>
                 <Text fontSize="15px" fontFamily={"work sans"} color="gray.400">
                   {room.lastMsg && room.lastMsg.msg.slice(0, 20)}
-                  {(room.lastMsg && room.lastMsg.msg.length > 20) ? ' ...' : '' }
+                  {room.lastMsg && room.lastMsg.msg.length > 20 ? " ..." : ""}
                 </Text>
               </Box>
             </Box>

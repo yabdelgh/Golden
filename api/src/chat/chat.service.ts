@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { UserService } from 'src/user/user.service';
 import { mySocket } from './chat.gateway';
@@ -8,7 +9,8 @@ import { RoomService } from './room/room.service';
 export class ChatService {
   constructor(
     private roomService: RoomService,
-    private userService: UserService) { }
+    private userService: UserService,
+    private prisma: PrismaService) { }
 
   async join(socket: mySocket) {
     const rooms: any = await this.roomService.getRooms(socket.user.id);
@@ -18,7 +20,15 @@ export class ChatService {
       }
     return rooms;
   }
+  async getDMRooms(socket: mySocket) {
+    const rooms: any = await this.roomService.getDMRooms(socket.user.id);
+    if (rooms.length !== 0)
+      for (let i = 0; i < rooms.length; i++) {
+        socket.join(String(rooms[i].id));
+      }
+    return rooms;
 
+  }
   async getUsers(userId: number, connectedUsers: UserDto[]) { 
     const users: UserDto[] = await this.userService.getUsers(userId);
     users.forEach((ele1: UserDto) => { 
@@ -29,7 +39,20 @@ export class ChatService {
         ele1.isOnline = false;
       return ele1;
     });
+    console.log(connectedUsers);
     return users;
   }
 
+  async getFriends(userId: number) {
+    return this.prisma.friend.findMany({
+      where: {
+        user2Id: userId
+      },
+      select: {
+        user1Id: true,
+        user2Id: true,
+        status: true
+      }
+    });
+  }
 }

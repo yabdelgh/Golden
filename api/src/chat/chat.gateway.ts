@@ -84,10 +84,11 @@ export class ChatGateway
     try
     {
       socket.user = await this.getUserFromsocket(socket);
-      console.log(socket.user);
       socket.emit('me', await this.userService.getUser(socket.user.id));
-      socket.emit('rooms', await this.chatService.join(socket));
       socket.emit('users', await this.chatService.getUsers(socket.user.id, await this.getConnectedUsers()));
+      socket.emit('rooms', await this.chatService.join(socket));
+      socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
+      socket.emit('friends', await this.chatService.getFriends(socket.user.id));
       this.status_broadcast(socket);
     }
     catch
@@ -101,8 +102,10 @@ export class ChatGateway
     @ConnectedSocket() client: mySocket,
     @MessageBody() payload: chatMsgDto,
   ) {
+    console.log(payload);
     payload.userId = client.user.id;
     const msg = await this.msgService.addMsg(payload);
+    console.log(msg)
     this.msg_broadcast(msg);
   }
 

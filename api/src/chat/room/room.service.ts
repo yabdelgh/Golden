@@ -16,10 +16,10 @@ export class RoomService {
     return hash;
   }
 
-  async getRooms(userId: number) : Promise<chatRoomDto[]> {
+  async getRooms(userId: number): Promise<chatRoomDto[]> {
     const rooms: chatRoomDto[] = await this.prisma.chatRooms.findMany({
       where: {
-        NOT: { status: RoomStatus.Deleted },
+        NOT: { OR: [{ status: RoomStatus.Deleted }, { name: '' }] },
         RoomUsers: {
           some: {
             userId,
@@ -41,6 +41,41 @@ export class RoomService {
       },
     });
 
+    return rooms;
+  }
+
+  async getDMRooms(userId: number): Promise<any> {
+    const rooms: any = await this.prisma.chatRooms.findMany({
+      where: {
+        name: '',
+        NOT: { status: RoomStatus.Deleted },
+        RoomUsers: {
+          some: {
+            userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        RoomUsers: {
+          where: {
+            NOT: { userId },
+          },
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
+    for (const ele of rooms) {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id: ele.RoomUsers[0].userId,
+        }
+      });
+      ele.name = user.login;
+    }
     return rooms;
   }
 
@@ -82,50 +117,50 @@ export class RoomService {
   }
 
   async updateRoom(room: chatRoomDto, userId: number) {
-    try{
-    const ret1 = await this.prisma.chatRooms.findFirst({
-      where: {
-        id: room.id,
-        RoomUsers: {
-          some: {
-            userId,
-            role: RoomUserRole.Owner,
-          },
-        },
-        NOT: {
-          status: RoomStatus.Deleted,
-        },
-      },
-    });
-    if (ret1)
-    {
-      const ret2 = await this.prisma.chatRooms.update({
+    try {
+      const ret1 = await this.prisma.chatRooms.findFirst({
         where: {
-          id: ret1.id,
-        },
-        data: {
-          name: room.name,
-          access: RoomAccess[room.access],
-          status: RoomStatus[room.status],
-          password: ( room.password ? await argon.hash(room.password) : ret1.password)
-        },
-        select: {
-          id: true,
-          name: true,
-          access: true,
+          id: room.id,
           RoomUsers: {
-            select: {
-              userId: true,
-              role: true,
-              ban: true,
-              mute: true,
+            some: {
+              userId,
+              role: RoomUserRole.Owner,
             },
+          },
+          NOT: {
+            status: RoomStatus.Deleted,
           },
         },
       });
-      return ret2;
-    }
-    else throw new ForbiddenException('Ambiguous credentials');
+      if (ret1) {
+        const ret2 = await this.prisma.chatRooms.update({
+          where: {
+            id: ret1.id,
+          },
+          data: {
+            name: room.name,
+            access: RoomAccess[room.access],
+            status: RoomStatus[room.status],
+            password: room.password
+              ? await argon.hash(room.password)
+              : ret1.password,
+          },
+          select: {
+            id: true,
+            name: true,
+            access: true,
+            RoomUsers: {
+              select: {
+                userId: true,
+                role: true,
+                ban: true,
+                mute: true,
+              },
+            },
+          },
+        });
+        return ret2;
+      } else throw new ForbiddenException('Ambiguous credentials');
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError)
         if (err.code === 'P2002')
@@ -309,12 +344,12 @@ export class RoomService {
     });
   }
 
-  async getRoomName(roomId: number) { 
+  async getRoomName(roomId: number) {
     const ret = await this.prisma.chatRooms.findFirst({
       where: {
-        id: roomId
-      }
-    })
+        id: roomId,
+      },
+    });
     return ret.name;
   }
 }

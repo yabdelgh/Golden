@@ -35,7 +35,7 @@ export class AuthController {
   @Get('samira')
   async samira(@Res() res) { 
     const payload = {
-      login: 'karima',
+      login: 'samira',
       id: 66,
     };
     const token = await this.jwtService.signAsync(payload, {

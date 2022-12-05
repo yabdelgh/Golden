@@ -52,47 +52,53 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
 
-  afterInit() { }
-  
-  async getUserFromsocket(socket: Socket) : Promise<UserDto>{
-      let token: string = String(socket.handshake.headers.cookie);
-      token = token.replace('access_token=', '');
-      const user =   await this.jwtService.verify(token, {
-        secret: this.config.get('JWT_SECRET'),
-      });
-      user.isOnline = true;
-      return user;
+  afterInit() {}
+
+  async getUserFromsocket(socket: Socket): Promise<UserDto> {
+    let token: string = String(socket.handshake.headers.cookie);
+    token = token.replace('access_token=', '');
+    const user = await this.jwtService.verify(token, {
+      secret: this.config.get('JWT_SECRET'),
+    });
+    user.isOnline = true;
+    return user;
   }
 
-  async getConnectedUsers() : Promise<UserDto[]>{
-      const clients: any = await this.server.fetchSockets();
-      return clients.map((ele: { user: UserDto }) => ele.user);
+  async getConnectedUsers(): Promise<UserDto[]> {
+    const clients: any = await this.server.fetchSockets();
+    return clients.map((ele: { user: UserDto }) => ele.user);
   }
 
   status_broadcast(socket: mySocket) {
     // emit the status to all clients in the rooms, except sender
-    socket.broadcast.to([...socket.rooms])
-      .emit('isOnline', { userId: socket.user.id, status: true });
+    socket.broadcast
+      .to([...socket.rooms])
+      .emit('isOnline', { id: socket.user.id, isOnline: socket.user.isOnline });
   }
 
   msg_broadcast(msg: chatMsgDto) {
     // emit the msg to all clients in the room, include sender
     this.server.in(String(msg.roomId)).emit('chatMsg', msg);
-   }
-  
+  }
+
   async handleConnection(socket: mySocket) {
-    try
-    {
+    try {
       socket.user = await this.getUserFromsocket(socket);
+      socket.user.isOnline = true;
+      socket.join(String(socket.user.id));
       socket.emit('me', await this.userService.getUser(socket.user.id));
-      socket.emit('users', await this.chatService.getUsers(socket.user.id, await this.getConnectedUsers()));
+      socket.emit(
+        'users',
+        await this.chatService.getUsers(
+          socket.user.id,
+          await this.getConnectedUsers(),
+        ),
+      );
       socket.emit('rooms', await this.chatService.join(socket));
       socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
       socket.emit('friends', await this.chatService.getFriends(socket.user.id));
       this.status_broadcast(socket);
-    }
-    catch
-    {
+    } catch {
       socket.disconnect(true);
     }
   }
@@ -102,10 +108,8 @@ export class ChatGateway
     @ConnectedSocket() client: mySocket,
     @MessageBody() payload: chatMsgDto,
   ) {
-    console.log(payload);
     payload.userId = client.user.id;
     const msg = await this.msgService.addMsg(payload);
-    console.log(msg)
     this.msg_broadcast(msg);
   }
 
@@ -117,7 +121,7 @@ export class ChatGateway
     try {
       const room = await this.roomService.createRoom(payload, socket.user.id);
       socket.join(String(room.id));
-      const clients : any = await this.server.fetchSockets();
+      const clients: any = await this.server.fetchSockets();
       for (const x in clients) {
         if (clients[x].user.id === socket.user.id)
           clients[x].join(String(room.id));
@@ -149,20 +153,125 @@ export class ChatGateway
     @MessageBody() payload: ChatRooms,
   ) {
     try {
-      const oldName = await this.roomService.getRoomName(payload.id);
       const room = await this.roomService.updateRoom(payload, socket.user.id);
       this.server.in(String(room.id)).emit('updateRoom', room);
     } catch (error) {
       socket.emit('error', error.message);
     }
   }
-  
+
   @SubscribeMessage('isOnline')
   async isOnline(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() status: boolean) {
-    socket.user.isOnline = status;
-    socket.broadcast.to([...socket.rooms]).emit('isOnline', {userId: socket.user.id, status});
+    @MessageBody() isOnline: boolean,
+  ) {
+    socket.user.isOnline = isOnline;
+    this.status_broadcast(socket);
+  }
+
+  @SubscribeMessage('addFriend')
+  async addFriend(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() friendId: number,
+  ) {
+    const friend = await this.userService.addFriend(socket.user.id, friendId);
+    this.server.in(String(String(friendId))).emit('addFriend', friend);
+    socket.emit('addFriend', friend);
+  }
+
+  @SubscribeMessage('removeFriend')
+  async removeFriend(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() friendId: number,
+  ) {
+    const friend = await this.userService.removeFriend(
+      socket.user.id,
+      friendId,
+    );
+    this.server.in(String(String(friendId))).emit('removeFriend', friend);
+    socket.emit('removeFriend', friend);
+  }
+
+  @SubscribeMessage('acceptFriend')
+  async acceptFriend(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() friendId: number,
+  ) {
+    const friend = await this.userService.acceptFriend(
+      socket.user.id,
+      friendId,
+    );
+    this.server.in(String(String(friendId))).emit('acceptFriend', friend);
+    socket.emit('acceptFriend', friend);
+  }
+
+  @SubscribeMessage('mute')
+  async mute(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: { userId: number; roomId: number; value: boolean },
+  ) {
+    const ret = await this.roomService.muteUser(
+      socket.user.id,
+      payload.roomId,
+      payload.userId,
+      payload.value,
+    );
+    if (ret) {
+      this.server.in(String(payload.roomId)).emit('mute', {
+        userId: ret.userId,
+        roomId: ret.roomId,
+        val: payload.value,
+      });
+    }
+  }
+
+  @SubscribeMessage('ban')
+  async ban(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: { userId: number; roomId: number; value: boolean },
+  ) {
+    const ret = await this.roomService.banUser(
+      socket.user.id,
+      payload.roomId,
+      payload.userId,
+      payload.value,
+    );
+    if (ret) {
+      if (!payload.value)
+        this.server
+          .in(String(payload.userId))
+          .socketsJoin(String(payload.roomId));
+      this.server.in(String(payload.roomId)).emit('ban', {
+        userId: ret.userId,
+        roomId: ret.roomId,
+        val: payload.value,
+      });
+      if (payload.value)
+        this.server
+          .in(String(payload.userId))
+          .socketsLeave(String(payload.roomId));
+    }
+  }
+
+  @SubscribeMessage('role')
+  async admin(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: { userId: number; roomId: number; role: string },
+  ) {
+    const ret = await this.roomService.role(
+      socket.user.id,
+      payload.roomId,
+      payload.userId,
+      payload.role,
+    );
+    if (ret)
+      console.log(payload);
+      console.log(ret);
+       this.server.in(String(payload.roomId)).emit('role', {
+        userId: ret.userId,
+        roomId: ret.roomId,
+        role: ret.role,
+      });
   }
 
   @SubscribeMessage('joinRoom')
@@ -173,21 +282,6 @@ export class ChatGateway
   @SubscribeMessage('leaveRoom')
   leaveRoom(socket, payload) {
     this.roomService.leaveRoom(socket.user.id, payload.roomId);
-  }
-
-  @SubscribeMessage('muteUser')
-  muteUser(socket, payload) {
-    this.roomService.muteUser(socket.user.id, payload.roomId, payload.victimId);
-  }
-
-  @SubscribeMessage('banUser')
-  banUser(socket, payload) {
-    this.roomService.banUser(socket.user.id, payload.roomId, payload.victimId);
-  }
-
-  @SubscribeMessage('addAdmin')
-  addAdmin(socket, payload) {
-    this.roomService.addAdmin(socket.user.Id, payload.roomId, payload.adminId);
   }
 
   @SubscribeMessage('removeAdmin')
@@ -210,6 +304,8 @@ export class ChatGateway
 
   handleDisconnect(@ConnectedSocket() socket: mySocket) {
     if (socket.user)
-      socket.broadcast.to([...socket.rooms]).emit('isOnline', {userId: socket.user.id, status: false});
+      socket.broadcast
+        .to([...socket.rooms])
+        .emit('isOnline', { userId: socket.user.id, status: false });
   }
 }

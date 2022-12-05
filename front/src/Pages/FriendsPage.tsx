@@ -8,13 +8,25 @@ import {
   Image,
   Button,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import ChatHeader from "../Components/ChatHeader";
-import { ChatState } from "../Context/ChatProvider";
+import NavBar from "../Components/NavBar";
+import { AppState } from "../Context/AppProvider";
 
 const FriendsPage = () => {
-  const { users, Friends } = ChatState();
+  const { socket, users, Friends } = AppState();
+
+  const addFriend = (id: number) => {
+    socket.emit("addFriend", id);
+  };
+  const removeFriend = (id: number) => {
+    socket.emit("removeFriend", id);
+  };
+  const confirmFriend = (id: number) => {
+    socket.emit("acceptFriend", id);
+  };
+
   return (
     <Box
       width="100%"
@@ -72,48 +84,57 @@ const FriendsPage = () => {
             justifyContent="center"
             mb="10px"
           >
-            {Friends && (
-              users.map((value1: any) => (
-              Friends.some((value2: any) => (value2.user1Id === value1.id) && (value2.status === true) ) ?
-                  <Box
-                    m="20px"
-                    width="200px"
-                    height="350px"
-                    borderRadius="lg"
-                    display="flex"
-                    flexDir="column"
-                    bg="white"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    key={value1.id}
-                    boxShadow="1px 5px 5px gray"
-                  >
-                    <Image
-                      borderTopRadius="lg"
-                      height="60%"
-                      width="100%"
-                      src={value1.imageUrl}
-                    />
-                    <Text fontWeight="bolder">{value1.login}</Text>
+            {Friends &&
+              users.map(
+                (value1: any) =>
+                  Friends.some(
+                    (value2: any) =>
+                      (value2.user2Id === value1.id ||
+                        value2.user1Id === value1.id) &&
+                      value2.status === true
+                  ) && (
                     <Box
-                      mb="7px"
+                      m="20px"
+                      width="200px"
+                      height="350px"
+                      borderRadius="lg"
                       display="flex"
                       flexDir="column"
+                      bg="white"
+                      alignItems="center"
                       justifyContent="space-between"
-                      width="90%"
-                      height="22%"
+                      key={value1.id}
+                      boxShadow="1px 5px 5px gray"
                     >
-                      <Button bg="gray.400" height="35px">
-                        unfriend
-                      </Button>
-                      <Button bg="teal" height="35px">
-                        message
-                      </Button>
+                      <Image
+                        borderTopRadius="lg"
+                        height="60%"
+                        width="100%"
+                        src={value1.imageUrl}
+                      />
+                      <Text fontWeight="bolder">{value1.login}</Text>
+                      <Box
+                        mb="7px"
+                        display="flex"
+                        flexDir="column"
+                        justifyContent="space-between"
+                        width="90%"
+                        height="22%"
+                      >
+                        <Button
+                          bg="gray.400"
+                          height="35px"
+                          onClick={() => removeFriend(value1.id)}
+                        >
+                          unfriend
+                        </Button>
+                        <Button bg="teal" height="35px">
+                          message
+                        </Button>
+                      </Box>
                     </Box>
-                  </Box> : <></>
-              ))
-            )}
-
+                  )
+              )}
           </TabPanel>
           <TabPanel
             height="70vh"
@@ -125,48 +146,59 @@ const FriendsPage = () => {
             justifyContent="center"
             mb="10px"
           >
-            {Friends && (
-              users.map((value1: any) => (
-              Friends.some((value2: any) => (value2.user1Id === value1.id) && (value2.status === false) ) ?
-                  <Box
-                    m="20px"
-                    width="200px"
-                    height="350px"
-                    borderRadius="lg"
-                    display="flex"
-                    flexDir="column"
-                    bg="white"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    key={value1.id}
-                    boxShadow="1px 5px 5px gray"
-                  >
-                    <Image
-                      borderTopRadius="lg"
-                      height="60%"
-                      width="100%"
-                      src={value1.imageUrl}
-                    />
-                    <Text fontWeight="bolder">{value1.login}</Text>
+            {Friends &&
+              users.map(
+                (value1: any) =>
+                  Friends.some(
+                    (value2: any) =>
+                      value2.user1Id === value1.id && value2.status === false
+                  ) && (
                     <Box
-                      mb="7px"
+                      m="20px"
+                      width="200px"
+                      height="350px"
+                      borderRadius="lg"
                       display="flex"
                       flexDir="column"
+                      bg="white"
+                      alignItems="center"
                       justifyContent="space-between"
-                      width="90%"
-                      height="22%"
+                      key={value1.id}
+                      boxShadow="1px 5px 5px gray"
                     >
-                      <Button bg="gray.400" height="35px">
-                        Delete
-                      </Button>
-                      <Button bg="teal" height="35px">
-                        Confirm
-                      </Button>
+                      <Image
+                        borderTopRadius="lg"
+                        height="60%"
+                        width="100%"
+                        src={value1.imageUrl}
+                      />
+                      <Text fontWeight="bolder">{value1.login}</Text>
+                      <Box
+                        mb="7px"
+                        display="flex"
+                        flexDir="column"
+                        justifyContent="space-between"
+                        width="90%"
+                        height="22%"
+                      >
+                        <Button
+                          bg="gray.400"
+                          height="35px"
+                          onClick={() => removeFriend(value1.id)}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          bg="teal"
+                          height="35px"
+                          onClick={() => confirmFriend(value1.id)}
+                        >
+                          Confirm
+                        </Button>
+                      </Box>
                     </Box>
-                  </Box> : <></>
-              ))
-            )}
-
+                  )
+              )}
           </TabPanel>
           <TabPanel
             height="70vh"
@@ -178,48 +210,56 @@ const FriendsPage = () => {
             justifyContent="center"
             mb="10px"
           >
-            {Friends && (
-              users.map((value1: any) => (
-              !Friends.some((value2: any) => (value2.user1Id === value1.id)) ?
-                  <Box
-                    m="20px"
-                    width="200px"
-                    height="350px"
-                    borderRadius="lg"
-                    display="flex"
-                    flexDir="column"
-                    bg="white"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    key={value1.id}
-                    boxShadow="1px 5px 5px gray"
-                  >
-                    <Image
-                      borderTopRadius="lg"
-                      height="60%"
-                      width="100%"
-                      src={value1.imageUrl}
-                    />
-                    <Text fontWeight="bolder">{value1.login}</Text>
+            {Friends &&
+              users.map(
+                (value1: any) =>
+                  !Friends.some(
+                    (value2: any) =>
+                      value2.user1Id === value1.id ||
+                      value2.user2Id === value1.id
+                  ) && (
                     <Box
-                      mb="7px"
+                      m="20px"
+                      width="200px"
+                      height="350px"
+                      borderRadius="lg"
                       display="flex"
                       flexDir="column"
+                      bg="white"
+                      alignItems="center"
                       justifyContent="space-between"
-                      width="90%"
-                      height="22%"
+                      key={value1.id}
+                      boxShadow="1px 5px 5px gray"
                     >
-                      <Button bg="gray.400" height="35px">
-                        Remove
-                      </Button>
-                      <Button bg="teal" height="35px">
-                        Add Friend
-                      </Button>
+                      <Image
+                        borderTopRadius="lg"
+                        height="60%"
+                        width="100%"
+                        src={value1.imageUrl}
+                      />
+                      <Text fontWeight="bolder">{value1.login}</Text>
+                      <Box
+                        mb="7px"
+                        display="flex"
+                        flexDir="column"
+                        justifyContent="space-between"
+                        width="90%"
+                        height="22%"
+                      >
+                        <Button bg="gray.400" height="35px">
+                          Remove
+                        </Button>
+                        <Button
+                          bg="teal"
+                          height="35px"
+                          onClick={() => addFriend(value1.id)}
+                        >
+                          Add Friend
+                        </Button>
+                      </Box>
                     </Box>
-                  </Box> : <></>
-              ))
-            )}
-
+                  )
+              )}
           </TabPanel>
         </TabPanels>
       </Tabs>

@@ -15,17 +15,17 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 
 const ChatConfigModal = ({ children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedRoom, socket } = ChatState();
-  const [groupName, setGroupName] = useState('');
+  const { selectedRoom, socket } = AppState();
+  const [groupName, setGroupName] = useState("");
   const deleteRoom = () => {
     socket.emit("deleteRoom", selectedRoom);
   };
   const updateRoom = () => {
-    socket.emit("updateRoom", { id: selectedRoom.id, name: groupName, });
+    socket.emit("updateRoom", { id: selectedRoom.id, name: groupName });
   };
 
   return (

@@ -1,20 +1,19 @@
-import React from "react";
-import { Box, Button, Container, Text, Link } from "@chakra-ui/react";
+import { Box, Button, Container, Text } from "@chakra-ui/react";
 import { FiArrowRight } from "react-icons/fi";
 import { useEffect } from "react";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  
-  const { user } = ChatState();
-  
+  const { user } = AppState();
+
   const Navigate = useNavigate();
-  
+
   useEffect(() => {
-    if (Object.keys(user).length !== 0) { 
-     Navigate("/chat");
-    };
+    if (Object.keys(user).length !== 0) {
+      Navigate("/chat");
+    }
+    //
   }, [user]);
 
   return (

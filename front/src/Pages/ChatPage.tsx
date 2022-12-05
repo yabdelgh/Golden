@@ -5,11 +5,12 @@ import ChatList from "../Components/ChatList";
 import UsersList from "../Components/UsersList";
 import RightEle from "../Components/RightEle";
 import UserProfile from "../Components/UserProfile";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
+import NavBar from "../Components/NavBar";
 
 const ChatPage = () => {
-  const { showUP } = ChatState();
-  
+  const { showUP } = AppState();
+
   return (
     <Box
       width="100%"
@@ -30,9 +31,7 @@ const ChatPage = () => {
       >
         <ChatList />
         <ChatBox />
-        <RightEle>
-          {showUP ? <UserProfile/> : <UsersList/>}
-        </RightEle>
+        <RightEle>{showUP ? <UserProfile /> : <UsersList />}</RightEle>
       </Box>
     </Box>
   );

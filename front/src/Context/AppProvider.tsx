@@ -2,19 +2,19 @@ import { useToast } from "@chakra-ui/react";
 import io from "socket.io-client";
 import { createContext, useContext, useState } from "react";
  
-const socket = io("http://localhost:3333/chat",{ withCredentials: true });
+const socket = io("http://localhost:3333/chat",{ withCredentials: true, reconnection: true });
 
-const ChatContext = createContext<any | null>(null);
+const AppContext = createContext<any | null>(null);
 
-const ChatProvider = ({ children }: any) => {
+const AppProvider = ({ children }: any) => {
 
   const [user, setUser]: any = useState({});
-  const [searchKey, setSearchKey] = useState('');
-  const [Friends, setFriends]: any = useState([]);
   const [users, setUsers]: any = useState([]);
   const [rooms, setRooms]: any = useState([]);
-  const [dMRooms, setDMRooms]: any = useState([]);
+  const [Friends, setFriends]: any = useState([]);
   const [msgs, setMsgs]: any = useState([]);
+  const [searchKey, setSearchKey] = useState('');
+  const [dMRooms, setDMRooms]: any = useState([]);
   const [selectedUser, setSelectedUser] = useState();
   const [selectedRoom, setSelectedRoom] = useState();
   const [usersList, setUsersList] = useState(false);
@@ -24,7 +24,7 @@ const ChatProvider = ({ children }: any) => {
   
 
   return (
-    <ChatContext.Provider
+    <AppContext.Provider
       value={{
         dMRooms,
         setDMRooms,
@@ -55,12 +55,12 @@ const ChatProvider = ({ children }: any) => {
       }}
     >
       {children}
-    </ChatContext.Provider>
+    </AppContext.Provider>
   );
 };
 
-export const ChatState = () => {
-  return useContext(ChatContext);
+export const AppState = () => {
+  return useContext(AppContext);
 };
 
-export default ChatProvider;
+export default AppProvider;

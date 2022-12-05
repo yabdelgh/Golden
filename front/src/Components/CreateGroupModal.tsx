@@ -19,25 +19,23 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 import { warningToast } from "../Utils/Toast";
 
 const CreateGroupModal = ({ children }: any) => {
-  const { socket } = ChatState();
+  const { socket } = AppState();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [name, setName] = useState("");
   const [show, setShow] = useState(false);
   const [access, setAccess] = useState("private");
   const [password, setPassword] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const createNewGroup = () => {
-    if (name === "")
-      warningToast(toast, "Please enter a group name");
+    if (name === "") warningToast(toast, "Please enter a group name");
     else if (access === "protected" && password === "")
       warningToast(toast, "Please enter a password");
-    else
-      socket.emit('addRoom', {id: 0, name, access, password });
+    else socket.emit("addRoom", { id: 0, name, access, password });
   };
 
   return (

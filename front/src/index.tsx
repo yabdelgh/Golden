@@ -4,7 +4,7 @@ import App from './App';
 //import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
-import ChatProvider from './Context/ChatProvider';
+import ChatProvider from "./Context/AppProvider";
 
 
 const root = ReactDOM.createRoot(

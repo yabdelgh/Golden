@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   FormControl,
   IconButton,
   Input,
@@ -9,7 +8,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 import User from "./User";
 import { VscChromeClose } from "react-icons/vsc";
 
@@ -21,7 +20,7 @@ const UsersList = () => {
     selectedRoom,
     usersList,
     setUsersList,
-  } = ChatState();
+  } = AppState();
 
   return (
     <>
@@ -67,7 +66,7 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-              <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
+            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
           ))
         ) : (
           <></>

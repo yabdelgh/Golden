@@ -77,21 +77,6 @@ export class UserController {
     return this.userservice.getBlockedUsers(user.id);
   }
 
-  @Post('friend')
-  async addFriend(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
-    return this.userservice.addFriend(user.id, id);
-  }
-
-  @Delete('friend')
-  async removeFriend(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
-    return this.userservice.removeFriend(user.id, id);
-  }
-
-  @Patch('friend')
-  async acceptFriend(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
-    return this.userservice.acceptFriend(user.id, id);
-  }
-
  /* @Post('upload')
   @UseInterceptors(FileInterceptor('file', storage))
   async upload(@UploadedFile() file, @Request() req): Promise<any> {

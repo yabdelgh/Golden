@@ -162,9 +162,18 @@ export class UserService {
   }
 
   async removeFriend(user1Id: number, user2Id: number) {
-    const user = await this.prisma.friend.delete({
+    const user = await this.prisma.friend.deleteMany({
       where: {
-        user1Id_user2Id: { user1Id, user2Id },
+        OR: [
+          {
+            user1Id,
+            user2Id
+          },
+          {
+            user1Id: user2Id,
+            user2Id: user1Id
+          }
+        ]
       },
     });
     return user;
@@ -179,6 +188,7 @@ export class UserService {
         status: true,
       },
     });
+    return user;
   }
 
   async upload(file, user): Promise<any> {

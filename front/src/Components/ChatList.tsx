@@ -9,14 +9,15 @@ import {
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
 import CreateGroupModal from "./CreateGroupModal";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 const ChatList = () => {
-  const {setShowUP, rooms, users, selectedRoom, setSelectedRoom, usersList } = ChatState();
+  const { user, setShowUP, rooms, users, selectedRoom, setSelectedRoom, usersList } =
+    AppState();
   
   const getFirstUser = (room: any) => {
-    return users.find((ele: any) => ele.id === room.RoomUsers[0].userId);
+      return users.find((ele: any) => ele.id === room.RoomUsers[0].userId);
   }
 
   const setChatBoxData = async (room: any) => {
@@ -96,6 +97,7 @@ const ChatList = () => {
                 color="white"
                 bg="teal"
                 name={room.name}
+                src={ room.isGroupChat ? undefined : getFirstUser(room).imageUrl}
               >
                 {thereIsSomeOneOnline(room.RoomUsers) ? (
                   <AvatarBadge boxSize="0.9em" bg="#00FF00" />
@@ -106,8 +108,8 @@ const ChatList = () => {
               <Box ml="20px" display="flex" flexDirection="column">
                 <Text p="4px 0px">{room.name}</Text>
                 <Text fontSize="15px" fontFamily={"work sans"} color="gray.400">
-                  {room.lastMsg && room.lastMsg.msg.slice(0, 20)}
-                  {room.lastMsg && room.lastMsg.msg.length > 20 ? " ..." : ""}
+                  {room.lastMsg && room.lastMsg.slice(0, 20)}
+                  {room.lastMsg && room.lastMsg.length > 20 ? " ..." : ""}
                 </Text>
               </Box>
             </Box>

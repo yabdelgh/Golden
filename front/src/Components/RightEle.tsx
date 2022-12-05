@@ -1,9 +1,9 @@
 import {Box} from "@chakra-ui/react";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 
 const RightEle = ({ children }: any) => {
-  const { selectedRoom, usersList } = ChatState();
-  
+  const { selectedRoom, usersList } = AppState();
+
   return (
     <Box
       display={{
@@ -19,10 +19,10 @@ const RightEle = ({ children }: any) => {
       fontFamily={"Inter"}
       fontWeight="bold"
       color="gray.500"
-      transition='ease-in'
-      borderRadius='lg'
+      transition="ease-in"
+      borderRadius="lg"
     >
-      { children }
+      {children}
     </Box>
   );
 };

@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, Text } from "@chakra-ui/react";
+import { Avatar, Button, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { ChatState } from "../Context/ChatProvider";
+import { AppState } from "../Context/AppProvider";
 
 const User = ({ id, isOnline }: any) => {
   const [user, setUser]: any[] = useState({ login: "not found" });
-  const { users, searchKey, showUP, setShowUP } = ChatState();
+  const { users, searchKey, setShowUP } = AppState();
 
   useEffect(() => {
     const tmp: any = users.find((ele: any) => {
@@ -17,21 +17,23 @@ const User = ({ id, isOnline }: any) => {
   return user ? (
     <Button
       display="flex"
-      alignItems='center'
-      justifyContent='flex-start'
-      pl='10px'
+      alignItems="center"
+      justifyContent="flex-start"
+      pl="10px"
       onClick={() => {
         setShowUP(user);
       }}
-      variant='unstyled'
-      height='53px'
+      variant="unstyled"
+      height="53px"
     >
       <Avatar
         color="white"
         bg="teal"
-        border="3px solid white"
-        borderRadius="10px"
+        borderRadius='lg'
+        border='2px solid white'
+        size='md'
         name={user ? user.login : ""}
+       // src={ user.imageUrl}
       />
       <Text fontWeight={"bold"} ml="10px">
         {user.login}

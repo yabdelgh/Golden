@@ -2,10 +2,15 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./Pages/HomePage";
 import ChatPage from "./Pages/ChatPage";
-import { ChatState } from "./Context/ChatProvider";
+import { AppState } from "./Context/AppProvider";
 import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
 import FriendsPage from "./Pages/FriendsPage";
+import { Friend, Msg, User, Room, RoomUser } from "../types";
+import NavBar from "./Components/NavBar";
+import ChatHeader from "./Components/ChatHeader";
+import ProfilePage from "./Pages/ProfilePage";
+import GamePage from "./Pages/GamePage";
 
 function App() {
   const {
@@ -19,47 +24,47 @@ function App() {
     setUsersList,
     setSelectedRoom,
     setFriends,
-  } = ChatState();
+  } = AppState();
 
   useEffect(() => {
     document.addEventListener("visibilitychange", () => {
       setIsOnline((value: boolean) => {
-        socket.emit('isOnline', !value);
+        socket.emit("isOnline", !value);
         return !value;
       });
     });
 
-    socket.on("me", (payload: any) => setUser(payload));
-    
-    socket.on("isOnline", (payload: any) => { 
-      setUsers((value: any) => {
-        if (value !== undefined)
-        {
-          const index = value.findIndex((ele: any) => ele.id === payload.userId)
-          if (index !== -1)
-            value[index].isOnline = payload.status;
-        }
-        console.log(payload);
+    socket.on("me", (payload: User) => setUser(payload));
+
+    socket.on("isOnline", (payload: User) => {
+      console.log(payload);
+      setUsers((value: User[]) => {
+        const index = value.findIndex((ele: User) => ele.id === payload.id);
+        if (index !== -1) value[index].isOnline = payload.isOnline;
         return [...value];
-      })
+      });
     });
-    socket.on("users", (payload: any) => {
-      setUsers(payload)
+
+    socket.on("users", (payload: User[]) => {
+      setUsers(payload);
     });
-    socket.on("rooms", (payload: any) => {
-      for (const ele of payload)
-        ele.isGroupChat = true;
-      setRooms((value: any) => [...value, ...payload]);
+
+    socket.on("rooms", (payload: Room[]) => {
+      for (const ele of payload) ele.isGroupChat = true;
+      setRooms((value: Room[]) => [...value, ...payload]);
     });
-    socket.on("dMRooms", (payload: any) => {
-      for (const ele of payload)
-        ele.isGroupChat = false;
-      setRooms((value: any) => [...value, ...payload]);
+
+    socket.on("dMRooms", (payload: Room[]) => {
+      for (const ele of payload) ele.isGroupChat = false;
+      setRooms((value: Room[]) => [...value, ...payload]);
     });
-    socket.on("addRoom", (payload: any) => {
-      setRooms((value: any) => [...value, payload]);
-      successToast(toast, 'new group added')
+
+    socket.on("addRoom", (payload: Room) => {
+      payload.isGroupChat = true;
+      setRooms((value: Room[]) => [...value, payload]);
+      successToast(toast, "new group added");
     });
+
     socket.on("deleteRoom", (payload: any) => {
       setRooms((rooms: any[]) => {
         const index = rooms.findIndex((ele: any) => {
@@ -69,68 +74,119 @@ function App() {
         return [...rooms];
       });
       setSelectedRoom((value: any) => {
-        if (value === undefined || payload.id === value.id) { 
+        if (value === undefined || payload.id === value.id) {
           setUsersList(undefined);
           return undefined;
         }
         return value;
-      })
-      successToast(toast, 'group chat deleted successfully')
-    }); 
-    socket.on("updateRoom", (payload: any) => {
-      setRooms((rooms: any[]) => {
-        const index = rooms.findIndex((ele: any) => {
+      });
+      successToast(toast, "group chat deleted successfully");
+    });
+
+    socket.on("updateRoom", (payload: Room) => {
+      setRooms((rooms: Room[]) => {
+        const index = rooms.findIndex((ele: Room) => {
           return ele.id === payload.id;
         });
         rooms.splice(index, 1, payload);
-            setSelectedRoom((value: any) => { 
-              if (value !== undefined && value.id === payload.id)
-                return payload;
-              return value;
-          });
+        setSelectedRoom((value: Room) => {
+          if (value !== undefined && value.id === payload.id) return payload;
+          return value;
+        });
         return [...rooms];
       });
-      successToast(toast, 'group name updated successfully')
+      successToast(toast, "group name updated successfully");
     });
-    
-    socket.on('chatMsg', (payload: any) => { 
-      console.log(payload);
-      setMsgs((value: any) => { 
+
+    socket.on("chatMsg", (payload: Msg) => {
+      setMsgs((value: Msg[]) => {
         return [...value, payload];
       });
-      setRooms((value: any) => { 
-        const ret = value.findIndex((ele: any) => { return ele.id === payload.roomId });
-        value[ret].lastMsg = payload;
+      setRooms((value: Room[]) => {
+        const ret = value.findIndex((ele: Room) => {
+          return ele.id === payload.roomId;
+        });
+        value[ret].lastMsg = payload.msg;
         return value;
       });
     });
 
-    socket.on("error", (error: string) => errorToast(toast, error));
-    socket.on('friends', (payload: any) => {
-      setFriends(payload); 
+    socket.on("friends", (payload: Friend[]) => {
+      setFriends(payload);
     });
+
+    socket.on("addFriend", (payload: Friend) => {
+      setFriends((value: Friend[]) => {
+        return [...value, payload];
+      });
+    });
+
+    socket.on("acceptFriend", (payload: Friend) => {
+      setFriends((value: Friend[]) => {
+        const index: number = value.findIndex(
+          (ele: Friend) =>
+            ele.user1Id === payload.user1Id && ele.user2Id === payload.user2Id
+        );
+        value[index].status = true;
+        return [...value];
+      });
+    });
+
+    socket.on("removeFriend", (payload: Friend) => {
+      setFriends((value: Friend[]) => {
+        const index: number = value.findIndex((ele: Friend) => ele === payload);
+        value.splice(index, 1);
+        return [...value];
+      });
+    });
+
+    socket.on('ban', (payload: {userId: number, roomId: number, val: boolean}) => { 
+      setRooms((value: Room[]) => { 
+        const ret = value.findIndex((ele: Room) => ele.id === payload.roomId);
+        const ret2 = value[ret].RoomUsers.findIndex((ele: RoomUser) => ele.userId === payload.userId);
+        value[ret].RoomUsers[ret2].ban = payload.val;
+        return [...value];
+      })
+    })
+    
+    socket.on('mute', (payload: { userId: number, roomId: number , val: boolean}) => {
+      console.log(payload);
+      setRooms((value: Room[]) => { 
+        const ret = value.findIndex((ele: Room) => ele.id === payload.roomId);
+        const ret2 = value[ret].RoomUsers.findIndex((ele: RoomUser) => ele.userId === payload.userId);
+        value[ret].RoomUsers[ret2].mute = payload.val;
+        return [...value];
+      })
+    })
+    
+    socket.on('role', (payload: { userId: number, roomId: number, role: string }) => { 
+      setRooms((value: Room[]) => { 
+        const ret = value.findIndex((ele: Room) => ele.id === payload.roomId);
+        const ret2 = value[ret].RoomUsers.findIndex((ele: RoomUser) => ele.userId === payload.userId);
+        value[ret].RoomUsers[ret2].role = payload.role;
+        console.log(payload)
+        return [...value];
+      })
+    })
+
+    socket.on("error", (error: string) => errorToast(toast, error));
+
     return () => {
-      socket.off("me");
-      socket.off("rooms");
-      socket.off("users");
-      socket.off("error");
-      socket.off("addRoom");
-      socket.off("deleteRoom");
-      socket.off("updateRoom");
-      socket.off("chatMsg");
-      socket.off("isOnline");
-      socket.off('friends'); 
-      socket.off('dMRooms'); 
+      socket.removeAllListeners();
     };
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="App">
+      <NavBar/>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/game" element={<GamePage />} />
       </Routes>
     </div>
   );

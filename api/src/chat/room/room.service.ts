@@ -72,7 +72,7 @@ export class RoomService {
       const user = await this.prisma.user.findFirst({
         where: {
           id: ele.RoomUsers[0].userId,
-        }
+        },
       });
       ele.name = user.login;
     }
@@ -228,46 +228,131 @@ export class RoomService {
     else throw new ForbiddenException('Ambiguous credentials');
   }
 
-  async muteUser(adminId: number, roomId: number, victimId: number) {
+  async muteUser(
+    adminId: number,
+    roomId: number,
+    victimId: number,
+    value: boolean,
+  ) {
     const room = await this.prisma.chatRooms.findFirst({
       where: {
         id: roomId,
-        RoomUsers: {
-          some: {
+        OR: [
+          {
+            RoomUsers: {
+              some: {
+                userId: adminId,
+                role: RoomUserRole.Owner,
+              },
+            },
+          },
+          {
             AND: [
-              { userId: adminId, NOT: { role: RoomUserRole.User } },
-              { userId: victimId, role: RoomUserRole.User },
+              {
+                RoomUsers: {
+                  some: {
+                    userId: adminId,
+                    NOT: { role: RoomUserRole.User },
+                  },
+                },
+              },
+              {
+                RoomUsers: {
+                  some: {
+                    userId: victimId,
+                    role: RoomUserRole.User,
+                  },
+                },
+              },
             ],
           },
-        },
+        ],
         NOT: {
           status: RoomStatus.Deleted,
         },
       },
     });
-
     if (room)
-      await this.prisma.roomUser.update({
+      return await this.prisma.roomUser.update({
         where: {
           roomId_userId: { roomId, userId: victimId },
         },
         data: {
-          mute: true,
+          mute: value,
         },
       });
-    else throw new ForbiddenException('Ambiguous credentials');
+    return undefined;
   }
 
-  async banUser(adminId: number, roomId: number, victimId: number) {
+  async banUser(
+    adminId: number,
+    roomId: number,
+    victimId: number,
+    value: boolean,
+  ) {
+    const room = await this.prisma.chatRooms.findFirst({
+      where: {
+        id: roomId,
+        OR: [
+          {
+            RoomUsers: {
+              some: {
+                userId: adminId,
+                role: RoomUserRole.Owner,
+              },
+            },
+          },
+          {
+            AND: [
+              {
+                RoomUsers: {
+                  some: {
+                    userId: adminId,
+                    NOT: { role: RoomUserRole.User },
+                  },
+                },
+              },
+              {
+                RoomUsers: {
+                  some: {
+                    userId: victimId,
+                    role: RoomUserRole.User,
+                  },
+                },
+              },
+            ],
+          },
+        ],
+        NOT: {
+          status: RoomStatus.Deleted,
+        },
+      },
+    });
+    if (room)
+      return await this.prisma.roomUser.update({
+        where: {
+          roomId_userId: { roomId, userId: victimId },
+        },
+        data: {
+          ban: value,
+        },
+      });
+    return undefined;
+  }
+
+  async role(
+    adminId: number,
+    roomId: number,
+    victimId: number,
+    role: string,
+  ) {
     const room = await this.prisma.chatRooms.findFirst({
       where: {
         id: roomId,
         RoomUsers: {
           some: {
-            AND: [
-              { userId: adminId, NOT: { role: RoomUserRole.User } },
-              { userId: victimId, role: RoomUserRole.User },
-            ],
+            userId: adminId,
+            role: RoomUserRole.Owner,
           },
         },
         NOT: {
@@ -275,17 +360,19 @@ export class RoomService {
         },
       },
     });
-
     if (room)
-      await this.prisma.roomUser.update({
+    {
+      console.log(role);
+      return await this.prisma.roomUser.update({
         where: {
           roomId_userId: { roomId, userId: victimId },
         },
         data: {
-          ban: true,
+          role: RoomUserRole[role],
         },
       });
-    else throw new ForbiddenException('Ambiguous credentials');
+    }
+    return undefined;
   }
 
   async joinRoom(userId: number, roomId: number, password?: string) {

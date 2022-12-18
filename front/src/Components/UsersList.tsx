@@ -9,8 +9,10 @@ import {
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 import { AppState } from "../Context/AppProvider";
-import User from "./User";
+import UserButton from "./UserButton";
 import { VscChromeClose } from "react-icons/vsc";
+import { User } from "../../types";
+import { useEffect, useState } from "react";
 
 const UsersList = () => {
   const {
@@ -21,6 +23,19 @@ const UsersList = () => {
     usersList,
     setUsersList,
   } = AppState();
+  
+  const [onlineCounter, setOnlineCounter] = useState(0);
+  const [offlineCounter, setOfflineCounter] = useState(0);
+
+  useEffect(() => {
+    selectedRoom &&
+    setOnlineCounter(() => {
+      const ret = users.filter((user: User) => (user.isOnline &&
+        selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id)));
+        setOfflineCounter(selectedRoom.RoomUsers.length - ret.length - 1);
+        return ret.length;
+      })
+  },[users, selectedRoom])
 
   return (
     <>
@@ -35,7 +50,7 @@ const UsersList = () => {
             <InputRightElement>
               <IconButton
                 variant={"unstyled"}
-                aria-label="Search database"
+                aria-label="Search User"
                 icon={<BsSearch />}
               />
             </InputRightElement>
@@ -51,44 +66,24 @@ const UsersList = () => {
         />
       </Box>
       <Text m="10px" color="green.400">
-        online __{" "}
-        {selectedRoom
-          ? users.filter((obj: any) => {
-              return (
-                obj.isOnline &&
-                selectedRoom.RoomUsers.some((ele: any) => {
-                  return ele.userId === obj.id;
-                })
-              );
-            }).length
-          : 0}
+        online __ {onlineCounter}
       </Text>
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={true} key={roomUser.userId} />
+            <UserButton id={roomUser.userId} isOnline={true} key={roomUser.userId} />
           ))
         ) : (
           <></>
         )}
       </Box>
       <Text m="10px" color="gray.400">
-        offline __{" "}
-        {selectedRoom
-          ? users.filter((obj: any) => {
-              return (
-                !obj.isOnline &&
-                selectedRoom.RoomUsers.some((ele: any) => {
-                  return ele.userId === obj.id;
-                })
-              );
-            }).length
-          : 0}
+        offline __ {offlineCounter}
       </Text>
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <User id={roomUser.userId} isOnline={false} key={roomUser.userId} />
+            <UserButton id={roomUser.userId} isOnline={false} key={roomUser.userId} />
           ))
         ) : (
           <></>

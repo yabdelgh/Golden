@@ -32,14 +32,7 @@ const ChatConfigModal = ({ children }: any) => {
     <Box>
       {children ? (
         <span onClick={onOpen}>{children}</span>
-      ) : (
-        <IconButton
-          variant="outline"
-          colorScheme="teal"
-          aria-label="Call Sage"
-          fontSize="20px"
-        />
-      )}
+      ) : <></>}
       <Modal size="md" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent

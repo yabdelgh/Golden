@@ -38,7 +38,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 export class UserController {
   constructor(private userservice: UserService) {}
 
-  @Post()
+ /* @Post()
   async createUser(@Body() user) {
     return this.userservice.createUser(user);
   }
@@ -77,17 +77,17 @@ export class UserController {
     return this.userservice.getBlockedUsers(user.id);
   }
 
- /* @Post('upload')
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file', storage))
   async upload(@UploadedFile() file, @Request() req): Promise<any> {
     const user = req.user;
     return this.userservice.upload(file, user);
-  }*/
+  }
 
   @Post('changeusername')
   // prisma update username
   async changeUsername(@Body() body, @Request() req): Promise<any> {
     const user = req.user;
     return this.userservice.changeUsername(body, user);
-  }
+  }*/
 }

@@ -7,6 +7,7 @@
   justify-content: center;
   background-color: 	#E9EBEE;
   font-family: 'work sans';
+  user-select: none;
 }
 
 /* width */

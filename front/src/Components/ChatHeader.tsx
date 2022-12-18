@@ -6,26 +6,24 @@ import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { AppState } from "../Context/AppProvider";
 import axios from "axios";
-import { HiOutlineLogout} from "react-icons/hi"
+import { HiOutlineLockClosed, HiOutlineLogout} from "react-icons/hi"
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
 } from "@chakra-ui/react";
+import SearchModal from "./SearchModal";
 const ChatHeader = () => {
-  const Navigate = useNavigate();
-  const { user, setUser } = AppState();
+  const navigate = useNavigate();
+  const { user, setUser, socket } = AppState();
 
   const logoutHandler =  () => {
     axios.get("/api/auth/logout");
+    socket.disconnect();
     setUser({});
-    Navigate('/')
+    navigate('/')
   };
 
   return (
@@ -47,14 +45,16 @@ const ChatHeader = () => {
       >
         Pong-chat
       </Text>
-      <Button
-        leftIcon={<BsSearch />}
-        display={{ base: "none", md: "flex" }}
-        fontFamily="Inter"
-        width="50%"
-      >
-        Search Pong
-      </Button>
+      <SearchModal>
+        <Button
+          leftIcon={<BsSearch />}
+          //   display={{ base: "none", md: "flex" }}
+          fontFamily="Inter"
+          width="100%"
+        >
+          Search Pong
+        </Button>
+      </SearchModal>
       <Box width="110px" display="flex" justifyContent="space-between">
         <Menu offset={[20, 8]}>
           <MenuButton size="35px" variant="unstyled" as={IconButton}>
@@ -77,8 +77,23 @@ const ChatHeader = () => {
           <PopoverContent width="130px">
             <PopoverArrow />
             <PopoverBody>
-              <Button display={'flex'} justifyContent='space-around' variant={"unstyled"} width="100%" onClick={logoutHandler}>
-                Log out <HiOutlineLogout size='20px'/>
+              <Button
+                display="flex"
+                justifyContent="space-around"
+                variant="unstyled"
+                width="100%"
+                onClick={() => navigate('/security')}
+              >
+                Security <HiOutlineLockClosed size="20px" />
+              </Button>
+              <Button
+                display="flex"
+                justifyContent="space-around"
+                variant={"unstyled"}
+                width="100%"
+                onClick={logoutHandler}
+              >
+                Log out <HiOutlineLogout size="20px" />
               </Button>
             </PopoverBody>
           </PopoverContent>

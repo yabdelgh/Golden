@@ -14,6 +14,7 @@ import { GiPingPongBat } from "react-icons/gi";
 import { FaUser, FaCog } from "react-icons/fa";
 import { HiArrowLeft } from "react-icons/hi";
 import { RoomUser, User, Room } from "../../types";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   const { user, showUP, setShowUP, selectedRoom, setUsersList, socket } =
@@ -73,6 +74,9 @@ const UserProfile = () => {
     if (ret && ret.mute === true) return true;
     return false;
   };
+
+  const { setUserProfile } = AppState();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -154,6 +158,10 @@ const UserProfile = () => {
             justifyContent="space-around"
             borderRadius="10px"
             mt="15px"
+            onClick={() => { 
+              setUserProfile(showUP);
+              navigate('/profile')
+            }}
             // border="1px solid red"
           >
             <FaUser size="34px" />

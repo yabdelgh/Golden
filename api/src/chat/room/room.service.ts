@@ -362,7 +362,6 @@ export class RoomService {
     });
     if (room)
     {
-      console.log(role);
       return await this.prisma.roomUser.update({
         where: {
           roomId_userId: { roomId, userId: victimId },

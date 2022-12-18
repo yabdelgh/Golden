@@ -11,7 +11,7 @@ import {
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { ChatRooms, RoomStatus } from '@prisma/client';
+import { ChatRooms, RoomAccess, RoomStatus } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { UserService } from 'src/user/user.service';
@@ -20,6 +20,7 @@ import { chatMsgDto } from './dtos/chatMsg.dto';
 import { MsgService } from './msg/msg.service';
 import { RoomService } from './room/room.service';
 import { chatRoomDto } from './dtos/chatRoom.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export class mySocket extends Socket {
   user?: UserDto;
@@ -47,6 +48,7 @@ export class ChatGateway
     private msgService: MsgService,
     private chatService: ChatService,
     private userService: UserService,
+    private prismaService: PrismaService,
   ) {}
 
   @WebSocketServer()
@@ -55,13 +57,19 @@ export class ChatGateway
   afterInit() {}
 
   async getUserFromsocket(socket: Socket): Promise<UserDto> {
+    console.log('connected')
     let token: string = String(socket.handshake.headers.cookie);
     token = token.replace('access_token=', '');
     const user = await this.jwtService.verify(token, {
-      secret: this.config.get('JWT_SECRET'),
+      secret: this.config.get('JWT_SECRET')
     });
     user.isOnline = true;
-    return user;
+    // this is a tmp solution
+    if (user && user.authenticated)
+    {
+      return user;
+      }
+    socket.disconnect();
   }
 
   async getConnectedUsers(): Promise<UserDto[]> {
@@ -264,14 +272,48 @@ export class ChatGateway
       payload.userId,
       payload.role,
     );
-    if (ret)
-      console.log(payload);
-      console.log(ret);
-       this.server.in(String(payload.roomId)).emit('role', {
-        userId: ret.userId,
-        roomId: ret.roomId,
-        role: ret.role,
+    this.server.in(String(payload.roomId)).emit('role', {
+      userId: ret.userId,
+      roomId: ret.roomId,
+      role: ret.role,
+    });
+  }
+  @SubscribeMessage('searchs')
+  async searchs(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: string,
+  ) {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        login: {
+          startsWith: payload,
+        },
+      },
+      select: {
+        id: true,
+        login: true,
+        imageUrl: true
+      },
+    });
+    if (user)
+      socket.emit('searchs', user);
+    else {
+      const room = await this.prismaService.chatRooms.findFirst({
+        where: {
+          name: {
+            startsWith: payload,
+          },
+          NOT: { OR: [{ access: RoomAccess.Private }, { status: RoomStatus.Deleted }] }
+        },
+        select: {
+          id: true,
+          name: true,
+          access: true
+        },
       });
+      if (room)
+        socket.emit('searchs', room);
+    }
   }
 
   @SubscribeMessage('joinRoom')

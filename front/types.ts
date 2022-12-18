@@ -31,7 +31,7 @@ export type Room = {
 
 export type User = {
     id: number,
-    login?: string,
+    login: string,
     email?: string,
     imageUrl?: string,
     isOnline?: boolean,

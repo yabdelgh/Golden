@@ -1,40 +1,76 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { authenticator } from 'otplib';
+import { UserService } from 'src/user/user.service';
+import { toFileStream } from 'qrcode';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   async callback(user: any, res: any) {
     const payload = {
-      login: user.login,
       id: user.id,
-      email: user.email,
-      imageUrl: user.imageUrl,
+      authenticated: !user.isTwoFactorAuthenticationEnabled,
     };
     const token = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
+      expiresIn: this.configService.get<string>('JWT_EXP_TIME'),
       secret: this.configService.get<string>('JWT_SECRET'),
     });
-    res.cookie('access_token', token, {
-      httpOnly: true,
-    });
-    res.redirect('http://localhost:3000/chat');
+    res.cookie('access_token', token, { httpOnly: true });
+    if (payload.authenticated)
+      res.redirect(this.configService.get<String>('FRONT_HOST_Home'));
+    else res.redirect(this.configService.get<String>('FRONT_HOST_TwoFA'));
   }
 
-  async logout(res: any) { 
+  async authenticate(userId: number, res: any, code: string) {
+    const secret: string = await this.userService.getUserSecret(userId);
+     const isValid : boolean = authenticator.verify({ token: code, secret });
+    if (!isValid) throw new UnauthorizedException('bad code');
+    const payload = { id: userId, authenticated: true };
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn: this.configService.get<string>('JWT_EXP_TIME'),
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+    res.cookie('access_token', token, { httpOnly: true });
+    res.end()
+  }
+
+  async generate(userId: number, res: any) {
+    const secret = authenticator.generateSecret();
+    const user = await this.userService.updateUser(userId, {
+      twoFactorAuthenticationCode: secret,
+    });
+    const otpauthUrl = authenticator.keyuri(
+      user.email,
+      this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'),
+      secret,
+    );
+    return toFileStream(res, otpauthUrl);
+  }
+
+  async update2FA(userId: number, token: string, value: boolean) {
+    const secret: string = await this.userService.getUserSecret(userId);
+    const isValid: boolean = authenticator.verify({ token, secret });
+    if (isValid)
+      return this.userService.updateUser(userId, {
+        isTwoFactorAuthenticationEnabled: value,
+      });
+    else throw new UnauthorizedException('Wrong authentication code');
+  }
+  
+  async logout(res: any) {
     const payload = {
-      login: null,
-      id: null,
-      email: null,
-      imageUrl: null,
+      id: 0,
+      authenticated: false,
     };
     const token = await this.jwtService.signAsync(payload, {
-      expiresIn: -100,
+      expiresIn: 0,
       secret: this.configService.get<string>('JWT_SECRET'),
     });
     res.cookie('access_token', token, { httpOnly: true });

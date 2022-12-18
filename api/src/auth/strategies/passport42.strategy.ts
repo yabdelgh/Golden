@@ -24,7 +24,7 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
   }
 
   async validate(
-    accessToken: string,
+   accessToken: string,
     refreshToken: string,
     profile: any,
   ): Promise<any> {
@@ -35,7 +35,7 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
       email,
       imageUrl,
     });
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException('connection failed');
     return user;
   }
 }

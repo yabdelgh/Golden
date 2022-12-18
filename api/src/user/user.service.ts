@@ -9,13 +9,8 @@ export class UserService {
 
   async validateUser(user: any) {
     return await this.prisma.user.upsert({
-      where: {
-        id: user.id,
-      },
-      update: {
-        email: user.email,
-        imageUrl: user.imageUrl
-      },
+      where: { id: user.id },
+      update: { email: user.email },
       create: {
         id: user.id,
         login: user.login,
@@ -24,7 +19,7 @@ export class UserService {
       },
       select: {
         id: true,
-        login: true
+        isTwoFactorAuthenticationEnabled: true,
       }
     })
   }
@@ -44,6 +39,7 @@ export class UserService {
       select: {
         id: true,
         login: true,
+        email: true
       },
     });
     return user;
@@ -51,14 +47,13 @@ export class UserService {
 
   async getUser(id: number) {
     const user = await this.prisma.user.findFirst({
-      where: {
-        id,
-      },
+      where: { id },
       select: {
         id: true,
         login: true,
         email: true,
-        imageUrl: true
+        imageUrl: true,
+        isTwoFactorAuthenticationEnabled: true
       }
     });
     /* if (user === null)
@@ -66,6 +61,12 @@ export class UserService {
     return user;
   }
 
+  async getUserSecret(id: number): Promise<string> {
+    const user = await this.prisma.user.findFirst({
+      where: { id }
+    });
+    return user.twoFactorAuthenticationCode;
+  }
   
   async getUsers(id: number) { 
     const users = await this.prisma.user.findMany({
@@ -202,18 +203,5 @@ export class UserService {
       },
     });
     return us.imageUrl;
-  }
-
-  async changeUsername(body, user): Promise<any> {
-    const { id } = user;
-    const { username } = body;
-    const us = await this.prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        login: user.login
-      },
-    })
   }
 }

@@ -22,6 +22,7 @@ export class ChatService {
       }
     return rooms;
   }
+  
   async getDMRooms(socket: mySocket) {
     const rooms: any = await this.roomService.getDMRooms(socket.user.id);
       for (let i = 0; i < rooms.length; i++) {

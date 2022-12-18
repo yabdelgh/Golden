@@ -1,16 +1,20 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./Pages/HomePage";
+import LoginPage from "./Pages/LoginPage";
 import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
 import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
 import FriendsPage from "./Pages/FriendsPage";
 import { Friend, Msg, User, Room, RoomUser } from "../types";
-import NavBar from "./Components/NavBar";
-import ChatHeader from "./Components/ChatHeader";
+import NavBar from "./Components/NavBar/NavBar";
 import ProfilePage from "./Pages/ProfilePage";
 import GamePage from "./Pages/GamePage";
+import WorldPage from "./Pages/WorldPage";
+import TwoFAPage from "./Pages/TwoFAPage";
+import { Box } from "@chakra-ui/react";
+import SecurityPage from "./Pages/SecurityPage";
+import HomePage from "./Pages/HomePage";
 
 function App() {
   const {
@@ -24,9 +28,14 @@ function App() {
     setUsersList,
     setSelectedRoom,
     setFriends,
+    setSearchs
   } = AppState();
 
   useEffect(() => {
+
+    if (!socket)
+      return;
+
     document.addEventListener("visibilitychange", () => {
       setIsOnline((value: boolean) => {
         socket.emit("isOnline", !value);
@@ -37,7 +46,6 @@ function App() {
     socket.on("me", (payload: User) => setUser(payload));
 
     socket.on("isOnline", (payload: User) => {
-      console.log(payload);
       setUsers((value: User[]) => {
         const index = value.findIndex((ele: User) => ele.id === payload.id);
         if (index !== -1) value[index].isOnline = payload.isOnline;
@@ -150,7 +158,6 @@ function App() {
     })
     
     socket.on('mute', (payload: { userId: number, roomId: number , val: boolean}) => {
-      console.log(payload);
       setRooms((value: Room[]) => { 
         const ret = value.findIndex((ele: Room) => ele.id === payload.roomId);
         const ret2 = value[ret].RoomUsers.findIndex((ele: RoomUser) => ele.userId === payload.userId);
@@ -164,8 +171,13 @@ function App() {
         const ret = value.findIndex((ele: Room) => ele.id === payload.roomId);
         const ret2 = value[ret].RoomUsers.findIndex((ele: RoomUser) => ele.userId === payload.userId);
         value[ret].RoomUsers[ret2].role = payload.role;
-        console.log(payload)
         return [...value];
+      })
+    })
+    
+    socket.on('searchs', (payload: string[]) => { 
+      setSearchs((value: string[]) => {
+        return [...value, payload];
       })
     })
 
@@ -176,19 +188,23 @@ function App() {
     };
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [socket]);
 
   return (
-    <div className="App">
+    <Box className="App">
       <NavBar/>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/friends" element={<FriendsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/game" element={<GamePage />} />
+        <Route path="/world" element={<WorldPage />} />
+        <Route path="/TwoFa" element={<TwoFAPage />} />
+        <Route path="/security" element={<SecurityPage />} />
+        <Route path="/home" element={<HomePage />} />
       </Routes>
-    </div>
+    </Box>
   );
 }
 

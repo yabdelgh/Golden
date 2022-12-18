@@ -1,39 +1,45 @@
 import { useToast } from "@chakra-ui/react";
-import io from "socket.io-client";
 import { createContext, useContext, useState } from "react";
  
-const socket = io("http://localhost:3333/chat",{ withCredentials: true, reconnection: true });
 
 const AppContext = createContext<any | null>(null);
 
 const AppProvider = ({ children }: any) => {
 
+  const [socket, setSocket]: any = useState(undefined);
   const [user, setUser]: any = useState({});
   const [users, setUsers]: any = useState([]);
   const [rooms, setRooms]: any = useState([]);
   const [Friends, setFriends]: any = useState([]);
   const [msgs, setMsgs]: any = useState([]);
   const [searchKey, setSearchKey] = useState('');
+  const [searchs, setSearchs] = useState([]);
   const [dMRooms, setDMRooms]: any = useState([]);
-  const [selectedUser, setSelectedUser] = useState();
+  const [userProfile, setUserProfile]: any = useState({});
+  const [roomProfile, setRoomProfile] = useState();
   const [selectedRoom, setSelectedRoom] = useState();
   const [usersList, setUsersList] = useState(false);
   const [showUP, setShowUP] = useState(undefined);
   const [isOnline, setIsOnline] = useState(true);
   const toast = useToast();
-  
 
   return (
     <AppContext.Provider
       value={{
+        socket,
+        setSocket,
+        userProfile,
+        roomProfile,
+        setUserProfile,
+        setRoomProfile,
+        searchs,
+        setSearchs,
         dMRooms,
         setDMRooms,
         Friends,
         setFriends,
         showUP,
         setShowUP,
-        selectedUser,
-        setSelectedUser,
         searchKey,
         setSearchKey,
         isOnline,
@@ -42,7 +48,6 @@ const AppProvider = ({ children }: any) => {
         setMsgs,
         toast,
         user,
-        socket,
         setUser,
         users,
         setUsers,

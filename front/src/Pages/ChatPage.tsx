@@ -6,11 +6,10 @@ import UsersList from "../Components/UsersList";
 import RightEle from "../Components/RightEle";
 import UserProfile from "../Components/UserProfile";
 import { AppState } from "../Context/AppProvider";
-import NavBar from "../Components/NavBar";
 
 const ChatPage = () => {
   const { showUP } = AppState();
-
+  
   return (
     <Box
       width="100%"

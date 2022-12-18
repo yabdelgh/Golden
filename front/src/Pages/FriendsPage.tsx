@@ -8,10 +8,8 @@ import {
   Image,
   Button,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import ChatHeader from "../Components/ChatHeader";
-import NavBar from "../Components/NavBar";
 import { AppState } from "../Context/AppProvider";
 
 const FriendsPage = () => {
@@ -28,29 +26,20 @@ const FriendsPage = () => {
   };
 
   return (
-    <Box
-      width="100%"
-      display="flex"
-      justifyContent="space-between"
-      flexDirection="column"
-      alignItems="center"
-      position={"fixed"}
-    >
-      <ChatHeader />
       <Tabs
-        isFitted
-        m="100px 10px 60px 0px"
-        border="3px solid white"
+      isFitted
+      border='3px solid white'
+        mt='10px'
+        width='60%'
         minWidth="420px"
-        minHeight="600px"
-        height="80vh"
-        width={{ base: "100%", sm: "75%" }}
-        borderRadius="lg"
+        minHeight="400px"
+      borderRadius="lg"
+      mb='30px'
       >
-        <TabList minHeight="60px" height="6vh" bg="white">
+        <TabList minHeight="38px" height="4vh" bg="white">
           <Tab
             fontWeight="bold"
-            fontSize="20px"
+            fontSize="18px"
             borderRadius="5px"
             _selected={{ color: "white", bg: "teal" }}
           >
@@ -58,7 +47,7 @@ const FriendsPage = () => {
           </Tab>
           <Tab
             fontWeight="bold"
-            fontSize="20px"
+            fontSize="18px"
             borderRadius="5px"
             _selected={{ color: "white", bg: "teal" }}
           >
@@ -66,19 +55,35 @@ const FriendsPage = () => {
           </Tab>
           <Tab
             fontWeight="bold"
-            fontSize="20px"
+            fontSize="18px"
             borderRadius="5px"
             _selected={{ color: "white", bg: "teal" }}
           >
             Suggestions
           </Tab>
+          <Tab
+            fontWeight="bold"
+            fontSize="18px"
+            borderRadius="5px"
+            _selected={{ color: "white", bg: "teal" }}
+          >
+            games
+          </Tab>
+          <Tab
+            fontWeight="bold"
+            fontSize="18px"
+            borderRadius="5px"
+            _selected={{ color: "white", bg: "teal" }}
+          >
+            groups
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel
             height="70vh"
-            minHeight="530px"
-            overflowY="scroll"
-            overflowX="hidden"
+          minHeight="530px"
+           // overflowY="scroll"
+           // overflowX="hidden"
             display="flex"
             flexWrap="wrap"
             justifyContent="center"
@@ -201,10 +206,7 @@ const FriendsPage = () => {
               )}
           </TabPanel>
           <TabPanel
-            height="70vh"
             minHeight="530px"
-            overflowY="scroll"
-            overflowX="hidden"
             display="flex"
             flexWrap="wrap"
             justifyContent="center"
@@ -219,7 +221,7 @@ const FriendsPage = () => {
                       value2.user2Id === value1.id
                   ) && (
                     <Box
-                      m="20px"
+                      m="10px"
                       width="200px"
                       height="350px"
                       borderRadius="lg"
@@ -263,7 +265,6 @@ const FriendsPage = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </Box>
   );
 };
 

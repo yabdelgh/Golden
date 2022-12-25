@@ -12,29 +12,26 @@ import {
 } from "@chakra-ui/react";
 import { AppState } from "../Context/AppProvider";
 import { Text } from "@chakra-ui/react";
-import { BsGear } from "react-icons/bs";
 import { useState } from "react";
 import ChatConfigModal from "./ChatConfigModal";
-import { VscChromeClose } from "react-icons/vsc";
-import { CiFaceSmile } from "react-icons/ci";
+import { TfiFaceSmile } from "react-icons/tfi";
 import { BsFillMicFill } from "react-icons/bs";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
 } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { RoomUser } from "../../types";
+import { getUserByName, thereIsSomeOneOnline } from "../Utils/rooms";
 const ChatBox = () => {
   const {
     user,
     setShowUP,
     socket,
+    showUP,
     users,
     selectedRoom,
     setSelectedRoom,
@@ -47,6 +44,7 @@ const ChatBox = () => {
   const sendMessage = () => {
     socket.emit("chatMsg", { roomId: selectedRoom.id, msg });
   };
+  
   const getUserName = (id: number) => {
     const ret = users.find((user: any) => {
       return user.id === id;
@@ -55,25 +53,20 @@ const ChatBox = () => {
     return ret.login;
   };
 
-  const thereIsSomeOneOnline = (roomUsers: any): boolean => {
-    return roomUsers.some(({ userId }: any) => {
-      return users.some((ele: any) => {
-        return ele.id === userId && ele.isOnline === true;
-      });
-    });
-  };
+  const isMember = (userId: number): boolean => {
+    if (selectedRoom.isGroupChat)
+      return selectedRoom.RoomUsers.some((object: RoomUser) => 
+        object.userId === userId && object.status === 'Member'
+      )
+    return true;
+  }
 
-  const getFirstUser = () => {
-    return users.find(
-      (ele: any) => ele.id === selectedRoom.RoomUsers[0].userId
-    );
-  };
 
   return (
     <Box
       display={{
-        base: selectedRoom && !usersList ? "flex" : "none",
-        md: !usersList ? "flex" : "none",
+        base: selectedRoom && !usersList && !showUP ? "flex" : "none",
+        md: !usersList && !showUP ? "flex" : "none",
         xl: "flex",
       }}
       alignItems="center"
@@ -109,10 +102,10 @@ const ChatBox = () => {
                 borderRadius={"5px"}
                 name={selectedRoom.name}
                 src={
-                  selectedRoom.isGroupChat ? undefined : getFirstUser().imageUrl
+                  selectedRoom.isGroupChat ? undefined : getUserByName(users, selectedRoom.name)?.imageUrl
                 }
               >
-                {thereIsSomeOneOnline(selectedRoom.RoomUsers) ? (
+                {thereIsSomeOneOnline(users, selectedRoom) ? (
                   <AvatarBadge boxSize="0.9em" bg="#00FF00" />
                 ) : (
                   <AvatarBadge boxSize="0.9em" bg="#FF0000" />
@@ -138,15 +131,17 @@ const ChatBox = () => {
                   <PopoverArrow />
                   <PopoverBody>
                     <ChatConfigModal>
-                    <Button variant="unstyled" width="100%">
-                      settings
-                    </Button>
+                      <Button variant="unstyled" width="100%">
+                        settings
+                      </Button>
                     </ChatConfigModal>
                     <Button
                       onClick={() => {
-                        setSelectedRoom(undefined)
+                        setSelectedRoom(undefined);
                       }}
-                      variant={"unstyled"} width="100%">
+                      variant={"unstyled"}
+                      width="100%"
+                    >
                       close this chat
                     </Button>
                   </PopoverBody>
@@ -157,10 +152,12 @@ const ChatBox = () => {
                 aria-label="Member List"
                 onClick={() =>
                   selectedRoom.isGroupChat
-                    ? setUsersList(!usersList)
+                    ? (setUsersList(!usersList) && setShowUP(undefined))
                     : setShowUP((value: any) => {
-                        setUsersList(!usersList);
-                        return getFirstUser();
+                        if (value)
+                          return undefined 
+                        else
+                          return getUserByName(users, selectedRoom.name);
                       })
                 }
                 icon={
@@ -186,11 +183,14 @@ const ChatBox = () => {
                       pt="20px"
                       pr="30px"
                     >
-                      <Box display="flex">
+                      <Box display="flex" alignItems="center">
                         <Text fontSize="15px" fontWeight="bolder" color="black">
                           {getUserName(msg.userId)}
                         </Text>
-                        <Text pl="10px">{msg.createdAt}</Text>
+                        <Text fontSize="12px" color="gray.400" ml="3px">
+                          {isMember(msg.userId) ? "" : "(ExMember)"}
+                        </Text>
+                        <Text pl="7px">{msg.createdAt}</Text>
                       </Box>
                       {msg.msg}
                     </Box>
@@ -231,7 +231,7 @@ const ChatBox = () => {
               <IconButton
                 variant={"unstyled"}
                 aria-label="emoji"
-                icon={<CiFaceSmile size="30px" color="gray" />}
+                icon={<TfiFaceSmile size="30px" color="gray" />}
               />
             </InputLeftElement>
             <InputRightElement mr={"20px"} height="100%">

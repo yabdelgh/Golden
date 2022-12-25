@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class chatMsgDto {
   @IsNumber()
@@ -10,5 +10,6 @@ export class chatMsgDto {
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(10)
   msg: string;
 }

@@ -68,7 +68,7 @@ const CreateGroupModal = ({ children }: any) => {
                 onBlur={(e) => setName(e.target.value)}
               />
             </FormControl>
-            {access === "protected" && (
+            {access === "Protected" && (
               <FormControl id="Password" isRequired>
                 <InputGroup size="md">
                   <Input
@@ -93,9 +93,9 @@ const CreateGroupModal = ({ children }: any) => {
             <FormControl as="fieldset" m="15px 40px">
               <RadioGroup onChange={setAccess} value={access}>
                 <HStack spacing="24px">
-                  <Radio value="private">Private</Radio>
-                  <Radio value="public">public</Radio>
-                  <Radio value="protected">Protected</Radio>
+                  <Radio value="Private">Private</Radio>
+                  <Radio value="Public">Public</Radio>
+                  <Radio value="Protected">Protected</Radio>
                 </HStack>
               </RadioGroup>
             </FormControl>

@@ -51,11 +51,11 @@ export class AuthController {
 
   
   
-  @Get('yabdelgh')
+  @Get('1')
   async yabdelgh(@Res() res) { 
     const payload = {
-      login: 'yabdelgh',
-      id: 18,
+      id: 1,
+      authenticated: true
     };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '7d',
@@ -64,14 +64,14 @@ export class AuthController {
     res.cookie('access_token', token, {
       httpOnly: true,
     });
-    res.redirect('http://localhost:3000/chat');
+    res.redirect('http://localhost:3000/profile');
   }
   
-  @Get('samira')
+  @Get('2')
   async samira(@Res() res) { 
     const payload = {
-      login: 'samira',
-      id: 66,
+      id: 2,
+      authenticated: true
     };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '7d',
@@ -80,6 +80,6 @@ export class AuthController {
     res.cookie('access_token', token, {
       httpOnly: true,
     });
-    res.redirect('http://localhost:3000/chat');
+    res.redirect('http://localhost:3000/profile');
   }
 }

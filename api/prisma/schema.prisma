@@ -20,7 +20,6 @@ model User {
   updatedAt       DateTime @updatedAt
   twoFactorAuthenticationCode String?
   isTwoFactorAuthenticationEnabled Boolean @default(false)
-
   FriendTo    Friend[] @relation("fk_user1")
   FriendWith  Friend[] @relation("fk_user2")
   Blocked     BlockedUser[] @relation("fk_blocker")
@@ -54,7 +53,7 @@ model BlockedUser {
 
 model ChatRooms {
 	id Int @id @default(autoincrement())
-	name String @unique
+	name String
 	status RoomStatus @default(Opened)
 	access RoomAccess  @default(Public)
 	password String?

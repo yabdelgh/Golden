@@ -5,6 +5,7 @@ const errorToast = (toast: any, msg: string) => {
     duration: 5000,
     isClosable: true,
     position: "bottom",
+    containerStyle: { bg: 'teal' }
   });
 };
 

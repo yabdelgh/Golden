@@ -2,7 +2,7 @@ import { Avatar, Button, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../Context/AppProvider";
 
-const RoomButton = ({ ele }: any) => {
+const RoomButton = ({ ele, onClose }: any) => {
 
   const { setRoomProfile } = AppState();
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ const RoomButton = ({ ele }: any) => {
       justifyContent="flex-start"
       onClick={() => {
         setRoomProfile(ele);
+        onClose();
         navigate('/world');
-        
       }}
       variant="unstyled"
       height="53px"

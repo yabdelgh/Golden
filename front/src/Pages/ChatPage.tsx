@@ -8,8 +8,8 @@ import UserProfile from "../Components/UserProfile";
 import { AppState } from "../Context/AppProvider";
 
 const ChatPage = () => {
-  const { showUP } = AppState();
-  
+  const { showUP, usersList } = AppState();
+
   return (
     <Box
       width="100%"
@@ -30,7 +30,13 @@ const ChatPage = () => {
       >
         <ChatList />
         <ChatBox />
-        <RightEle>{showUP ? <UserProfile /> : <UsersList />}</RightEle>
+        <RightEle>
+          {showUP ? (
+            <UserProfile />
+          ) : usersList ? (
+            <UsersList />
+          ) : undefined}
+        </RightEle>
       </Box>
     </Box>
   );

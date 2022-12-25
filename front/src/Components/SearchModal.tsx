@@ -81,7 +81,7 @@ const SearchModal = ({ children }: any) => {
                 if (ele.login && ele.login.includes(searchPong))
                   return <TmpButton ele={ele} onClose={onClose} key={ele.id} />;
                 else if (ele.name && ele.name.includes(searchPong))
-                  return <RoomButton ele={ele} key={ele.id} />;
+                  return <RoomButton ele={ele} onClose={onClose} key={ele.id} />;
                 else
                   return undefined;
               })}

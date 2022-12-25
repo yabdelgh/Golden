@@ -10,7 +10,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (Object.keys(user).length !== 0) {
+    if (user.login) {
       navigate("/profile");
     }
   });
@@ -27,17 +27,20 @@ const LoginPage = () => {
   return (
     <Box
       width="100%"
+      height='100%'
       bg="teal"
       display="flex"
       justifyContent="space-around"
       alignItems="center"
+      position='fixed'
     >
-      <Box width="400px" height="400px">
+      <Box width="400px" height="400px" display={{base: 'none', xl: 'flex'}}>
         <Lottie options={defaultOptions} style={{ backgroundColor: "teal" }} />
       </Box>
       <Box
         width="50%"
-        height="50%"
+        height="400px"
+        minWidth="800px"
         display="flex"
         flexDir="column"
         alignItems="center"
@@ -46,10 +49,8 @@ const LoginPage = () => {
           fontWeight="bold"
           width="100%"
           height="40%"
-          pb="0"
           textAlign="center"
           fontSize="100"
-          fontFamily="work sans"
           color="whiteAlpha.800"
         >
           Ping-Pong
@@ -58,16 +59,14 @@ const LoginPage = () => {
           width="100%"
           height="30%"
           textAlign="center"
-          fontSize="50"
-          fontFamily="work sans"
+          fontSize="50px"
           color="whiteAlpha.500"
         >
           FREE, FAN AND READY TO PLAY!
         </Text>
-        <Box width="30%" borderRadius="100%">
+        <Box width='100%' display='flex' justifyContent='center'>
           <a href="http://localhost:3333/api/auth/login">
             <Button
-              //  rightIcon={<FiArrowRight />}
               bg="#FF5323"
               width="310px"
               height="50px"
@@ -82,18 +81,6 @@ const LoginPage = () => {
               sign in with 42 account
             </Button>
           </a>
-        </Box>
-        <Box
-          m="3% 10% 0% 10%"
-          bg="white"
-          border="3px solid white"
-          borderRadius="md"
-          color="green"
-          display="none"
-        >
-          <Text textAlign="center" fontSize="4xl" fontFamily="work sans">
-            free, fun and Ready to play!
-          </Text>
         </Box>
       </Box>
     </Box>

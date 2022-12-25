@@ -10,7 +10,8 @@ const User = ({ id, isOnline }: any) => {
     const tmp: any = users.find((ele: any) => {
       return ele.id === id && ele.isOnline === isOnline;
     });
-    if (tmp && tmp.login.includes(searchKey)) setUser(tmp);
+    if (tmp && tmp.login.includes(searchKey))
+      setUser(tmp);
     else setUser(undefined);
   }, [users, searchKey, id, isOnline]);
 

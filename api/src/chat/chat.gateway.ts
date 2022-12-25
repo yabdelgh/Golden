@@ -7,11 +7,12 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { ChatRooms, RoomAccess, RoomStatus } from '@prisma/client';
+import { ChatRooms, RoomAccess, RoomStatus, RoomUser } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { UserService } from 'src/user/user.service';
@@ -42,8 +43,6 @@ export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   constructor(
-    private jwtService: JwtService,
-    private config: ConfigService,
     private roomService: RoomService,
     private msgService: MsgService,
     private chatService: ChatService,
@@ -56,60 +55,64 @@ export class ChatGateway
 
   afterInit() {}
 
-  async getUserFromsocket(socket: Socket): Promise<UserDto> {
-    console.log('connected')
-    let token: string = String(socket.handshake.headers.cookie);
-    token = token.replace('access_token=', '');
-    const user = await this.jwtService.verify(token, {
-      secret: this.config.get('JWT_SECRET')
-    });
-    user.isOnline = true;
-    // this is a tmp solution
-    if (user && user.authenticated)
-    {
-      return user;
-      }
-    socket.disconnect();
-  }
-
   async getConnectedUsers(): Promise<UserDto[]> {
     const clients: any = await this.server.fetchSockets();
     return clients.map((ele: { user: UserDto }) => ele.user);
   }
 
-  status_broadcast(socket: mySocket) {
-    // emit the status to all clients in the rooms, except sender
-    socket.broadcast
-      .to([...socket.rooms])
-      .emit('isOnline', { id: socket.user.id, isOnline: socket.user.isOnline });
-  }
-
-  msg_broadcast(msg: chatMsgDto) {
-    // emit the msg to all clients in the room, include sender
-    this.server.in(String(msg.roomId)).emit('chatMsg', msg);
-  }
-
   async handleConnection(socket: mySocket) {
     try {
-      socket.user = await this.getUserFromsocket(socket);
-      socket.user.isOnline = true;
-      socket.join(String(socket.user.id));
-      socket.emit('me', await this.userService.getUser(socket.user.id));
-      socket.emit(
+      const userId = await this.chatService.getUserFromsocket(socket);
+      socket.emit('me', await this.userService.getUser(userId));
+      socket.emit('users', await this.userService.getUsers(userId));
+      socket.emit('rooms', await this.chatService.getRooms(socket));
+      socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
+      socket.emit('friends', await this.chatService.getFriends(userId));
+      this.chatService.status_broadcast(socket);
+    } catch {
+      socket.disconnect(true);
+    }
+    // get users with the status
+    /* socket.emit(
         'users',
         await this.chatService.getUsers(
           socket.user.id,
           await this.getConnectedUsers(),
         ),
-      );
-      socket.emit('rooms', await this.chatService.join(socket));
-      socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
-      socket.emit('friends', await this.chatService.getFriends(socket.user.id));
-      this.status_broadcast(socket);
-    } catch {
-      socket.disconnect(true);
-    }
+      );*/
   }
+  
+
+  @SubscribeMessage('directMsg')
+  async handleDirectMsg(
+    @ConnectedSocket() client: mySocket,
+    @MessageBody() payload: chatMsgDto,
+  ) {
+    // payload.roomId === user2id 'this is a tmp solution until creating a new chatmsgDto'
+    const exist = await this.prismaService.chatRooms.findFirst({
+      where: {
+        name: '',
+        RoomUsers: {
+          some: {
+            AND: [{ userId: client.user.id }, {userId: payload.roomId}]
+          }
+        }
+      }
+    })
+    console.log(exist)
+    if (exist)
+      throw new WsException('Ambiguous credentials go home');
+    const room = await this.roomService.createDirectMsgRoom(client.user.id, payload.roomId);
+    const user1 = await this.userService.getUser(client.user.id);
+    const user2 = await this.userService.getUser(payload.roomId);
+    client.join(`room${room.id}`);
+    this.server.in(`${payload.roomId}`).socketsJoin(`room${room.id}`)
+    client.emit('addRoom', {id: room.id, name: user2.login, isGroupChat: false}); 
+    this.server.in(`${payload.roomId}`).emit('addRoom', {id: room.id, name: user1.login, isGroupChat: false}); 
+    const msg = await this.msgService.addMsg({roomId: room.id, userId: client.user.id, msg: payload.msg});
+    this.server.in(`room${msg.roomId}`).emit('chatMsg', msg);
+  }
+  
 
   @SubscribeMessage('chatMsg')
   async handleMessage(
@@ -118,7 +121,7 @@ export class ChatGateway
   ) {
     payload.userId = client.user.id;
     const msg = await this.msgService.addMsg(payload);
-    this.msg_broadcast(msg);
+    this.server.in(`room${msg.roomId}`).emit('chatMsg', msg);
   }
 
   @SubscribeMessage('addRoom')
@@ -128,13 +131,8 @@ export class ChatGateway
   ) {
     try {
       const room = await this.roomService.createRoom(payload, socket.user.id);
-      socket.join(String(room.id));
-      const clients: any = await this.server.fetchSockets();
-      for (const x in clients) {
-        if (clients[x].user.id === socket.user.id)
-          clients[x].join(String(room.id));
-      }
-      this.server.in(String(room.id)).emit('addRoom', room);
+      socket.join(`room${room.id}`);
+      socket.emit('addRoom', room);
     } catch (error) {
       socket.emit('error', error.message);
     }
@@ -148,7 +146,7 @@ export class ChatGateway
     try {
       payload.status = RoomStatus.Deleted;
       const room = await this.roomService.updateRoom(payload, socket.user.id);
-      this.server.in(String(room.id)).emit('deleteRoom', room);
+      this.server.in(`room${room.id}`).emit('deleteRoom', room);
       this.server.socketsLeave(String(room.id));
     } catch (error) {
       socket.emit('error', error.message);
@@ -162,7 +160,7 @@ export class ChatGateway
   ) {
     try {
       const room = await this.roomService.updateRoom(payload, socket.user.id);
-      this.server.in(String(room.id)).emit('updateRoom', room);
+      this.server.in(`room${room.id}`).emit('updateRoom', room);
     } catch (error) {
       socket.emit('error', error.message);
     }
@@ -174,7 +172,7 @@ export class ChatGateway
     @MessageBody() isOnline: boolean,
   ) {
     socket.user.isOnline = isOnline;
-    this.status_broadcast(socket);
+    this.chatService.status_broadcast(socket);
   }
 
   @SubscribeMessage('addFriend')
@@ -183,7 +181,7 @@ export class ChatGateway
     @MessageBody() friendId: number,
   ) {
     const friend = await this.userService.addFriend(socket.user.id, friendId);
-    this.server.in(String(String(friendId))).emit('addFriend', friend);
+    this.server.in(String(friendId)).emit('addFriend', friend);
     socket.emit('addFriend', friend);
   }
 
@@ -196,7 +194,7 @@ export class ChatGateway
       socket.user.id,
       friendId,
     );
-    this.server.in(String(String(friendId))).emit('removeFriend', friend);
+    this.server.in(String(friendId)).emit('removeFriend', friend);
     socket.emit('removeFriend', friend);
   }
 
@@ -209,7 +207,7 @@ export class ChatGateway
       socket.user.id,
       friendId,
     );
-    this.server.in(String(String(friendId))).emit('acceptFriend', friend);
+    this.server.in(String(friendId)).emit('acceptFriend', friend);
     socket.emit('acceptFriend', friend);
   }
 
@@ -225,7 +223,7 @@ export class ChatGateway
       payload.value,
     );
     if (ret) {
-      this.server.in(String(payload.roomId)).emit('mute', {
+      this.server.in(`room${payload.roomId}`).emit('mute', {
         userId: ret.userId,
         roomId: ret.roomId,
         val: payload.value,
@@ -248,16 +246,17 @@ export class ChatGateway
       if (!payload.value)
         this.server
           .in(String(payload.userId))
-          .socketsJoin(String(payload.roomId));
-      this.server.in(String(payload.roomId)).emit('ban', {
+          .socketsJoin(`room${payload.roomId}`);
+      else
+        this.server
+          .in(String(payload.userId))
+          .socketsLeave(`room${payload.roomId}`);
+
+      this.server.in(`room${payload.roomId}`).emit('ban', {
         userId: ret.userId,
         roomId: ret.roomId,
         val: payload.value,
       });
-      if (payload.value)
-        this.server
-          .in(String(payload.userId))
-          .socketsLeave(String(payload.roomId));
     }
   }
 
@@ -272,7 +271,7 @@ export class ChatGateway
       payload.userId,
       payload.role,
     );
-    this.server.in(String(payload.roomId)).emit('role', {
+    this.server.in(`room${payload.roomId}`).emit('role', {
       userId: ret.userId,
       roomId: ret.roomId,
       role: ret.role,
@@ -292,38 +291,57 @@ export class ChatGateway
       select: {
         id: true,
         login: true,
-        imageUrl: true
+        imageUrl: true,
       },
     });
-    if (user)
-      socket.emit('searchs', user);
+    if (user) socket.emit('searchs', user);
     else {
       const room = await this.prismaService.chatRooms.findFirst({
         where: {
           name: {
             startsWith: payload,
           },
-          NOT: { OR: [{ access: RoomAccess.Private }, { status: RoomStatus.Deleted }] }
+          NOT: {
+            OR: [
+              { access: RoomAccess.Private },
+              { status: RoomStatus.Deleted },
+            ],
+          },
         },
         select: {
           id: true,
           name: true,
-          access: true
+          access: true,
         },
       });
-      if (room)
-        socket.emit('searchs', room);
+      if (room) socket.emit('searchs', room);
     }
   }
 
   @SubscribeMessage('joinRoom')
-  joinRooom(socket, payload) {
-    this.roomService.joinRoom(socket.user.id, payload.roomId, payload.password);
+  async joinRooom(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: {roomId: number, password?: string},
+  ) {
+    const roomUser = await this.roomService.joinRoom(
+      socket.user.id,
+      payload.roomId,
+      payload.password,
+    );
+    const user = await this.userService.getUser(roomUser.userId);
+    socket.join(`room${roomUser.roomId}`);
+    socket.emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
+    this.server.in(`room${roomUser.roomId}`).emit('joinRoom', {roomId: roomUser.roomId, user});
   }
-
+  
   @SubscribeMessage('leaveRoom')
-  leaveRoom(socket, payload) {
-    this.roomService.leaveRoom(socket.user.id, payload.roomId);
+  async leaveRooom(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: { roomId: number }
+  ) {
+    await this.roomService.leaveRoom(socket.user.id, payload.roomId);
+    this.server.in(`room${payload.roomId}`).emit('leaveRoom', {roomId: payload.roomId, userId: socket.user.id});
+    socket.leave(`room${payload.roomId}`);
   }
 
   @SubscribeMessage('removeAdmin')

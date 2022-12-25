@@ -1,11 +1,13 @@
 import { Box, Image, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
-import Lottie from "react-lottie";
 import ChatHeader from "../Components/ChatHeader";
 import { AppState } from "../Context/AppProvider";
-import FriendsPage from "./FriendsPage";
 import animationData from "./robot-says-hello.json";
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
+import { IoIosPeople } from "react-icons/io";
+import ChallengeButton from "../Components/Buttons/ChallengeButton";
+import MessageButton from "../Components/Buttons/MessageButton";
+import ParamButton from "../Components/Buttons/ParamButton";
+
 const ProfilePage = () => {
   const { user, userProfile, setUserProfile, Friends } = AppState();
 
@@ -21,91 +23,51 @@ const ProfilePage = () => {
     },
   };
   return (
-    <Box
-      display="flex"
-      flexDir="column"
-      width="100%"
-      alignItems="center"
-    >
+    <>
       <ChatHeader />
       {userProfile && (
         <Box
           display="flex"
-          justifyContent="space-between"
+          flexDir="column"
+          justifyContent="flex-end"
+          border="3px solid white"
           alignItems="center"
-          width="60%"
-          minWidth="600px"
-          height="250px"
-          minHeight="250px"
-          mt="70px"
+          height="625px"
+          width="500px"
+          minHeight="400px"
+          mt="100px"
           borderRadius="lg"
-          bg="linear-gradient(to right,teal, white)"
+          background="linear-gradient(to Bottom, teal 40%, white 20%)"
         >
-          <Box display="flex" height="100%" alignItems="center">
-            <Image
-              ml="30px"
-              width="190px"
-              height="190px"
-              borderRadius="100%"
-              src={userProfile.imageUrl}
-            />
-            <Box height="100%" p="50px" minWidth={"300px"}>
-              <Text
-                fontSize="40px"
-                color="gray.700"
-                fontWeight="bold"
-                mb="10px"
-              >
-                {userProfile.login}
-              </Text>
-              <Text
-                color="gray.600"
-                fontSize="25px"
-                fontFamily="Inter"
-                fontWeight="bold"
-              >
-                {`${Friends.length} friends`}
-              </Text>
-              <AvatarGroup size="md" max={5}>
-                <Avatar
-                  name="Ryan Florence"
-                  src="https://bit.ly/ryan-florence"
-                />
-                <Avatar
-                  name="Segun Adebayo"
-                  src="https://bit.ly/sage-adebayo"
-                />
-                <Avatar name="Kent Dodds" src="https://bit.ly/code-beast" />
-                <Avatar
-                  name="Prosper Otemuyiwa"
-                  src="https://bit.ly/prosper-baba"
-                />
-                <Avatar
-                  name="Christian Nwamba"
-                  src="https://bit.ly/code-beast"
-                />
-                <Avatar
-                  name="Christian Nwamba"
-                  src="https://bit.ly/code-beast"
-                />
-                <Avatar
-                  name="Christian Nwamba"
-                  src="https://bit.ly/code-beast"
-                />
-              </AvatarGroup>
-            </Box>
+          <Image
+            borderRadius="100%"
+            width="180px"
+            height="190px"
+            minHeight="190px"
+            bg="gray"
+            m="10px"
+            mt="50px"
+            src={userProfile.imageUrl}
+          />
+          <Text fontSize="30px" color="gray.600">
+            {userProfile.login}
+          </Text>
+          <Box display="flex" flexDir="column" alignItems="center" m="20px" mb='25px' >
+            <IoIosPeople size="40px" />
+            <Text fontWeight="bold" mt="7px">
+              {/* {Friends.length} */}
+              521
+            </Text>
+            <Text color="gray.700">Friends</Text>
           </Box>
-          <Box
-            height="60%"
-            minWidth="250px"
-            display={{ base: "none", xl: "flex" }}
-          >
-            <Lottie options={defaultOptions} />
+          <Box display="flex" height='90px'>
+            <ChallengeButton target={userProfile} icon={true} />
+            <MessageButton target={userProfile} icon={true} />
+            <ParamButton target={userProfile} />
           </Box>
         </Box>
       )}
-      <FriendsPage />
-    </Box>
+    </>
   );
 };
 

@@ -72,6 +72,7 @@ const ChatHeader = () => {
               size="md"
               cursor="pointer"
               name={user.login}
+              src={ user.imageUrl}
             />
           </PopoverTrigger>
           <PopoverContent width="130px">

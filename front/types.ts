@@ -18,6 +18,7 @@ export type RoomUser = {
     role?: string,
     ban?: boolean,
     mute?: boolean,
+    status?: string
 }
 
 export type Room = {
@@ -34,5 +35,5 @@ export type User = {
     login: string,
     email?: string,
     imageUrl?: string,
-    isOnline?: boolean,
+    isOnline: boolean,
 }

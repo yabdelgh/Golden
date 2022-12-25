@@ -1,15 +1,20 @@
-import {Box} from "@chakra-ui/react";
+import {Box, Show} from "@chakra-ui/react";
+import { useEffect } from "react";
 import { AppState } from "../Context/AppProvider";
 
 const RightEle = ({ children }: any) => {
-  const { selectedRoom, usersList } = AppState();
+  const { selectedRoom, usersList , showUP} = AppState();
+  
+  useEffect(() => { 
+    console.log(showUP);
+  })
 
   return (
     <Box
       display={{
-        base: selectedRoom && usersList ? "flex" : "none",
-        md: usersList ? "flex" : "none",
-        xl: usersList ? "flex" : "none",
+        base: (selectedRoom && (usersList || showUP)) ? "flex" : "none",
+        md: (selectedRoom && (usersList || showUP)) ? "flex" : "none",
+        xl: (selectedRoom && (usersList || showUP)) ? "flex" : "none",
       }}
       ml="5px"
       bg="white"

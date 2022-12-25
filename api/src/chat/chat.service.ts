@@ -1,63 +1,70 @@
 import { Injectable } from '@nestjs/common';
-import { RoomUser } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserDto } from 'src/user/dtos/user.dto';
-import { UserService } from 'src/user/user.service';
 import { mySocket } from './chat.gateway';
 import { RoomService } from './room/room.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ChatService {
   constructor(
+    private config: ConfigService,
+    private jwtService: JwtService,
     private roomService: RoomService,
-    private userService: UserService,
-    private prisma: PrismaService) { }
+    private prisma: PrismaService,
+  ) {}
 
-  async join(socket: mySocket) {
+  async getUserFromsocket(socket: mySocket): Promise<number> {
+    let token: string = String(socket.handshake.headers.cookie);
+    token = token.replace('access_token=', '');
+    const user = await this.jwtService.verify(token, {
+      secret: this.config.get('JWT_SECRET'),
+    });
+    user.isOnline = true;
+    socket.join(String(user.id));
+    socket.user = user;
+    return user.id;
+  }
+
+  async getRooms(socket: mySocket) {
     const rooms: any = await this.roomService.getRooms(socket.user.id);
-      for (let i = 0; i < rooms.length; i++) {
-        const ret = rooms[i].RoomUsers.find((ele: RoomUser) =>  ele.userId === socket.user.id );
-        if (!ret.ban)
-          socket.join(String(rooms[i].id));
-      }
+    for (let i = 0; i < rooms.length; i++) socket.join(`room${ rooms[i].id }`);
     return rooms;
   }
-  
+
   async getDMRooms(socket: mySocket) {
     const rooms: any = await this.roomService.getDMRooms(socket.user.id);
-      for (let i = 0; i < rooms.length; i++) {
-        socket.join(String(rooms[i].id));
-      }
+    for (let i = 0; i < rooms.length; i++) socket.join(`room${rooms[i].id}`);
     return rooms;
-
   }
-  
-  async getUsers(userId: number, connectedUsers: UserDto[]) { 
+
+  // get users with status
+  /* async getUsers(userId: number, connectedUsers: UserDto[]) {
     const users: UserDto[] = await this.userService.getUsers(userId);
-    users.forEach((ele1: UserDto) => { 
+    users.forEach((ele1: UserDto) => {
       const connectedUser = connectedUsers.find((ele2) => ele2.id === ele1.id);
-      if (connectedUser !== undefined)
-        ele1.isOnline = connectedUser.isOnline;
-      else
-        ele1.isOnline = false;
+      if (connectedUser !== undefined) ele1.isOnline = connectedUser.isOnline;
+      else ele1.isOnline = false;
       return ele1;
     });
     return users;
-  }
+  }*/
 
   async getFriends(userId: number) {
     return this.prisma.friend.findMany({
       where: {
-        OR: [
-        { user2Id: userId },
-        {user1Id: userId}
-        ]
+        OR: [{ user2Id: userId }, { user1Id: userId }],
       },
       select: {
         user1Id: true,
         user2Id: true,
-        status: true
-      }
+        status: true,
+      },
     });
+  }
+  status_broadcast(socket: mySocket) {
+    socket.broadcast
+      .to([...socket.rooms])
+      .emit('isOnline', { id: socket.user.id, isOnline: socket.user.isOnline });
   }
 }

@@ -20,7 +20,7 @@ const TwoFAPage = () => {
     axios
       .post("/api/auth/2fa/authenticate", { code })
       .then((res) => {
-        navigate("/home");
+        navigate("/profile");
       })
       .catch((res) => {
         console.log("failure");

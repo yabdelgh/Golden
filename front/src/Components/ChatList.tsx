@@ -11,30 +11,26 @@ import ChatLoading from "./ChatLoading";
 import CreateGroupModal from "./CreateGroupModal";
 import { AppState } from "../Context/AppProvider";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
+import { getUserByName, thereIsSomeOneOnline } from "../Utils/rooms";
 
 const ChatList = () => {
-  const { user, setShowUP, rooms, users, selectedRoom, setSelectedRoom, usersList } =
+  const { setShowUP, rooms, users, selectedRoom, setSelectedRoom, setUsersList ,usersList, showUP } =
     AppState();
-  
-  const getFirstUser = (room: any) => {
-      return users.find((ele: any) => ele.id === room.RoomUsers[0].userId);
-  }
+
 
   const setChatBoxData = async (room: any) => {
     setSelectedRoom(room);
-    if (room.isGroupChat && usersList)
-      setShowUP(undefined);
-    else if (usersList)
-      setShowUP(() => getFirstUser(room));
+    if (room.isGroupChat && (usersList || showUP)) {
+     setShowUP(undefined)
+      setUsersList(true)
+    }
+    if (!room.isGroupChat && (usersList || showUP))
+    {
+      setShowUP(getUserByName(users, room.name));
+      setUsersList(false); 
+    }
   };
 
-  const thereIsSomeOneOnline = (roomUsers: any): boolean => {
-    return roomUsers.some(({ userId }: any) => {
-      return users.some((ele: any) => {
-        return ele.id === userId && ele.isOnline === true;
-      });
-    });
-  };
 
   return (
     <Box
@@ -97,9 +93,13 @@ const ChatList = () => {
                 color="white"
                 bg="teal"
                 name={room.name}
-                src={ room.isGroupChat ? undefined : getFirstUser(room).imageUrl}
+                src={
+                  room.isGroupChat
+                    ? undefined
+                    : getUserByName(users, room.name)?.imageUrl
+                }
               >
-                {thereIsSomeOneOnline(room.RoomUsers) ? (
+                {thereIsSomeOneOnline(users, room) ? (
                   <AvatarBadge boxSize="0.9em" bg="#00FF00" />
                 ) : (
                   <AvatarBadge boxSize="0.9em" bg="#FF0000" />

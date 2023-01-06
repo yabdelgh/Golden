@@ -15,6 +15,7 @@ import TwoFAPage from "./Pages/TwoFAPage";
 import { Box, useDisclosure } from "@chakra-ui/react";
 import SecurityPage from "./Pages/SecurityPage";
 import { io } from "socket.io-client";
+import UseHere from "./Pages/UseHere";
 
 function App() {
   const {
@@ -31,6 +32,7 @@ function App() {
     setSelectedRoom,
     setFriends,
     setSearchs,
+    setChallenges,
   } = AppState();
   const navigate = useNavigate();
   const { onClose } = useDisclosure();
@@ -47,10 +49,7 @@ function App() {
   useEffect(() => {
     if (!socket) return;
 
-    socket &&
-      socket.onAny((eventName: string, payload: any) => {
-        console.log(socket);
-      });
+    socket.onAny((eventName: string, payload: any) => {});
 
     document.addEventListener("visibilitychange", () => {
       setIsOnline((value: boolean) => {
@@ -81,6 +80,10 @@ function App() {
     socket.on("dMRooms", (payload: Room[]) => {
       setRooms((value: Room[]) => [...value, ...payload]);
     });
+
+    socket.on("challenges", (payload: any) => { 
+      setChallenges(payload);
+    })
 
     socket.on("addRoom", (payload: Room) => {
       setRooms((rooms: Room[]) => {
@@ -254,10 +257,34 @@ function App() {
       });
     });
 
+    socket.on("challenge", (payload: any) => { 
+      setChallenges((value: any) => [payload, ...value])
+    })
+    
+    socket.on("cancelChallenge", (payload: any) => { 
+      setChallenges((value: any) => {
+        const newVal = value.filter((ele: any) => ele.challengerId !== payload.challengerId || ele.challengedId !== ele.challengedId)
+        return [...newVal]
+      })
+    })
+
+    socket.on("declineChallenge", (payload: any) => { 
+      setChallenges((value: any) => { 
+        const newVal = value.filter((ele: any) => ele.challengerId !== payload.challengerId || ele.challengedId !== ele.challengedId)
+        return [...newVal]
+      })
+    })
+
     socket.on("error", (error: string) => errorToast(toast, error));
     socket.on("exception", (error: { status: string; message: string }) =>
       errorToast(toast, error.message)
     );
+
+    socket.on('disconnect', () => {
+      setUser({})
+      console.log('helllooooooooooooooooooooooooooooo')
+      navigate('/useHere')
+    })
 
     return () => {
       socket.removeAllListeners();
@@ -267,9 +294,9 @@ function App() {
 
   return (
     <Box className="App">
-      <NavBar />
       <Routes>
         <Route path="/" element={ user.login ? <ProfilePage/> : <LoginPage />} />
+        <Route path="/useHere" element={<UseHere />} />
         <Route
           path="/chat"
           element={user.login ? <ChatPage /> : <LoginPage />}

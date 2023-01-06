@@ -5,7 +5,7 @@ import { AppState } from "../../Context/AppProvider";
 const ChallengeButton = ({ target, icon }: any) => {
   const { user } = AppState();
 
-  const challenge = () => {console.log('message')};
+  const challenge = () => {};
 
   const button = icon ? (
     <Button

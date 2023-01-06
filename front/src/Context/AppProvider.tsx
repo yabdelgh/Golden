@@ -8,6 +8,7 @@ const AppProvider = ({ children }: any) => {
 
   const [socket, setSocket]: any = useState(undefined);
   const [user, setUser]: any = useState({});
+  const [challenges, setChallenges] = useState([]); 
   const [users, setUsers]: any = useState([]);
   const [rooms, setRooms]: any = useState([]);
   const [Friends, setFriends]: any = useState([]);
@@ -26,6 +27,8 @@ const AppProvider = ({ children }: any) => {
   return (
     <AppContext.Provider
       value={{
+        challenges,
+        setChallenges,
         socket,
         setSocket,
         userProfile,

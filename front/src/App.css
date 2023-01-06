@@ -10,6 +10,13 @@
   user-select: none;
 }
 
+#ping-pong {
+  border: 3px solid white;
+  background-color: black;
+  border-radius: 5px;
+  margin: 20px;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 3px;

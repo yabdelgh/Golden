@@ -5,10 +5,6 @@ import { AppState } from "../Context/AppProvider";
 const RightEle = ({ children }: any) => {
   const { selectedRoom, usersList , showUP} = AppState();
   
-  useEffect(() => { 
-    console.log(showUP);
-  })
-
   return (
     <Box
       display={{

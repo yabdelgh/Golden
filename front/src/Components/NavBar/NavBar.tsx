@@ -13,6 +13,7 @@ const NavBar = () => {
   useEffect(() => {
     const handleMouseMove = (event: any) => {
       if (event.clientX < 20) onOpen();
+      else if (event.clientX > 200)onClose();
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => {

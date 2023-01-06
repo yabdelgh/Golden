@@ -10,9 +10,7 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { ChatRooms, RoomAccess, RoomStatus, RoomUser } from '@prisma/client';
+import { ChatRooms, RoomAccess, RoomStatus } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { UserService } from 'src/user/user.service';
@@ -22,6 +20,7 @@ import { MsgService } from './msg/msg.service';
 import { RoomService } from './room/room.service';
 import { chatRoomDto } from './dtos/chatRoom.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { GameService } from 'src/game/game.service';
 
 export class mySocket extends Socket {
   user?: UserDto;
@@ -48,6 +47,7 @@ export class ChatGateway
     private chatService: ChatService,
     private userService: UserService,
     private prismaService: PrismaService,
+    private readonly gameService: GameService,
   ) {}
 
   @WebSocketServer()
@@ -64,22 +64,24 @@ export class ChatGateway
     try {
       const userId = await this.chatService.getUserFromsocket(socket);
       socket.emit('me', await this.userService.getUser(userId));
-      socket.emit('users', await this.userService.getUsers(userId));
-      socket.emit('rooms', await this.chatService.getRooms(socket));
-      socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
-      socket.emit('friends', await this.chatService.getFriends(userId));
-      this.chatService.status_broadcast(socket);
-    } catch {
-      socket.disconnect(true);
-    }
-    // get users with the status
-    /* socket.emit(
+     socket.emit(
         'users',
         await this.chatService.getUsers(
           socket.user.id,
           await this.getConnectedUsers(),
         ),
-      );*/
+      );
+      //socket.emit('users', await this.userService.getUsers(userId));
+      socket.emit('rooms', await this.chatService.getRooms(socket));
+      socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
+      socket.emit('friends', await this.chatService.getFriends(userId));
+      socket.emit('challenges', await this.gameService.getChallenges(userId));
+      this.chatService.status_broadcast(socket);
+    } catch (err){
+      console.log(err);
+      socket.disconnect(true);
+    }
+    // get users with the status
   }
   
 
@@ -99,7 +101,6 @@ export class ChatGateway
         }
       }
     })
-    console.log(exist)
     if (exist)
       throw new WsException('Ambiguous credentials go home');
     const room = await this.roomService.createDirectMsgRoom(client.user.id, payload.roomId);
@@ -344,23 +345,55 @@ export class ChatGateway
     socket.leave(`room${payload.roomId}`);
   }
 
-  @SubscribeMessage('removeAdmin')
-  removeAdmin(socket, payload) {
-    this.roomService.removeAdmin(
-      socket.user.Id,
-      payload.roomId,
-      payload.adminId,
-    );
+  @SubscribeMessage('challenge')
+  async handleChallenge (
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() payload: any
+  ) {
+    const challenge = await this.gameService.challenge(socket.user.id, payload);
+    if (!challenge)
+      return new WsException('Ambiguous credentials')
+    socket.emit('challenge', challenge);
+    this.server.in(`${payload.challengedId}`).emit('challenge', challenge);
   }
-
-  @SubscribeMessage('invitUser')
-  invitUser(socket, payload) {
-    this.roomService.invitUser(
-      socket.user.id,
-      payload.roomId,
-      payload.newUserId,
-    );
+  
+  @SubscribeMessage('cancelChallenge')
+  async handleCancelChallenge (
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() challengedId: any
+  ) {
+    const challenge = await this.gameService.deleteChallenge(socket.user.id, challengedId);
+    if (!challenge)
+      return new WsException('Ambiguous credentials')
+    socket.emit('cancelChallenge', challenge);
+    this.server.in(`${challengedId}`).emit('cancelChallenge', challenge);
   }
+  
+  @SubscribeMessage('declineChallenge')
+  async handleDeclineChallenge (
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() challengerId: number
+  ) {
+      const challenge = await this.gameService.deleteChallenge(challengerId, socket.user.id);
+    if (!challenge)
+      return new WsException('Ambiguous credentials')
+    socket.emit('declineChallenge', challenge);
+    this.server.in(`${challengerId}`).emit('declineChallenge', challenge);
+  }
+  
+  /*@SubscribeMessage('acceptChallenge')
+  async handleAcceptChallenge (
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() challengerId: number
+  ) {
+    // if all user are online and not in game create a game
+    // set in game status to true
+    // join sockets
+    //start a counter 15s
+    //send the game with are you readdy
+    //
+//    socket.emit('areYouReady', {})  
+  }*/
 
   handleDisconnect(@ConnectedSocket() socket: mySocket) {
     if (socket.user)

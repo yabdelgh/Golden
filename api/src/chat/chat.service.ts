@@ -4,6 +4,8 @@ import { mySocket } from './chat.gateway';
 import { RoomService } from './room/room.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { UserDto } from 'src/user/dtos/user.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ChatService {
@@ -12,6 +14,7 @@ export class ChatService {
     private jwtService: JwtService,
     private roomService: RoomService,
     private prisma: PrismaService,
+    private userService: UserService,
   ) {}
 
   async getUserFromsocket(socket: mySocket): Promise<number> {
@@ -21,6 +24,7 @@ export class ChatService {
       secret: this.config.get('JWT_SECRET'),
     });
     user.isOnline = true;
+    socket.in(String(user.id)).disconnectSockets();
     socket.join(String(user.id));
     socket.user = user;
     return user.id;
@@ -39,7 +43,7 @@ export class ChatService {
   }
 
   // get users with status
-  /* async getUsers(userId: number, connectedUsers: UserDto[]) {
+   async getUsers(userId: number, connectedUsers: UserDto[]) {
     const users: UserDto[] = await this.userService.getUsers(userId);
     users.forEach((ele1: UserDto) => {
       const connectedUser = connectedUsers.find((ele2) => ele2.id === ele1.id);
@@ -48,7 +52,7 @@ export class ChatService {
       return ele1;
     });
     return users;
-  }*/
+  }
 
   async getFriends(userId: number) {
     return this.prisma.friend.findMany({

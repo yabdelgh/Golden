@@ -1,4 +1,11 @@
-import { Box, Text, Button, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Button,
+  IconButton,
+  useDisclosure,
+  Input,
+} from "@chakra-ui/react";
 import { IoMdNotifications } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
 import { Avatar } from "@chakra-ui/react";
@@ -6,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { AppState } from "../Context/AppProvider";
 import axios from "axios";
-import { HiOutlineLockClosed, HiOutlineLogout} from "react-icons/hi"
+import { HiOutlineLockClosed, HiOutlineLogout } from "react-icons/hi";
 import {
   Popover,
   PopoverTrigger,
@@ -14,16 +21,62 @@ import {
   PopoverBody,
   PopoverArrow,
 } from "@chakra-ui/react";
+import {
+  IoGameControllerOutline,
+  IoChatbubblesOutline,
+} from "react-icons/io5";
 import SearchModal from "./SearchModal";
+import {
+  Drawer,
+  DrawerContent,
+} from "@chakra-ui/react";
+import ChallengeButton from "./Buttons/ChallengeButton";
+import Challenge from "./game/Challenge";
+
+function DrawerExample() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
+  const { challenges } = AppState();
+
+  return (
+    <>
+      <IconButton
+        variant={"unstyled"}
+        aria-label="Search database"
+        icon={<IoGameControllerOutline size="30px" />}
+        onClick={onOpen}
+      />
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerContent
+          mt="70px"
+          mr="50px"
+          width='30px'
+          height="fit-content"
+          borderRadius="lg"
+          display="flex"
+          alignItems='center'
+          justifyContent='space-around'
+        >
+          <Text mt='15px'>Challenges ({challenges.length})</Text>
+          {challenges.length !== 0 && <Challenge challenge={challenges[0]} />}
+          <Button m='10px' variant="solid" colorScheme="teal" width="95%" onClick={() => navigate('/game')}>
+            create a game
+          </Button>
+        </DrawerContent>
+      </Drawer>
+    </>
+  );
+}
+
 const ChatHeader = () => {
   const navigate = useNavigate();
   const { user, setUser, socket } = AppState();
 
-  const logoutHandler =  () => {
+  const logoutHandler = () => {
     axios.get("/api/auth/logout");
     socket.disconnect();
     setUser({});
-    navigate('/')
+    navigate("/");
   };
 
   return (
@@ -43,19 +96,26 @@ const ChatHeader = () => {
         fontFamily="Work sans"
         fontWeight="bold"
       >
-        Pong-chat
+        Golden
       </Text>
       <SearchModal>
-        <Button
-          leftIcon={<BsSearch />}
-          //   display={{ base: "none", md: "flex" }}
-          fontFamily="Inter"
-          width="100%"
-        >
-          Search Pong
+        <Button leftIcon={<BsSearch />} fontFamily="Inter" width="100%">
+          Search Golden
         </Button>
       </SearchModal>
-      <Box width="110px" display="flex" justifyContent="space-between">
+      <Box
+        width="210px"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <IconButton
+          variant={"unstyled"}
+          aria-label="Search database"
+          icon={<IoChatbubblesOutline size="30px" />}
+          onClick={() => navigate("/chat")}
+        />
+        <DrawerExample />
         <Menu offset={[20, 8]}>
           <MenuButton size="35px" variant="unstyled" as={IconButton}>
             <IoMdNotifications size="35px" />
@@ -72,10 +132,14 @@ const ChatHeader = () => {
               size="md"
               cursor="pointer"
               name={user.login}
-              src={ user.imageUrl}
+              src={user.imageUrl}
             />
           </PopoverTrigger>
-          <PopoverContent width="130px">
+          <PopoverContent
+            width="130px"
+            boxShadow="none"
+            _focus={{ boxShadow: "none" }}
+          >
             <PopoverArrow />
             <PopoverBody>
               <Button
@@ -83,7 +147,7 @@ const ChatHeader = () => {
                 justifyContent="space-around"
                 variant="unstyled"
                 width="100%"
-                onClick={() => navigate('/security')}
+                onClick={() => navigate("/security")}
               >
                 Security <HiOutlineLockClosed size="20px" />
               </Button>

@@ -19,11 +19,8 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
         const user = await this.jwtService.verify(token, {
           secret: this.config.get('JWT_SECRET'),
         });
-        console.log(user)
         if (user && user.authenticated)
-        {
           return allowFunction(null, true);
-          }
         return allowFunction('Unauthorized', false);
       } catch {
         return allowFunction('Unauthorized', false);

@@ -24,7 +24,7 @@ const PlayerProfile = ({ target, color }: any) => {
             bg="gray"
             m="10px"
             mt="50px"
-            src={target.imageUrl}
+            src={target.imageUrl || '/defaultProfilePic.png'}
           />
           <Text fontSize="30px" color="gray.600">
             {target.login}

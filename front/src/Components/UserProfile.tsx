@@ -14,7 +14,7 @@ const UserProfile = () => {
   const { showUP, setShowUP, selectedRoom, setUsersList } = AppState();
 
   const getRole = (room: Room, userId: number): string | undefined => {
-    if (room.isGroupChat)
+    if (room !== undefined && room.isGroupChat)
       return room.RoomUsers.find((ele: RoomUser) => ele.userId === userId)?.role
     return undefined;
   };
@@ -26,7 +26,7 @@ const UserProfile = () => {
       alignItems="center"
       height="100%"
       bgGradient="linear(to-b, teal, white)"
-      borderRadius="lg"
+      borderRightRadius="lg"
     >
       <Box
         width="100%"
@@ -67,7 +67,7 @@ const UserProfile = () => {
           bg="black"
           m="10px"
           mt="50px"
-          src={showUP.imageUrl}
+          src={showUP.imageUrl || '/defaultProfilePic.png'}
         />
         <Text fontSize="30px" color="gray.600">
           {showUP.login}

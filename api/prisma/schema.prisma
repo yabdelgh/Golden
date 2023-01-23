@@ -70,11 +70,13 @@ model ChatRooms {
 model games {
   id Int @id @default(autoincrement())
   redCornerId Int
+  redCornerScore Int
   redCorner User @relation(name:"fk_redCorner", fields: [redCornerId], references: [id])
   blueCornerId Int
+  blueCornerScore Int
   blueCorner User @relation(name:"fk_blueCorner", fields: [blueCornerId], references: [id])
+  createdAt DateTime @default(now())
   map String @default("default")
-  
 }
 
 model Challenges {

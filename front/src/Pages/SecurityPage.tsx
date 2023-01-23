@@ -21,10 +21,10 @@ const SecurityPage = () => {
   };
 
   return (
-    <>
-      <ChatHeader/>
     <Box
       bg="teal"
+      mt='70px'
+      ml='73px'
       width="full"
       display="flex"
       justifyContent={"center"}
@@ -43,7 +43,6 @@ const SecurityPage = () => {
         setVerify={setVerify}
       />
     </Box>
-    </>
   );
 };
 

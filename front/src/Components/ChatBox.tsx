@@ -64,30 +64,23 @@ const ChatBox = () => {
 
   return (
     <Box
-      display={{
-        base: selectedRoom && !usersList && !showUP ? "flex" : "none",
-        md: !usersList && !showUP ? "flex" : "none",
-        xl: "flex",
-      }}
+      display='flex'
       alignItems="center"
-      justifyContent="center"
+      justifyContent="space-between"
       flexDirection="column"
-      width={{ base: "100%", sm: "75%", xl: "60%" }}
-      minWidth="400px"
+      width='100%'
+      minWidth='400px'
+      ml={{base: 232, md: 362}}
       border="3px white solid"
-      borderRadius="5px"
-      ml="10px"
       bgColor="#E9EBEE"
     >
       {selectedRoom ? (
         <>
           <Box
-            // border="3px red solid"
-            height="10%"
+            height='70px'
             pl="15px"
             display="flex"
             alignItems="center"
-            minHeight="65px"
             bgColor="white"
             fontFamily="Inter"
             fontWeight="bold"
@@ -99,7 +92,7 @@ const ChatBox = () => {
               <Avatar
                 bg="teal"
                 color="white"
-                borderRadius={"5px"}
+             //   borderRadius={"15px"}
                 name={selectedRoom.name}
                 src={
                   selectedRoom.isGroupChat ? undefined : getUserByName(users, selectedRoom.name)?.imageUrl
@@ -137,6 +130,7 @@ const ChatBox = () => {
                     </ChatConfigModal>
                     <Button
                       onClick={() => {
+                        setShowUP(undefined)
                         setSelectedRoom(undefined);
                       }}
                       variant={"unstyled"}
@@ -244,7 +238,7 @@ const ChatBox = () => {
           </InputGroup>
         </>
       ) : (
-        <Text fontSize="20px" color="blackAlpha.500">
+        <Text fontSize="30px" color="blackAlpha.500" m='30%'>
           Select a room to start chatting
         </Text>
       )}

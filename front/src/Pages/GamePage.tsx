@@ -1,30 +1,36 @@
-import { Box, Button, Text } from "@chakra-ui/react";
-import ChatHeader from "../Components/ChatHeader";
 import "../App.css";
 import { useState } from "react";
 import CreateAGame from "../Components/game/CreateAGame";
 import ChallengeTogame from "../Components/game/ChallengeTogame";
-import { Socket } from "socket.io-client";
 import { AppState } from "../Context/AppProvider";
+import Game from "../Components/game/Game";
+import WaitAGame from "../Components/game/WaitAGame";
+import { User } from "../../types";
+import { validateHeaderValue } from "http";
 
 const GamePage = () => {
-  const { socket } = AppState();
+  const { user, setUser, socket} = AppState();
   const [map, setMap] = useState("default");
   const [invit, setInvit] = useState(false);
   const [opponent, setOpponent]: any = useState({});
   const [opponentType, setOpponentType] = useState("quick pairing");
 
   const send = () => {
-    socket.emit("challenge", {
-      challengedId: opponent.id,
-      map: map,
-    });
+
+    if (opponentType === 'Friend')
+      socket.emit("challenge", {
+        challengedId: opponent.id,
+        map: map,
+      });
+    else { 
+      setUser((value: User) => ({...value, WaitingAGame: true}));
+      socket.emit('quickPairing');
+    }
   };
 
   return (
     <>
-      <ChatHeader />
-      {!invit ? (
+      {user.inGame ? <Game/> : user.WaitingAGame ? <WaitAGame/> : !invit ? (
         <CreateAGame
           opponentType={opponentType}
           setOpenentType={setOpponentType}

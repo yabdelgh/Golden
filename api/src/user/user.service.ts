@@ -70,19 +70,38 @@ export class UserService {
   
   async getUsers(id: number) { 
     const users = await this.prisma.user.findMany({
-      where:{
-        UserRooms: {
-          some: {
-            room: {
-              NOT: { status: RoomStatus.Deleted },
-              RoomUsers: {
-                some: {
-                  userId: id
+      where: {
+        OR: [
+          {
+            UserRooms: {
+              some: {
+                room: {
+                  NOT: { status: RoomStatus.Deleted },
+                  RoomUsers: {
+                    some: {
+                      userId: id
+                    }
+                  }
                 }
               }
             }
-          }
-        },
+          },
+          {
+            FriendTo: {
+              some: {
+                user1Id: id
+              }
+            }
+          },
+          {
+            FriendWith: {
+              some: {
+                user1Id: id
+              }
+            }
+          },
+
+        ],
         NOT: {id}
       },
       select: {

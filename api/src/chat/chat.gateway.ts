@@ -21,6 +21,7 @@ import { RoomService } from './room/room.service';
 import { chatRoomDto } from './dtos/chatRoom.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameService } from 'src/game/game.service';
+import { MatchMakerQueue } from 'src/utils/MatchMakerQueue';
 
 export class mySocket extends Socket {
   user?: UserDto;
@@ -41,6 +42,8 @@ export class mySocket extends Socket {
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  matchMaker = new MatchMakerQueue<number>();
+
   constructor(
     private roomService: RoomService,
     private msgService: MsgService,
@@ -64,7 +67,7 @@ export class ChatGateway
     try {
       const userId = await this.chatService.getUserFromsocket(socket);
       socket.emit('me', await this.userService.getUser(userId));
-     socket.emit(
+      socket.emit(
         'users',
         await this.chatService.getUsers(
           socket.user.id,
@@ -77,13 +80,11 @@ export class ChatGateway
       socket.emit('friends', await this.chatService.getFriends(userId));
       socket.emit('challenges', await this.gameService.getChallenges(userId));
       this.chatService.status_broadcast(socket);
-    } catch (err){
-      console.log(err);
+    } catch (err) {
       socket.disconnect(true);
     }
     // get users with the status
   }
-  
 
   @SubscribeMessage('directMsg')
   async handleDirectMsg(
@@ -96,24 +97,35 @@ export class ChatGateway
         name: '',
         RoomUsers: {
           some: {
-            AND: [{ userId: client.user.id }, {userId: payload.roomId}]
-          }
-        }
-      }
-    })
-    if (exist)
-      throw new WsException('Ambiguous credentials go home');
-    const room = await this.roomService.createDirectMsgRoom(client.user.id, payload.roomId);
+            AND: [{ userId: client.user.id }, { userId: payload.roomId }],
+          },
+        },
+      },
+    });
+    if (exist) throw new WsException('Ambiguous credentials go home');
+    const room = await this.roomService.createDirectMsgRoom(
+      client.user.id,
+      payload.roomId,
+    );
     const user1 = await this.userService.getUser(client.user.id);
     const user2 = await this.userService.getUser(payload.roomId);
     client.join(`room${room.id}`);
-    this.server.in(`${payload.roomId}`).socketsJoin(`room${room.id}`)
-    client.emit('addRoom', {id: room.id, name: user2.login, isGroupChat: false}); 
-    this.server.in(`${payload.roomId}`).emit('addRoom', {id: room.id, name: user1.login, isGroupChat: false}); 
-    const msg = await this.msgService.addMsg({roomId: room.id, userId: client.user.id, msg: payload.msg});
+    this.server.in(`${payload.roomId}`).socketsJoin(`room${room.id}`);
+    client.emit('addRoom', {
+      id: room.id,
+      name: user2.login,
+      isGroupChat: false,
+    });
+    this.server
+      .in(`${payload.roomId}`)
+      .emit('addRoom', { id: room.id, name: user1.login, isGroupChat: false });
+    const msg = await this.msgService.addMsg({
+      roomId: room.id,
+      userId: client.user.id,
+      msg: payload.msg,
+    });
     this.server.in(`room${msg.roomId}`).emit('chatMsg', msg);
   }
-  
 
   @SubscribeMessage('chatMsg')
   async handleMessage(
@@ -322,7 +334,7 @@ export class ChatGateway
   @SubscribeMessage('joinRoom')
   async joinRooom(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: {roomId: number, password?: string},
+    @MessageBody() payload: { roomId: number; password?: string },
   ) {
     const roomUser = await this.roomService.joinRoom(
       socket.user.id,
@@ -332,68 +344,112 @@ export class ChatGateway
     const user = await this.userService.getUser(roomUser.userId);
     socket.join(`room${roomUser.roomId}`);
     socket.emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
-    this.server.in(`room${roomUser.roomId}`).emit('joinRoom', {roomId: roomUser.roomId, user});
+    this.server
+      .in(`room${roomUser.roomId}`)
+      .emit('joinRoom', { roomId: roomUser.roomId, user });
   }
-  
+
   @SubscribeMessage('leaveRoom')
   async leaveRooom(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: { roomId: number }
+    @MessageBody() payload: { roomId: number },
   ) {
     await this.roomService.leaveRoom(socket.user.id, payload.roomId);
-    this.server.in(`room${payload.roomId}`).emit('leaveRoom', {roomId: payload.roomId, userId: socket.user.id});
+    this.server
+      .in(`room${payload.roomId}`)
+      .emit('leaveRoom', { roomId: payload.roomId, userId: socket.user.id });
     socket.leave(`room${payload.roomId}`);
   }
 
   @SubscribeMessage('challenge')
-  async handleChallenge (
+  async handleChallenge(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: any
+    @MessageBody() payload: any,
   ) {
     const challenge = await this.gameService.challenge(socket.user.id, payload);
-    if (!challenge)
-      return new WsException('Ambiguous credentials')
+    if (!challenge) return new WsException('Ambiguous credentials');
     socket.emit('challenge', challenge);
     this.server.in(`${payload.challengedId}`).emit('challenge', challenge);
   }
-  
+
   @SubscribeMessage('cancelChallenge')
-  async handleCancelChallenge (
+  async handleCancelChallenge(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() challengedId: any
+    @MessageBody() challengedId: any,
   ) {
-    const challenge = await this.gameService.deleteChallenge(socket.user.id, challengedId);
-    if (!challenge)
-      return new WsException('Ambiguous credentials')
+    const challenge = await this.gameService.deleteChallenge(
+      socket.user.id,
+      challengedId,
+    );
+    if (!challenge) return new WsException('Ambiguous credentials');
     socket.emit('cancelChallenge', challenge);
     this.server.in(`${challengedId}`).emit('cancelChallenge', challenge);
   }
-  
+
   @SubscribeMessage('declineChallenge')
-  async handleDeclineChallenge (
+  async handleDeclineChallenge(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() challengerId: number
+    @MessageBody() challengerId: number,
   ) {
-      const challenge = await this.gameService.deleteChallenge(challengerId, socket.user.id);
-    if (!challenge)
-      return new WsException('Ambiguous credentials')
+    const challenge = await this.gameService.deleteChallenge(
+      challengerId,
+      socket.user.id,
+    );
+    if (!challenge) return new WsException('Ambiguous credentials');
     socket.emit('declineChallenge', challenge);
     this.server.in(`${challengerId}`).emit('declineChallenge', challenge);
   }
-  
-  /*@SubscribeMessage('acceptChallenge')
-  async handleAcceptChallenge (
+
+  @SubscribeMessage('acceptChallenge')
+  async handleAcceptChallenge(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() challengerId: number
+    @MessageBody() challengerId: number,
   ) {
-    // if all user are online and not in game create a game
+    // if all user are online  create a game
+    socket.user.inGame = true;
+    this.server
+      .in([...socket.rooms])
+      .emit('inGame', { id: socket.user.id, inGame: true });
+    const opponent: any = await this.server
+      .in(`${challengerId}`)
+      .fetchSockets();
+    opponent[0].user.inGame = true;
+    this.server
+      .in([...opponent[0].rooms])
+      .emit('inGame', { id: challengerId, ingame: true });
+
     // set in game status to true
     // join sockets
     //start a counter 15s
     //send the game with are you readdy
     //
-//    socket.emit('areYouReady', {})  
-  }*/
+    //    socket.emit('areYouReady', {})
+  }
+
+  @SubscribeMessage('quickPairing')
+  async handleQuickPairing(@ConnectedSocket() socket: mySocket) {
+    this.matchMaker.subscribe(Number(socket.user.id));
+    const pairing = this.matchMaker.pairing();
+    if (pairing) {
+      console.log(pairing);
+      socket.user.inGame = true;
+      this.server.in([...socket.rooms]).emit('inGame', { id: socket.user.id, inGame: true });
+      const opponent: any = await this.server.in(`${pairing[0]}`).fetchSockets();
+      opponent[0].user.inGame = true;
+      console.log(opponent)
+      this.server
+        .in([...opponent[0].rooms])
+        .emit('inGame', { id: pairing[0], ingame: true });
+    }
+    //  else
+    //  socket.emit('waitAGame');
+  }
+
+  @SubscribeMessage('cancelQuickPairing')
+  async handleCancelQuickPairing(@ConnectedSocket() socket: mySocket) {
+    this.matchMaker.cancel(Number(socket.id));
+    //  socket.emit('notInGame');
+  }
 
   handleDisconnect(@ConnectedSocket() socket: mySocket) {
     if (socket.user)

@@ -5,7 +5,7 @@ import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
 import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
-import FriendsPage from "./Pages/FriendsPage";
+import FriendsPage from "./Components/Profile/Profile";
 import { Friend, Msg, User, Room, RoomUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
 import ProfilePage from "./Pages/ProfilePage";
@@ -14,8 +14,11 @@ import WorldPage from "./Pages/WorldPage";
 import TwoFAPage from "./Pages/TwoFAPage";
 import { Box, useDisclosure } from "@chakra-ui/react";
 import SecurityPage from "./Pages/SecurityPage";
-import { io } from "socket.io-client";
+import { io, Manager } from "socket.io-client";
 import UseHere from "./Pages/UseHere";
+import { validateHeaderValue } from "http";
+import LoadingPage from "./Pages/LoadingPage";
+import ChatHeader from "./Components/ChatHeader";
 
 function App() {
   const {
@@ -35,7 +38,6 @@ function App() {
     setChallenges,
   } = AppState();
   const navigate = useNavigate();
-  const { onClose } = useDisclosure();
 
   useEffect(() => {
     setSocket(() =>
@@ -48,8 +50,8 @@ function App() {
 
   useEffect(() => {
     if (!socket) return;
-
-    socket.onAny((eventName: string, payload: any) => {});
+    socket.onAny((eventName: string, payload: any) => {
+    });
 
     document.addEventListener("visibilitychange", () => {
       setIsOnline((value: boolean) => {
@@ -59,6 +61,21 @@ function App() {
     });
 
     socket.on("me", (payload: User) => setUser(payload));
+
+    socket.on("inGame", (payload: any) => {
+      setUser((value: User) => {
+        if (value.id === payload.id) {
+          navigate("/game");
+          return { ...value, inGame: true };
+        } else
+          setUsers((value: User[]) => {
+            const index = value.findIndex((ele: User) => ele.id === payload.id);
+            if (index !== -1) value[index].inGame = payload.inGame;
+            return [...value];
+          });
+        return value;
+      });
+    });
 
     socket.on("isOnline", (payload: User) => {
       setUsers((value: User[]) => {
@@ -78,12 +95,13 @@ function App() {
     });
 
     socket.on("dMRooms", (payload: Room[]) => {
+      for (const ele of payload) ele.isGroupChat = false;
       setRooms((value: Room[]) => [...value, ...payload]);
     });
 
-    socket.on("challenges", (payload: any) => { 
+    socket.on("challenges", (payload: any) => {
       setChallenges(payload);
-    })
+    });
 
     socket.on("addRoom", (payload: Room) => {
       setRooms((rooms: Room[]) => {
@@ -257,34 +275,41 @@ function App() {
       });
     });
 
-    socket.on("challenge", (payload: any) => { 
-      setChallenges((value: any) => [payload, ...value])
-    })
-    
-    socket.on("cancelChallenge", (payload: any) => { 
-      setChallenges((value: any) => {
-        const newVal = value.filter((ele: any) => ele.challengerId !== payload.challengerId || ele.challengedId !== ele.challengedId)
-        return [...newVal]
-      })
-    })
+    socket.on("challenge", (payload: any) => {
+      setChallenges((value: any) => [payload, ...value]);
+    });
 
-    socket.on("declineChallenge", (payload: any) => { 
-      setChallenges((value: any) => { 
-        const newVal = value.filter((ele: any) => ele.challengerId !== payload.challengerId || ele.challengedId !== ele.challengedId)
-        return [...newVal]
-      })
-    })
+    socket.on("cancelChallenge", (payload: any) => {
+      setChallenges((value: any) => {
+        const newVal = value.filter(
+          (ele: any) =>
+            ele.challengerId !== payload.challengerId ||
+            ele.challengedId !== ele.challengedId
+        );
+        return [...newVal];
+      });
+    });
+
+    socket.on("declineChallenge", (payload: any) => {
+      setChallenges((value: any) => {
+        const newVal = value.filter(
+          (ele: any) =>
+            ele.challengerId !== payload.challengerId ||
+            ele.challengedId !== ele.challengedId
+        );
+        return [...newVal];
+      });
+    });
 
     socket.on("error", (error: string) => errorToast(toast, error));
     socket.on("exception", (error: { status: string; message: string }) =>
       errorToast(toast, error.message)
     );
 
-    socket.on('disconnect', () => {
-      setUser({})
-      console.log('helllooooooooooooooooooooooooooooo')
-      navigate('/useHere')
-    })
+    socket.on("disconnect", () => {
+      setUser({});
+      navigate("/useHere");
+    });
 
     return () => {
       socket.removeAllListeners();
@@ -295,7 +320,11 @@ function App() {
   return (
     <Box className="App">
       <Routes>
-        <Route path="/" element={ user.login ? <ProfilePage/> : <LoginPage />} />
+        <Route
+          path="/"
+          element={user.login ? <ProfilePage /> : <LoginPage />}
+        />
+        <Route path="/loading" element={<LoadingPage />} />
         <Route path="/useHere" element={<UseHere />} />
         <Route
           path="/chat"
@@ -323,6 +352,8 @@ function App() {
           element={user.login ? <SecurityPage /> : <LoginPage />}
         />
       </Routes>
+      <ChatHeader />
+      <NavBar />
     </Box>
   );
 }

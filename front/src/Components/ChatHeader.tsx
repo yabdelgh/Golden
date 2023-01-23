@@ -4,7 +4,6 @@ import {
   Button,
   IconButton,
   useDisclosure,
-  Input,
 } from "@chakra-ui/react";
 import { IoMdNotifications } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
@@ -21,6 +20,7 @@ import {
   PopoverBody,
   PopoverArrow,
 } from "@chakra-ui/react";
+import { CgProfile} from 'react-icons/cg'
 import {
   IoGameControllerOutline,
   IoChatbubblesOutline,
@@ -30,7 +30,6 @@ import {
   Drawer,
   DrawerContent,
 } from "@chakra-ui/react";
-import ChallengeButton from "./Buttons/ChallengeButton";
 import Challenge from "./game/Challenge";
 
 function DrawerExample() {
@@ -58,8 +57,8 @@ function DrawerExample() {
           justifyContent='space-around'
         >
           <Text mt='15px'>Challenges ({challenges.length})</Text>
-          {challenges.length !== 0 && <Challenge challenge={challenges[0]} />}
-          <Button m='10px' variant="solid" colorScheme="teal" width="95%" onClick={() => navigate('/game')}>
+          {challenges.length !== 0 && <Challenge challenge={challenges[0]} onClose={onClose} />}
+          <Button m='10px' variant="solid" colorScheme="teal" width="95%" onClick={() => { onClose(); navigate('/game') }}>
             create a game
           </Button>
         </DrawerContent>
@@ -71,6 +70,7 @@ function DrawerExample() {
 const ChatHeader = () => {
   const navigate = useNavigate();
   const { user, setUser, socket } = AppState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logoutHandler = () => {
     axios.get("/api/auth/logout");
@@ -85,10 +85,12 @@ const ChatHeader = () => {
       bg="white"
       height="60px"
       width="100%"
-      display="flex"
+      display={user.login ? "flex" : "none"}
       justifyContent="space-around"
       alignItems="center"
       position="fixed"
+      top='0'
+      left='0'
     >
       <Text
         color="teal"
@@ -104,27 +106,14 @@ const ChatHeader = () => {
         </Button>
       </SearchModal>
       <Box
-        width="210px"
+        width="170px"
         display="flex"
         justifyContent="space-between"
         alignItems="center"
       >
-        <IconButton
-          variant={"unstyled"}
-          aria-label="Search database"
-          icon={<IoChatbubblesOutline size="30px" />}
-          onClick={() => navigate("/chat")}
-        />
         <DrawerExample />
-        <Menu offset={[20, 8]}>
-          <MenuButton size="35px" variant="unstyled" as={IconButton}>
             <IoMdNotifications size="35px" />
-          </MenuButton>
-          <MenuList zIndex="dropdown">
-            <MenuItem>Msg</MenuItem>
-          </MenuList>
-        </Menu>
-        <Popover>
+        <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
           <PopoverTrigger>
             <Avatar
               bg="teal"
@@ -132,11 +121,11 @@ const ChatHeader = () => {
               size="md"
               cursor="pointer"
               name={user.login}
-              src={user.imageUrl}
+              src={user.imageUrl || "/defaultProfilePic.png"}
             />
           </PopoverTrigger>
           <PopoverContent
-            width="130px"
+            width="150px"
             boxShadow="none"
             _focus={{ boxShadow: "none" }}
           >
@@ -147,9 +136,12 @@ const ChatHeader = () => {
                 justifyContent="space-around"
                 variant="unstyled"
                 width="100%"
-                onClick={() => navigate("/security")}
+                onClick={() => {
+                  navigate("/profile");
+                  onClose();
+                }}
               >
-                Security <HiOutlineLockClosed size="20px" />
+                Profile <CgProfile size="20px" />
               </Button>
               <Button
                 display="flex"
@@ -159,6 +151,18 @@ const ChatHeader = () => {
                 onClick={logoutHandler}
               >
                 Log out <HiOutlineLogout size="20px" />
+              </Button>
+              <Button
+                display="flex"
+                justifyContent="space-around"
+                variant="unstyled"
+                width="100%"
+                onClick={() => {
+                  navigate("/security");
+                  onClose();
+                }}
+              >
+                Security <HiOutlineLockClosed size="20px" />
               </Button>
             </PopoverBody>
           </PopoverContent>

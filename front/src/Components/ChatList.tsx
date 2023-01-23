@@ -14,48 +14,48 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { getUserByName, thereIsSomeOneOnline } from "../Utils/rooms";
 
 const ChatList = () => {
-  const { setShowUP, rooms, users, selectedRoom, setSelectedRoom, setUsersList ,usersList, showUP } =
-    AppState();
-
+  const {
+    setShowUP,
+    rooms,
+    users,
+    selectedRoom,
+    setSelectedRoom,
+    setUsersList,
+    usersList,
+    showUP,
+  } = AppState();
 
   const setChatBoxData = async (room: any) => {
     setSelectedRoom(room);
     if (room.isGroupChat && (usersList || showUP)) {
-     setShowUP(undefined)
-      setUsersList(true)
+      setShowUP(undefined);
+      setUsersList(true);
     }
-    if (!room.isGroupChat && (usersList || showUP))
-    {
+    if (!room.isGroupChat && (usersList || showUP)) {
       setShowUP(getUserByName(users, room.name));
-      setUsersList(false); 
+      setUsersList(false);
     }
   };
 
-
   return (
     <Box
-      display={{ base: selectedRoom ? "none" : "flex", md: "flex" }}
+      display="flex"
       flexDir="column"
-      p={3}
+      p="3"
+      top='70'
+      left='71'
       bg="white"
-      w={{ base: "100%", md: "35%" }}
-      borderRadius="lg"
-      borderWidth="1px"
-      minWidth="370px"
+      height='100%'
+      position='fixed'
+      w={{ base: "230px", md: "360px" }}
     >
-      <Box display="flex" flexWrap="wrap" justifyContent="space-between">
-        <Text
-          fontSize="25px"
-          fontFamily="Work sans"
-          height="50px"
-          mb="5px"
-          ml="5px"
-        >
+      <Box display="flex" justifyContent="space-between">
+        <Text fontSize="25px" fontFamily="Work sans" height="50px" m="5px">
           Contacts
         </Text>
         <CreateGroupModal>
-          <Button ml="20px" leftIcon={<AiOutlineUsergroupAdd size="25px" />}>
-            create new group
+          <Button ml="10px" leftIcon={<AiOutlineUsergroupAdd size="25px" />}>
+            <Text display={{ base: "none", xl: "flex" }}>create new group</Text>
           </Button>
         </CreateGroupModal>
       </Box>
@@ -64,23 +64,18 @@ const ChatList = () => {
           width="100%"
           overflowY="auto"
           spacing={0}
-          css={{
-            "::-webkit-scrollbar": {
-              width: "0px",
-            },
-          }}
-          divider={<StackDivider borderColor="gray.200" />}
-          borderBottom="1px #EEEEEE solid"
-          borderTop="1px #EEEEEE solid"
+         // divider={<StackDivider borderColor="gray.200" />}
+         // borderBottom="1px #EEEEEE solid"
+         // borderTop="1px #EEEEEE solid"
         >
           {rooms.map((room: any) => (
             <Box
               cursor={"pointer"}
-              height="80px"
+              height="65px"
               display="flex"
               alignItems={"center"}
               bg={selectedRoom === room ? "#EEEEEE" : "white"}
-              borderRadius="5px"
+              borderRadius="15px"
               p="5px"
               fontFamily="Inter"
               fontWeight="bold"
@@ -89,14 +84,17 @@ const ChatList = () => {
               key={room.id}
             >
               <Avatar
-                borderRadius="5px"
                 color="white"
                 bg="teal"
+                ml='10px'
+                size={'md'}
+                border='3px solid white'
                 name={room.name}
                 src={
                   room.isGroupChat
                     ? undefined
-                    : getUserByName(users, room.name)?.imageUrl
+                    : getUserByName(users, room.name)?.imageUrl ||
+                      "/defaultProfilePic.png"
                 }
               >
                 {thereIsSomeOneOnline(users, room) ? (
@@ -107,7 +105,7 @@ const ChatList = () => {
               </Avatar>
               <Box ml="20px" display="flex" flexDirection="column">
                 <Text p="4px 0px">{room.name}</Text>
-                <Text fontSize="15px" fontFamily={"work sans"} color="gray.400">
+                <Text fontSize="14px" fontFamily={"work sans"} color="gray.400">
                   {room.lastMsg && room.lastMsg.slice(0, 20)}
                   {room.lastMsg && room.lastMsg.length > 20 ? " ..." : ""}
                 </Text>

@@ -22,9 +22,6 @@ const TwoFAPage = () => {
       .then((res) => {
         navigate("/profile");
       })
-      .catch((res) => {
-        console.log("failure");
-      });
   };
 
   return (

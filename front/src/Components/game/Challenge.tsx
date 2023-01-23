@@ -1,10 +1,12 @@
 import { Avatar, Box, Button, Text } from "@chakra-ui/react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { User } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 
-const Challenge = ({ challenge }: any) => {
+const Challenge = ({ challenge , onClose}: any) => {
   const { user, users, socket } = AppState();
-  if (!user || users.length === 0) return <></>;
+  const navigate = useNavigate();
+  if (!user ||  users.length === 0) return <></>;
   if (challenge.challengedId === user.id) {
     const opponent = users.find(
       (ele: User) => ele.id === challenge.challengerId
@@ -38,7 +40,12 @@ const Challenge = ({ challenge }: any) => {
           >
             decline
           </Button>
-          <Button variant={"ghost"} colorScheme="teal" disabled={ !opponent.isOnline}>
+          <Button variant={"ghost"} colorScheme="teal" disabled={!opponent.isOnline}
+            onClick={() => { 
+              socket.emit('acceptChallenge', challenge.challengerId);
+              onClose();
+            }}
+          >
             accept
           </Button>
         </Box>
@@ -63,7 +70,7 @@ const Challenge = ({ challenge }: any) => {
             borderRadius="full"
             size="md"
             name={opponent ? opponent.login : ""}
-            src={opponent.imageUrl}
+            src={opponent.imageUrl || '/defaultProfilePic.png'}
           />
           <Text ml="10px">{opponent.login}</Text>
         </Box>

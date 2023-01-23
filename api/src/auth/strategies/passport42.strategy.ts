@@ -18,7 +18,6 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
         id: 'id',
         login: 'login',
         email: 'email',
-        imageUrl: 'image_url',
       },
     });
   }
@@ -33,7 +32,6 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
       id,
       login,
       email,
-      imageUrl,
     });
     if (!user) throw new UnauthorizedException('connection failed');
     return user;

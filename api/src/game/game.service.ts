@@ -1,16 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { WsException } from '@nestjs/websockets';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GameService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async getHistory(userId: number) { 
+    const ret = await this.prismaService.games.findMany({
+      where: {
+        OR: [{ redCornerId: userId }, {blueCornerId: userId}]
+      },
+      take: 10
+    });
+    return ret;
+  }
+
   async getChallenges(userId: number) {
     const ret = await this.prismaService.challenges.findMany({
       where: {
         OR: [{ challengedId: userId }, {challengerId: userId}]
-      }
+      },
     })
     return ret;
   }

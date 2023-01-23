@@ -39,7 +39,6 @@ const WorldPage = () => {
 
   return (
     <>
-      <ChatHeader />
       {roomProfile && (
         <Box
           display="flex"

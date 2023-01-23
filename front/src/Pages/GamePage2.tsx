@@ -4,7 +4,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import ChatHeader from "../Components/ChatHeader";
 import { AppState } from "../Context/AppProvider";
 import "../App.css";
 import PlayWith from "../Components/game/PlayWith";
@@ -104,7 +103,6 @@ const GamePage = () => {
 
   return (
     <>
-      <ChatHeader />
       <Box
         width="100%"
         display="flex"

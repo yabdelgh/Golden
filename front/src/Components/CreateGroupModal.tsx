@@ -104,7 +104,7 @@ const CreateGroupModal = ({ children }: any) => {
               mb="5px"
               bg="green.300"
               onClick={createNewGroup}
-              autoFocus
+           //   autoFocus
             >
               create
             </Button>

@@ -37,6 +37,13 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userservice: UserService) {}
+  
+  @Get()
+  async getUser(@Query('id', ParseIntPipe) id: number) {
+    const ret = await this.userservice.getUser(id);
+    console.log(ret);
+    return ret;
+  }
 
  /* @Post()
   async createUser(@Body() user) {
@@ -47,10 +54,6 @@ export class UserController {
     this.userservice.updateUser(user.id, payload);
   }
 
-  @Get('get')
-  async getUser(@Query('id', ParseIntPipe) id: number) {
-    return this.userservice.getUser(id);
-  }
 
   @Get('me')
   async getCurrentUser(@Req() { user }) {

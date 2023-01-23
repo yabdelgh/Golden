@@ -10,6 +10,6 @@ export class chatMsgDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(10)
+  @MaxLength(100)
   msg: string;
 }

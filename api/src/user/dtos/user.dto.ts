@@ -34,6 +34,10 @@ export class UserDto {
   @IsOptional()
   @IsBoolean()
   isOnline?: boolean;
+  
+  @IsOptional()
+  @IsBoolean()
+  inGame?: boolean;
 
   @IsOptional()
   @IsString()

@@ -95,7 +95,7 @@ const ChallengeTogame = ({
                 size="md"
                 cursor="pointer"
                 name={opponent.login}
-                src={opponent.imageUrl}
+                src={opponent.imageUrl || '/defaultProfilePic.png'}
               />
               <Text m='10px' fontWeight={'bold'}>{opponent.login}</Text>
             </Box>

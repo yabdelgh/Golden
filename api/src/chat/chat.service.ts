@@ -15,7 +15,7 @@ export class ChatService {
     private roomService: RoomService,
     private prisma: PrismaService,
     private userService: UserService,
-  ) {}
+  ) { }
 
   async getUserFromsocket(socket: mySocket): Promise<number> {
     let token: string = String(socket.handshake.headers.cookie);
@@ -24,6 +24,7 @@ export class ChatService {
       secret: this.config.get('JWT_SECRET'),
     });
     user.isOnline = true;
+    user.inGame = false;
     socket.in(String(user.id)).disconnectSockets();
     socket.join(String(user.id));
     socket.user = user;
@@ -32,7 +33,7 @@ export class ChatService {
 
   async getRooms(socket: mySocket) {
     const rooms: any = await this.roomService.getRooms(socket.user.id);
-    for (let i = 0; i < rooms.length; i++) socket.join(`room${ rooms[i].id }`);
+    for (let i = 0; i < rooms.length; i++) socket.join(`room${rooms[i].id}`);
     return rooms;
   }
 
@@ -43,12 +44,18 @@ export class ChatService {
   }
 
   // get users with status
-   async getUsers(userId: number, connectedUsers: UserDto[]) {
+  async getUsers(userId: number, connectedUsers: UserDto[]) {
     const users: UserDto[] = await this.userService.getUsers(userId);
     users.forEach((ele1: UserDto) => {
       const connectedUser = connectedUsers.find((ele2) => ele2.id === ele1.id);
-      if (connectedUser !== undefined) ele1.isOnline = connectedUser.isOnline;
-      else ele1.isOnline = false;
+      if (connectedUser !== undefined) {
+        ele1.isOnline = connectedUser.isOnline;
+        ele1.inGame = connectedUser.inGame;
+      }
+      else {
+        ele1.isOnline = false;
+        ele1.inGame = false;
+      }
       return ele1;
     });
     return users;

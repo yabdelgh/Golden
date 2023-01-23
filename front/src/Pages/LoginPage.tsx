@@ -2,8 +2,6 @@ import { Box, Button, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { AppState } from "../Context/AppProvider";
 import { useNavigate } from "react-router-dom";
-import Lottie from "react-lottie";
-import animationData from "./ping-pong-icon.json";
 
 const LoginPage = () => {
   const { user } = AppState();
@@ -15,14 +13,6 @@ const LoginPage = () => {
     }
   });
 
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
 
   return (
     <Box
@@ -34,9 +24,6 @@ const LoginPage = () => {
       alignItems="center"
       position='fixed'
     >
-      <Box width="400px" height="400px" display={{base: 'none', xl: 'flex'}}>
-        <Lottie options={defaultOptions} style={{ backgroundColor: "teal" }} />
-      </Box>
       <Box
         width="50%"
         height="400px"
@@ -53,7 +40,7 @@ const LoginPage = () => {
           fontSize="100"
           color="whiteAlpha.800"
         >
-          Ping-Pong
+          Golden
         </Text>
         <Text
           width="100%"

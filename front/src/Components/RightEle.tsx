@@ -12,16 +12,16 @@ const RightEle = ({ children }: any) => {
         md: (selectedRoom && (usersList || showUP)) ? "flex" : "none",
         xl: (selectedRoom && (usersList || showUP)) ? "flex" : "none",
       }}
-      ml="5px"
+      ml="3px"
       bg="white"
-      minWidth="400px"
-      width={{ base: "100%", xl: "30%" }}
+      minWidth="300px"
+      width='30%'
       flexDirection="column"
       fontFamily={"Inter"}
       fontWeight="bold"
       color="gray.500"
       transition="ease-in"
-      borderRadius="lg"
+      borderRightRadius="lg"
     >
       {children}
     </Box>

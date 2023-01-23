@@ -13,7 +13,6 @@ const PlayWith = ({ setOpenent }: any) => {
       {...getRootProps()}
       width="100%"
       display="flex"
-      // height="130px"
       justifyContent="space-around"
       m='10px'
       p='10px'
@@ -30,7 +29,7 @@ const PlayWith = ({ setOpenent }: any) => {
         kozmor
         </Box>
       </RadioEx>
-      <RadioEx {...getRadioProps({ value: "quick pairing" })}>
+      <RadioEx {...getRadioProps({ value: "quickPairing" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"} m='10px'>
           <Image draggable={false} src={"human-target.png"} width="70px" />
           <Text>quick pairing</Text>

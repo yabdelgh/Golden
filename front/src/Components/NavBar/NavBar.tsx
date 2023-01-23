@@ -1,51 +1,59 @@
-import { useEffect } from "react";
-import { AiOutlineUser } from "react-icons/ai";
-import { HiOutlineUsers } from "react-icons/hi";
-import { MdTravelExplore } from "react-icons/md";
-import { Drawer, DrawerContent, useDisclosure } from "@chakra-ui/react";
-import { IoChatbubblesOutline, IoGameControllerOutline } from "react-icons/io5";
-
-import  NavBarButton from "./NavBarButton";
+import { Avatar, Box, IconButton } from "@chakra-ui/react";
+import { IoChatbubblesOutline } from "react-icons/io5";
+import { MdExplore } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { AppState } from "../../Context/AppProvider";
 
 const NavBar = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  useEffect(() => {
-    const handleMouseMove = (event: any) => {
-      if (event.clientX < 20) onOpen();
-      else if (event.clientX > 200)onClose();
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
+  const { user, setUserProfile } = AppState();
+  const navigate = useNavigate();
 
   return (
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-        <DrawerContent
-          mt="30vh"
-          ml="10px"
-          borderRadius="lg"
-          height="400px"
-          maxW="75px"
-          bgColor="teal"
-        >
-          <NavBarButton pageName='/profile'>
-            <AiOutlineUser size="50px" />
-          </NavBarButton>
-          <NavBarButton pageName='/chat'>
-            <IoChatbubblesOutline size="50px" />
-          </NavBarButton>
-          <NavBarButton pageName='/game'>
-            <IoGameControllerOutline size="50px" />
-          </NavBarButton>
-        <NavBarButton pageName='/world'>
-            <MdTravelExplore size="50px" />
-          </NavBarButton>
-        </DrawerContent>
-      </Drawer>
+    <Box
+      bg="white"
+      width="70px"
+      height='100%'
+      position="fixed"
+      top='70'
+      left='0'
+      display={user.login ? "flex" : "none"}
+      flexDir="column"
+      alignItems="center"
+        userSelect='none'
+    >
+      <Avatar
+        bg="teal"
+        color="white"
+        mt="10px"
+        width="50px"
+        height="50px"
+        borderRadius="15px"
+        cursor="pointer"
+        
+        name={user.login}
+        src={user.imageUrl || "/defaultProfilePic.png"}
+        onClick={() => { setUserProfile(user); navigate("/profile") }}
+      />
+      <IconButton
+        mt="20px"
+        colorScheme="gray"
+        width="50px"
+        height="50px"
+        borderRadius="20px"
+        aria-label="Search database"
+        icon={<IoChatbubblesOutline size="30px" />}
+        onClick={() => navigate("/chat")}
+      />
+      <IconButton
+        mt="20px"
+        colorScheme="gray"
+        width="50px"
+        height="50px"
+        borderRadius="20px"
+        aria-label="Search database"
+        icon={<MdExplore size="30px" />}
+      />
+    </Box>
   );
 };
 

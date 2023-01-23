@@ -28,7 +28,6 @@ const TwoFactorCode = ({ verify, setVerify }: any) => {
         }), setVerify(false)
       )
       )
-      .catch(() => console.log("error a weldi"));
   };
   return (
     <Box

@@ -1,5 +1,5 @@
 import { useToast } from "@chakra-ui/react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
  
 
 const AppContext = createContext<any | null>(null);
@@ -23,10 +23,25 @@ const AppProvider = ({ children }: any) => {
   const [showUP, setShowUP] = useState(undefined);
   const [isOnline, setIsOnline] = useState(true);
   const toast = useToast();
+  const [isSmallerThan1200, setIsSmallerThan1200] = useState(false);
+  const [isSmallerThan1800, setIsSmallerThan1800] = useState(false);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallerThan1200(window.innerWidth < 1720);
+      setIsSmallerThan1800(window.innerWidth < 2120);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   return (
     <AppContext.Provider
       value={{
+        isSmallerThan1200,
+        isSmallerThan1800,
         challenges,
         setChallenges,
         socket,

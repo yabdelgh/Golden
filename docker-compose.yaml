@@ -21,3 +21,13 @@ services:
       - db
     volumes:
       - ./api/src:/app/src
+  
+  front:
+    container_name: front
+    build: ./front
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./front/src:/app/src

@@ -12,4 +12,10 @@ export class GameController {
     async getHistory(@Param('id') id: number) {
        return this.gameService.getHistory(Number(id)); 
     }
+
+    @Get('overview/:id')
+    @UseGuards(JwtAuthGuard)
+    async getOverView(@Param('id') id: number) {
+       return this.gameService.getOverview(Number(id)); 
+    }
 }

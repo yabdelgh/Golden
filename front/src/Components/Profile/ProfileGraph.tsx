@@ -1,22 +1,16 @@
-import React from "react";
+import { useEffect } from "react";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { Box, Text } from "@chakra-ui/react";
+import { AppState } from "../../Context/AppProvider";
+import axios from "axios";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-export default function ProfileGraph() {
-  const data = {
-    labels: ["Wins", "Loses"],
-    datasets: [
-      {
-        data: [20, 90],
-        backgroundColor: ["	#ff5252", "#00ad8e"],
-        borderWidth: 0,
-      },
-    ],
-  };
+export default function ProfileGraph({ wins, games }: any) {
+
+  const loses = games - wins;
 
   const options = {
     responsive: true,
@@ -36,7 +30,7 @@ export default function ProfileGraph() {
         },
         color: "#fff",
         font: {
-          size: 20,
+          size: 15,
         },
       },
     },
@@ -49,6 +43,18 @@ export default function ProfileGraph() {
       console.log(element[0].index);
     },
   };
+
+  const data: any = {
+    labels: ["Loses", "Wins"],
+    datasets: [
+      {
+        data: wins < 1 ? [loses] : loses < 1 ? [wins]: [wins, loses],
+        backgroundColor: wins < 1 ? ["#ff5252"]:["#00ad8e", "#ff5252"],
+        borderWidth: 0,
+      },
+    ],
+  };
+
   return (
     <Box
       width="100%"
@@ -68,14 +74,38 @@ export default function ProfileGraph() {
       >
         Performance Overview
       </Text>
-      <Box
-        width="100%"
-        height="90%"
-        display="flex"
-        justifyContent='flex-end'
-      >
-        <Text>you played 123 games in this year </Text>
-        <Box width="70%" height="70%" mb="15%">
+      <Box width="100%" height="90%" display="flex" justifyContent="flex-end">
+        <Box
+          ml="30px"
+          width="40%"
+          display="flex"
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Box
+            fontFamily="Inter"
+            fontSize="50px"
+            fontWeight="bold"
+            display="flex"
+            alignItems={"flex-end"}
+            color="gray.700"
+          >
+            {games}
+            <Text fontSize="25px" fontWeight="normal" m="10px">
+              Games
+            </Text>
+          </Box>
+          <Box display="flex" fontSize="18px">
+            <Text m="5px" color="#00ad8e">
+              {wins} Wins,
+            </Text>
+            <Text m="5px" color="#ff5252">
+              {games - wins} Loses
+            </Text>
+          </Box>
+        </Box>
+        <Box width="60%" height="70%" mb="15%">
           <Pie options={options} data={data} />
         </Box>
       </Box>

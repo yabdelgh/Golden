@@ -1,30 +1,19 @@
 import { Box } from "@chakra-ui/react";
-import { useEffect } from "react";
 import ProfileBar from "../Components/Profile/ProfileBar";
 import ProfileContent from "../Components/Profile/ProfileContent";
-import { AppState } from "../Context/AppProvider";
 
 const ProfilePage = () => {
-  const { user, userProfile, setUserProfile } = AppState();
-
-  useEffect(() => {
-    if (!userProfile.login && user.login) setUserProfile(() => user);
-  });
   
   return (
-    <Box
-      width="fit-content"
-      mt='70px'
-      overflowY={'hidden'}
-    >
-        <ProfileBar />
+    <Box width="fit-content" mt="70px">
+      <ProfileBar />
       <ProfileContent />
     </Box>
   );
 };
 
 export default ProfilePage;
-      
+
 // {
 //   userProfile && userProfile.id !== user.id && (
 //         <Box

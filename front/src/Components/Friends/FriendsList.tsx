@@ -1,8 +1,10 @@
 import { Box, Button, Image, Text } from "@chakra-ui/react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 
 const FriendsList = () => {
-  const { users, Friends } = AppState(); 
+  const { users, Friends, setUserProfile } = AppState(); 
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -44,6 +46,8 @@ const FriendsList = () => {
                 justifyContent="space-between"
                 key={value1.id}
                 boxShadow="1px 5px 5px gray"
+                cursor='pointer'
+                onClick={() => { setUserProfile(value1);  navigate('/profile')}}
               >
                 <Image
                   borderTopRadius="lg"

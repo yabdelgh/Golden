@@ -1,8 +1,10 @@
 import { Box, Image, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { AppState } from "../../Context/AppProvider";
 
 const ProfileBar = () => {
   const { userProfile } = AppState();
+  
   return (
     <>
       {userProfile && (

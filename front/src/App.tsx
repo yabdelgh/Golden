@@ -22,6 +22,7 @@ import ChatHeader from "./Components/ChatHeader";
 
 function App() {
   const {
+    setUserProfile,
     user,
     setIsOnline,
     setMsgs,
@@ -60,7 +61,7 @@ function App() {
       });
     });
 
-    socket.on("me", (payload: User) => setUser(payload));
+    socket.on("me", (payload: User) => { setUser(payload); setUserProfile(payload) });
 
     socket.on("inGame", (payload: any) => {
       setUser((value: User) => {

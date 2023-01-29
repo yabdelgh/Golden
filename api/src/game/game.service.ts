@@ -5,22 +5,41 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class GameService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getHistory(userId: number) { 
+  async getHistory(userId: number) {
     const ret = await this.prismaService.games.findMany({
       where: {
-        OR: [{ redCornerId: userId }, {blueCornerId: userId}]
+        OR: [{ redCornerId: userId }, { blueCornerId: userId }],
       },
-      take: 10
+      take: 10,
     });
     return ret;
+  }
+
+  async getOverview(userId: number) {
+    const games = await this.prismaService.games.findMany({
+      where: {
+        OR: [{ redCornerId: userId }, { blueCornerId: userId }],
+      },
+    });
+    const nbrOfGames:number = games.length;
+    const nbrOfWins = games.filter(
+      (ele: any) =>
+        (userId === ele.redCornerId &&
+          ele.redCornerScore > ele.blueCornerScore) ||
+        (userId === ele.blueCornerId &&
+          ele.blueCornerScore > ele.redCornerScore),
+    ).length;
+    console.log(nbrOfGames);
+    console.log(nbrOfWins);
+    return { Games: nbrOfGames, Wins: nbrOfWins };
   }
 
   async getChallenges(userId: number) {
     const ret = await this.prismaService.challenges.findMany({
       where: {
-        OR: [{ challengedId: userId }, {challengerId: userId}]
+        OR: [{ challengedId: userId }, { challengerId: userId }],
       },
-    })
+    });
     return ret;
   }
 
@@ -33,19 +52,18 @@ export class GameService {
           map: challenge.map,
         },
       });
-        return ret;
+      return ret;
     } catch {
       return undefined;
     }
   }
 
-  async deleteChallenge(challengerId: number, challengedId: number) { 
+  async deleteChallenge(challengerId: number, challengedId: number) {
     const ret = await this.prismaService.challenges.delete({
       where: {
-        challengerId_challengedId: { challengerId, challengedId }
-      }
-    })
+        challengerId_challengedId: { challengerId, challengedId },
+      },
+    });
     return ret;
   }
-
 }

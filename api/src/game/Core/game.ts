@@ -6,8 +6,12 @@ import { Arena } from "./Arena";
 import Matter, { Engine, Events, Pair, Runner, Vector } from "matter-js"
 import { Bodies, World, IWorldDefinition, Body, Composite } from "matter-js"
 import { GetBodySize } from "./common/utils/matter-js";
-import random from "random";
+// import random from "random";
 
+let random
+// import('random').then(randomModule => {
+//     random = randomModule
+// });
 
 enum GameStatus {
     Stoped = 0,
@@ -17,11 +21,12 @@ enum GameStatus {
 }
 
 interface GameParams {
+    id:number
     ball: Body;
     players: APlayer[];
     obstacles: Body[];
     size: Vector;
-    scale: number
+    scale?: number
 }
 
 export interface GameState {
@@ -31,6 +36,7 @@ export interface GameState {
 }
 
 export class Game {
+    private _id;
     private ball: Body;
     private players: APlayer[];
     private obstacles: Body[]
@@ -42,12 +48,12 @@ export class Game {
     private remaining_rounds: number = 0;
     private _engine: Engine;
     emiter: Subject<GameState> = new Subject<GameState>();
+    gameEndEvent: Subject<GameState> = new Subject<GameState>();
     private runner: Runner;
     private ball_speed: Vector;
 
-    constructor({ ball, players, obstacles, size, scale }: GameParams) {
-        // TODO: use random ball position generator.
-        // this.ball.set_position({x:0,y:0,z:0,});
+    constructor({ id, ball, players, obstacles, size, scale }: GameParams) {
+        this._id = id;
         this.ball = ball
         this.players = players
         this.size = size
@@ -143,6 +149,15 @@ export class Game {
             this._score[1] += 1;
             this.set_ball_at_start(PlayerMove.Right);
         }
+        this.rounds--;
+        if (this.rounds == 0) {
+            this.gameEndEvent.next({
+                ball: this.ball.position,
+                player1: this.players[0].body.position,
+                player2: this.players[1].body.position,
+            });
+            this.stop();
+        }
     }
 
     private set_ball_at_start(direction: PlayerMove) {
@@ -178,6 +193,18 @@ export class Game {
         this.emiter.subscribe(event);
     }
 
+    subscribeGameEnd(event: any) {
+        this.gameEndEvent.subscribe(event)
+    }
+
+    // exportBodies(): any {
+    //     return {
+    //         players : this.players.map(p => JSON.stringify(p.body)),
+    //         obstacles : this.obstacles.map(o => JSON.stringify(o)),
+    //         ball: JSON.stringify(this.ball),
+    //     }
+    // }
+
     public get world(): Composite {
         return this.engine.world;
     }
@@ -188,5 +215,9 @@ export class Game {
     
     public get score(): number[] {
         return this._score;
+    }
+
+    public get id():number {
+        return this._id;
     }
 }

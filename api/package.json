@@ -21,8 +21,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@types/matter-js": "^0.18.2",
     "random": "^4.1.0",
+    "@types/matter-js": "^0.18.2",
     "matter-js": "^0.18.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",

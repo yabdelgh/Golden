@@ -7,7 +7,7 @@ import { APlayer, PlayerMove } from "./APlayer";
 export class AIPlayer extends APlayer {
 
     public constructor(body: Body) { 
-        super(body);
+        super(body, 0);
     }
     
     public update_game_state(state: GameState): void {

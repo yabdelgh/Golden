@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import { Engine, Render, Vector } from "matter-js";
 import React, { useEffect, useRef, useState } from "react";
 import { AppState } from "../../Context/AppProvider";
 import PlayerProfile from "../PlayerProfile";
@@ -30,7 +31,12 @@ const ball = {
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  let divRef: any = React.createRef();
+
   const { user, users } = AppState();
+
+  // let engine:Engine
+  // let render:Render
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -76,6 +82,8 @@ const Game = () => {
 
   const { socket } = AppState();
   const [data, setData] = useState();
+  const [engine, setEngine]:any = useState();
+  const [render, setRender]:any = useState();
 
   useEffect(() => {
     socket.on("data", setData(data));
@@ -84,21 +92,82 @@ const Game = () => {
     };
   }, []);
 
-  return (
-    <Box m="10%" display="flex">
-      {user && <PlayerProfile target={user} color="#013BB7" />}
-      <Box height="fit-content" ml="10px" mr="10px">
-        <canvas
+  useEffect(() => {
+
+    console.log("engine or render", engine, render)
+    let constEngine
+    let constRender
+    if (!engine){
+      constEngine = Engine.create({
+      enableSleeping: false,
+      gravity: Vector.create(0, 0),
+      velocityIterations: 100,
+      positionIterations: 100,
+    });
+    setEngine(constEngine);
+    console.log("engine " ,constEngine)
+  }
+    if (!render) {
+        constRender = Render.create({
+        element: divRef.current,
+        engine: constEngine as Engine,
+        options: {
+          width: 500,
+          height: 600,
+          // showStats: true,
+          // showPerformance: true,
+          background: "black",
+          wireframes: true,
+          // showAngleIndicator:true,
+        },
+      });
+      Render.run(render);
+      setRender(constRender)
+    }
+    console.log("userEffect")
+
+    // render.canvas.style.transform = "scale(2,2)";
+    // render.bounds.min.x = 10;
+
+
+    // setInterval(() => { Body.setVelocity(ball, Vector.create(Math.sign(ball.velocity.x) * 5, ball.velocity.y)); console.log(ball.velocity)}, 100)
+    // document.addEventListener("keydown", (e) => {
+    //   if (e.code === KeyboardCodes.ArrowUp) player.start_moving(PlayerMove.Up);
+    //   if (e.code === KeyboardCodes.ArrowDown)
+    //     player.start_moving(PlayerMove.Down);
+    // });
+
+    // document.addEventListener("keyup", (e) => {
+    //   if (
+    //     e.code === KeyboardCodes.ArrowUp ||
+    //     e.code === KeyboardCodes.ArrowDown
+    //   )
+    //     player.stop_moving();
+    // });
+
+    return () => {
+      // Render.stop(render);
+      //   render.clear(engine);
+    };
+  });
+
+  return <div id="render" ref={divRef} />;
+  
+  // return (
+  //   <Box m="10%" display="flex">
+  //     {user && <PlayerProfile target={user} color="#013BB7" />}
+  //     <Box height="fit-content" ml="10px" mr="10px">
+  //       <canvas
           
-          id="ping-pong"
-          width="700"
-          height="500"
-          ref={canvasRef}
-        ></canvas>
-      </Box>
-      {users && <PlayerProfile target={users[0]} color="#df0225" />}
-    </Box>
-  );
+  //         id="ping-pong"
+  //         width="700"
+  //         height="500"
+  //         ref={canvasRef}
+  //       ></canvas>
+  //     </Box>
+  //     {users && <PlayerProfile target={users[0]} color="#df0225" />}
+  //   </Box>
+  // );
 };
 
 export default Game;

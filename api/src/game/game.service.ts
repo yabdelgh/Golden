@@ -8,7 +8,7 @@ import { Player } from './Core/Players/player';
 
 @Injectable()
 export class GameService {
-    games: Game[] = []; // use map instead
+    games: Map<number, Game> = new Map<number, Game>; // use map instead
     constructor(private readonly prismaService: PrismaService) { }
 
     async getHistory(userId: number) {
@@ -92,11 +92,22 @@ export class GameService {
 
     newGame(players: mySocket[], padelType: PadelType, arenaType: ArenaType) {
         const gamePlayers = this.create_players(players, padelType);
-        const game = new Game({ball:Bodies.circle(0,0, 10),
+        const game = new Game({
+                        id:0,
+                        ball:Bodies.circle(0,0, 10),
                         players: gamePlayers,
                         obstacles:[],
                         size: Vector.create(200, 500),
                         scale:1})
-        this.games.push(game)
+        this.games.set(game.id, game)
+        game.ball
+        game.subscribeGameEnd((game: Game)=> {
+            // set the status and teh score to the database
+            // remove the game from the map
+            this.games.delete(game.id)
+        })
+    }
+    getGame(id: number): Game | undefined{
+        return this.games.get(id)
     }
 }

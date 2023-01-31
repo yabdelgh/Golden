@@ -4,6 +4,8 @@
   "private": true,
   "proxy": "http://localhost:3333",
   "dependencies": {
+    "@types/matter-js": "^0.18.2",
+    "matter-js": "^0.18.0",
     "@chakra-ui/react": "^2.3.7",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",

@@ -100,7 +100,7 @@ export class GameService {
                         size: Vector.create(200, 500),
                         scale:1})
         this.games.set(game.id, game)
-        game.ball
+        // game.ball
         game.subscribeGameEnd((game: Game)=> {
             // set the status and teh score to the database
             // remove the game from the map

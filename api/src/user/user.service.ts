@@ -2,10 +2,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RoomStatus } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private configService: ConfigService) { }
 
   async validateUser(user: any) {
     return await this.prisma.user.upsert({
@@ -211,16 +212,20 @@ export class UserService {
     return user;
   }
 
-  async upload(file, user): Promise<any> {
-    const { id } = user;
-    const us = await this.prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        imageUrl: '/uploads/' + file.filename,
-      },
-    });
-    return us.imageUrl;
+  // async upload(file, user): Promise<any> {
+  //   const { id } = user;
+  //   const us = await this.prisma.user.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       imageUrl: '/uploads/' + file.filename,
+  //     },
+  //   });
+  //   return us.imageUrl;
+  // }
+
+  async uploadAvatar(userId: number, avatar: Express.Multer.File) {
+    return {"message": "Uploaded successfully"};
   }
 }

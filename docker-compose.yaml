@@ -11,8 +11,8 @@ services:
       - POSTGRES_DB=nest
     ports:
       - "5432:5432"
-    volumes:
-      - ./db-data:/var/lib/postgresql/data
+    # volumes:
+    #   - ./db-data:/var/lib/postgresql/data
 
   api:
     container_name: api
@@ -23,6 +23,7 @@ services:
       - db
     volumes:
       - ./api/src:/app/src
+      - ./avatars:/avatars
   
   front:
     container_name: front

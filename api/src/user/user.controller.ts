@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Request,
   Body,
   //UploadedFile,
  // UseInterceptors,
@@ -12,6 +11,9 @@ import {
   Req,
   Patch,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Put,
 } from '@nestjs/common';
 //import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
@@ -20,6 +22,9 @@ import { UserService } from './user.service';
 //import { diskStorage } from 'multer';
 import { UserDto } from './dtos/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express'
+import { uploadAvatarConfig } from './avatar.config';
 
 /*export const storage = {
   storage: diskStorage({
@@ -45,6 +50,11 @@ export class UserController {
     return ret;
   }
 
+  @Put('avatar')
+  @UseInterceptors(FileInterceptor('avatar', uploadAvatarConfig))
+  async uploadAvatar(@Req() req, @UploadedFile() avatar : Express.Multer.File) {
+    return this.userservice.uploadAvatar(req.user.id, avatar);
+  }
  /* @Post()
   async createUser(@Body() user) {
     return this.userservice.createUser(user);

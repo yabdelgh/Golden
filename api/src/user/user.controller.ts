@@ -23,7 +23,7 @@ import { UserService } from './user.service';
 import { UserDto } from './dtos/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express'
+import { Express, Request } from 'express'
 import { uploadAvatarConfig } from './avatar.config';
 
 /*export const storage = {
@@ -52,8 +52,8 @@ export class UserController {
 
   @Put('avatar')
   @UseInterceptors(FileInterceptor('avatar', uploadAvatarConfig))
-  async uploadAvatar(@Req() req, @UploadedFile() avatar : Express.Multer.File) {
-    return this.userservice.uploadAvatar(req.user.id, avatar);
+  async uploadAvatar(@Req() req: Request, @UploadedFile() avatar : Express.Multer.File) {
+    return this.userservice.uploadAvatar(req, avatar);
   }
  /* @Post()
   async createUser(@Body() user) {

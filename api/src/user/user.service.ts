@@ -1,12 +1,15 @@
-
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RoomStatus } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private configService: ConfigService) { }
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {}
 
   async validateUser(user: any) {
     return await this.prisma.user.upsert({
@@ -21,8 +24,8 @@ export class UserService {
       select: {
         id: true,
         isTwoFactorAuthenticationEnabled: true,
-      }
-    })
+      },
+    });
   }
 
   async createUser(user: any) {
@@ -40,7 +43,7 @@ export class UserService {
       select: {
         id: true,
         login: true,
-        email: true
+        email: true,
       },
     });
     return user;
@@ -54,8 +57,8 @@ export class UserService {
         login: true,
         email: true,
         imageUrl: true,
-        isTwoFactorAuthenticationEnabled: true
-      }
+        isTwoFactorAuthenticationEnabled: true,
+      },
     });
     /* if (user === null)
       throw new BadRequestException('user not found');*/
@@ -64,12 +67,12 @@ export class UserService {
 
   async getUserSecret(id: number): Promise<string> {
     const user = await this.prisma.user.findFirst({
-      where: { id }
+      where: { id },
     });
     return user.twoFactorAuthenticationCode;
   }
-  
-  async getUsers(id: number) { 
+
+  async getUsers(id: number) {
     const users = await this.prisma.user.findMany({
       where: {
         OR: [
@@ -80,37 +83,36 @@ export class UserService {
                   NOT: { status: RoomStatus.Deleted },
                   RoomUsers: {
                     some: {
-                      userId: id
-                    }
-                  }
-                }
-              }
-            }
+                      userId: id,
+                    },
+                  },
+                },
+              },
+            },
           },
           {
             FriendTo: {
               some: {
-                user1Id: id
-              }
-            }
+                user1Id: id,
+              },
+            },
           },
           {
             FriendWith: {
               some: {
-                user1Id: id
-              }
-            }
+                user1Id: id,
+              },
+            },
           },
-
         ],
-        NOT: {id}
+        NOT: { id },
       },
       select: {
         id: true,
         login: true,
         email: true,
         imageUrl: true,
-      }
+      },
     });
     return users;
   }
@@ -188,13 +190,13 @@ export class UserService {
         OR: [
           {
             user1Id,
-            user2Id
+            user2Id,
           },
           {
             user1Id: user2Id,
-            user2Id: user1Id
-          }
-        ]
+            user2Id: user1Id,
+          },
+        ],
       },
     });
     return user;
@@ -225,7 +227,17 @@ export class UserService {
   //   return us.imageUrl;
   // }
 
-  async uploadAvatar(userId: number, avatar: Express.Multer.File) {
-    return {"message": "Uploaded successfully"};
+  async uploadAvatar(req: Request, avatar: Express.Multer.File) {
+    const userId = (req.user as { id: number })?.id;
+    // TODO: remove old avatar
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        imageUrl: `${this.configService.get('AVATARS_URL')}/${avatar.filename}`,
+      },
+    });
+    return { message: 'Updated successfully' };
   }
 }

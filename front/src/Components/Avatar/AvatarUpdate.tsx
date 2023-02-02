@@ -12,7 +12,8 @@ const AvatarPreview = ({ username, link }: any) => {
       alignItems={"center"}
       width={"350px"}
       height={"500px"}
-      style={{ marginLeft: "500px" }}
+      margin={"auto"}
+      padding={"auto"}
       fontFamily="Inter"
     >
       <Text fontWeight={"bold"} fontSize={"32px"} mb={"2rem"}>Change Avatar</Text>

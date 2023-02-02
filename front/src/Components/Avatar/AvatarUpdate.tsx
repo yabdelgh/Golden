@@ -1,17 +1,33 @@
 import { Box, Button, Image, Text } from "@chakra-ui/react";
 import { useState, useRef } from "react";
+// import { axios } from "axios";
 
 const AvatarPreview = ({ username, link }: any) => {
   const [avatar, setAvatar] = useState(link);
+  const [file, setFile] = useState(null);
+  const [fileInServer, setFileInServer] = useState(null);
   const avatarRef = useRef<HTMLInputElement>(null);
 
   const updateAvatar = (e: any) => {
     const file = e.target.files[0];
+    setFile(file);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
       setAvatar(reader.result as string);
     };
+  };
+
+  const saveAvatar = async () => {
+      if (!file || file === fileInServer) return;
+    const formData = new FormData();
+    formData.append("avatar", file);
+    setFileInServer(file);
+    // await axios.post("http://localhost:3333/api/user/avatar", formData, {
+    //     headers: {
+    //         "Content-Type": "multipart/form-data",
+    //     },
+    // });
   };
 
   return (
@@ -53,7 +69,13 @@ const AvatarPreview = ({ username, link }: any) => {
         >
           Choose Avatar
         </Button>
-        <Button width="70%" m="1rem" bg="green.300">
+        <Button
+          width="70%"
+          m="1rem"
+          bg="green.300"
+          isDisabled={!file || file === fileInServer}
+          onClick={saveAvatar}
+        >
           Save
         </Button>
       </Box>

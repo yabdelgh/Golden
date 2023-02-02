@@ -29,8 +29,6 @@ export class GameService {
         (userId === ele.blueCornerId &&
           ele.blueCornerScore > ele.redCornerScore),
     ).length;
-    console.log(nbrOfGames);
-    console.log(nbrOfWins);
     return { Games: nbrOfGames, Wins: nbrOfWins };
   }
 

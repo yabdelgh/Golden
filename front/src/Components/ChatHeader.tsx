@@ -89,6 +89,7 @@ const ChatHeader = () => {
       justifyContent="space-around"
       alignItems="center"
       position="fixed"
+      minWidth={'700px'}
       top='0'
       left='0'
     >

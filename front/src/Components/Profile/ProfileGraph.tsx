@@ -1,10 +1,8 @@
-import { useEffect } from "react";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { Box, Text } from "@chakra-ui/react";
-import { AppState } from "../../Context/AppProvider";
-import axios from "axios";
+import { TbTrendingUp } from "react-icons/tb";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -57,12 +55,14 @@ export default function ProfileGraph({ wins, games }: any) {
 
   return (
     <Box
-      width="100%"
-      height="600px"
-      display="flex"
-      flexDir="column"
-      alignItems="center"
-      justifyContent="space-between"
+          width={{base: '100%', xl:'49%'}}
+          h={{base: '600px', xl: '48%'}}
+          display="flex"
+          flexDir="column"
+          alignItems="center"
+          borderRadius='lg'
+          justifyContent={'center'}
+          bg='white'
     >
       <Text
         m="10px"
@@ -74,6 +74,8 @@ export default function ProfileGraph({ wins, games }: any) {
       >
         Performance Overview
       </Text>
+      {(games !== undefined  && games !== 0) ? 
+
       <Box width="100%" height="90%" display="flex" justifyContent="flex-end">
         <Box
           ml="30px"
@@ -109,6 +111,20 @@ export default function ProfileGraph({ wins, games }: any) {
           <Pie options={options} data={data} />
         </Box>
       </Box>
-    </Box>
+    :
+        <Box
+          height='90%'
+          color="gray.400"
+          display="flex"
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center"
+          fontSize={'50px'}
+        >
+          <TbTrendingUp size='100px' />
+          <Text fontSize="25px" mt='50px'>You have no Games for now.</Text>
+        </Box>
+      }
+    </Box> 
   );
 }

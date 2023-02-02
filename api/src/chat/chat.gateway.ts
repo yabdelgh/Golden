@@ -431,12 +431,10 @@ export class ChatGateway
     this.matchMaker.subscribe(Number(socket.user.id));
     const pairing = this.matchMaker.pairing();
     if (pairing) {
-      console.log(pairing);
       socket.user.inGame = true;
       this.server.in([...socket.rooms]).emit('inGame', { id: socket.user.id, inGame: true });
       const opponent: any = await this.server.in(`${pairing[0]}`).fetchSockets();
       opponent[0].user.inGame = true;
-      console.log(opponent)
       this.server
         .in([...opponent[0].rooms])
         .emit('inGame', { id: pairing[0], ingame: true });

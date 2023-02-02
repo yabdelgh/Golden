@@ -5,7 +5,6 @@ import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
 import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
-import FriendsPage from "./Components/Profile/Profile";
 import { Friend, Msg, User, Room, RoomUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
 import ProfilePage from "./Pages/ProfilePage";
@@ -200,6 +199,7 @@ function App() {
     });
 
     socket.on("friends", (payload: Friend[]) => {
+      console.log(payload);
       setFriends(payload);
     });
 
@@ -330,10 +330,6 @@ function App() {
         <Route
           path="/chat"
           element={user.login ? <ChatPage /> : <LoginPage />}
-        />
-        <Route
-          path="/friends"
-          element={user.login ? <FriendsPage /> : <LoginPage />}
         />
         <Route
           path="/profile"

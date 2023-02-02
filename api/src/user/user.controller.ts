@@ -1,16 +1,8 @@
 import {
   Controller,
   Get,
-  Post,
-  Request,
-  Body,
-  //UploadedFile,
- // UseInterceptors,
   Query,
   ParseIntPipe,
-  Delete,
-  Req,
-  Patch,
   UseGuards,
 } from '@nestjs/common';
 //import { FileInterceptor } from '@nestjs/platform-express';
@@ -41,7 +33,6 @@ export class UserController {
   @Get()
   async getUser(@Query('id', ParseIntPipe) id: number) {
     const ret = await this.userservice.getUser(id);
-    console.log(ret);
     return ret;
   }
 

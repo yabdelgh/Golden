@@ -1,6 +1,6 @@
-import { Box, Button, Image, Text } from "@chakra-ui/react";
+import { Box, Button, cookieStorageManager, Image, Text } from "@chakra-ui/react";
 import { useState, useRef } from "react";
-// import { axios } from "axios";
+import axios from "axios";
 
 const AvatarPreview = ({ username, link }: any) => {
   const [avatar, setAvatar] = useState(link);
@@ -19,15 +19,16 @@ const AvatarPreview = ({ username, link }: any) => {
   };
 
   const saveAvatar = async () => {
-      if (!file || file === fileInServer) return;
+    if (!file || file === fileInServer) return;
     const formData = new FormData();
     formData.append("avatar", file);
+    await axios.put("http://localhost:3333/api/user/avatar", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+      withCredentials: true
+    });
     setFileInServer(file);
-    // await axios.post("http://localhost:3333/api/user/avatar", formData, {
-    //     headers: {
-    //         "Content-Type": "multipart/form-data",
-    //     },
-    // });
   };
 
   return (

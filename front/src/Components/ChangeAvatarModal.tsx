@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import AvatarPreview from "./Avatar/AvatarUpdate";
 
-const ChangeAvatarModal = ({ children }: any) => {
+const ChangeAvatarModal = ({ children, username, link }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -38,7 +38,7 @@ const ChangeAvatarModal = ({ children }: any) => {
       <Modal size="md" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-            <AvatarPreview username="4yuub" link="https://bit.ly/dan-abramov" />
+            <AvatarPreview username={username} link={link} />
         </ModalContent>
       </Modal>
     </Box>

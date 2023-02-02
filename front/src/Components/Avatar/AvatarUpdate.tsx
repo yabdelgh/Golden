@@ -2,8 +2,18 @@ import { Box, Button, Image, Text } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 
 const AvatarPreview = ({ username, link }: any) => {
-  const [avatar, serAvatar] = useState(link);
+  const [avatar, setAvatar] = useState(link);
   const avatarRef = useRef<HTMLInputElement>(null);
+
+  const updateAvatar = (e: any) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setAvatar(reader.result as string);
+    };
+  };
+
   return (
     <Box
       display={"flex"}
@@ -16,7 +26,9 @@ const AvatarPreview = ({ username, link }: any) => {
       padding={"auto"}
       fontFamily="Inter"
     >
-      <Text fontWeight={"bold"} fontSize={"32px"} mb={"2rem"}>Change Avatar</Text>
+      <Text fontWeight={"bold"} fontSize={"32px"} mb={"2rem"}>
+        Change Avatar
+      </Text>
       <Image borderRadius="100%" boxSize="200px" src={avatar} alt={username} />
       <Box
         display="flex"
@@ -24,7 +36,13 @@ const AvatarPreview = ({ username, link }: any) => {
         width={"100%"}
         mt="2rem"
       >
-        <input type="file" hidden ref={avatarRef} />
+        <input
+          type="file"
+          accept="image/*"
+          hidden
+          ref={avatarRef}
+          onChange={updateAvatar}
+        />
         <Button
           width="70%"
           m="1rem"

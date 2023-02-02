@@ -1,8 +1,10 @@
 import { Box } from "@chakra-ui/react";
-import { Engine, Render, Vector } from "matter-js";
+import { Bodies, Body, Composite, Engine, Render, Runner, Vector } from "matter-js";
 import React, { useEffect, useRef, useState } from "react";
+import { GameData, GameState, GameBodies } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
-import PlayerProfile from "../PlayerProfile";
+import _ from "lodash";
+import { removeNulls } from "../../Utils/cleanObject";
 
 const FPS = 60;
 const PLAYER_WIDTH = 12;
@@ -38,93 +40,72 @@ const Game = () => {
   // let engine:Engine
   // let render:Render
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
-    const ctx = canvas.getContext("2d");
-    if (ctx === null) return;
-    ctx.fillStyle = "white";
-    const drawRect = async (
-      x: number,
-      y: number,
-      width: number,
-      height: number
-    ) => {
-      ctx.fillRect(x, y, width, height);
-    };
-    const drawCircle = async (x: number, y: number, radius: number) => {
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.fill();
-    };
-
-    async function render() {
-      drawCircle(ball.x, ball.y, ball.radius);
-      drawRect(player1.x - 2, player1.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-      drawRect(player2.x + 1, player2.y, PLAYER_WIDTH, PLAYER_HEIGHT);
-    }
-
-    const game = async () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      render();
-    };
-
-    document.onkeydown = (event) => {
-      if (event.key === "ArrowUp") {
-        player1.y -= 10;
-      } else if (event.key === "ArrowDown") {
-        player1.y += 10;
-      }
-    };
-    setInterval(game, 1000 / FPS);
-  }, []);
-
   const { socket } = AppState();
-  const [data, setData] = useState();
   const [engine, setEngine]:any = useState();
   const [render, setRender]:any = useState();
+  const [gameState, setGameState] = useState<GameBodies>();
 
   useEffect(() => {
-    socket.on("data", setData(data));
+    if (render) {
+      socket.on("gameData", (serialized: any) => {
+        const data: GameData = eval(`(${serialized})`)
+        const players =  data.players.map(p => Body.create(removeNulls(p)))
+        const obstacles =  data.obstacles.map(o => Body.create(removeNulls(o)))
+        const ball = Body.create(removeNulls(data.ball))
+        engine && Composite.add(engine.world, [...players, ...obstacles, ball])
+        setGameState({players, obstacles, ball});
+      });
+      socket.emit("getGameData", {})
+      socket.on("Game0", (data:GameState) => {
+        console.log(data)
+        if (gameState) {
+          Body.setPosition(gameState.ball, data.ball)
+          Body.setPosition(gameState.players[0], data.player1)
+          Body.setPosition(gameState.players[1], data.player2)
+        }
+      })
+    }
+    else {
+      console.log("game data not received")
+    }
+
     return () => {
-      socket.removeAllListeners("data");
+      socket.removeAllListeners("data", render);
     };
-  }, []);
+  }, [render]);
 
   useEffect(() => {
 
-    console.log("engine or render", engine, render)
     let constEngine
     let constRender
-    if (!engine){
-      constEngine = Engine.create({
-      enableSleeping: false,
-      gravity: Vector.create(0, 0),
-      velocityIterations: 100,
-      positionIterations: 100,
-    });
-    setEngine(constEngine);
-    console.log("engine " ,constEngine)
-  }
+    if (!engine) {
+        constEngine = Engine.create({
+        enableSleeping: false,
+        gravity: Vector.create(0, 0),
+        velocityIterations: 100,
+        positionIterations: 100,
+      });
+      setEngine(constEngine);
+      console.log("engine " ,constEngine)
+    }
     if (!render) {
         constRender = Render.create({
         element: divRef.current,
         engine: constEngine as Engine,
         options: {
           width: 500,
-          height: 600,
+          height: 500,
           // showStats: true,
           // showPerformance: true,
           background: "black",
-          wireframes: true,
+          wireframes: false,
           // showAngleIndicator:true,
         },
       });
-      Render.run(render);
       setRender(constRender)
+      Render.run(constRender);
+      // Runner.start(Runner.create(), constEngine as Engine)
     }
-    console.log("userEffect")
 
     // render.canvas.style.transform = "scale(2,2)";
     // render.bounds.min.x = 10;
@@ -149,7 +130,7 @@ const Game = () => {
       // Render.stop(render);
       //   render.clear(engine);
     };
-  });
+  }, []);
 
   return <div id="render" ref={divRef} />;
   

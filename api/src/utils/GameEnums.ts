@@ -1,4 +1,4 @@
-enum PadelType {
+export enum PadelType {
     Simple,
     Khobza,
     HalfCircle,
@@ -6,7 +6,7 @@ enum PadelType {
     Jebaniya,
 }
 
-enum ArenaType {
+export enum ArenaType {
     Simple,
     Crazy,
     Unpredictable,

@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Game, GameState } from './Core/game';
 import { APlayer } from './Core/Players/APlayer';
 import { Player } from './Core/Players/player';
+import { PadelType, ArenaType } from '../utils/GameEnums'
 
 @Injectable()
 export class GameService {
@@ -77,7 +78,8 @@ export class GameService {
        // create player by setting the id for each player and set the callback for sending data to the client
        // should create a padel factory and use it like that: PadelFactory.create(padelType): body
        return players.map(player => {
-           const padel = Bodies.rectangle(0,0, 100, 300)
+           const padel = Bodies.rectangle(0,0, 20, 100)
+           console.log("player-socket", player.user)
            const p =  new Player(padel, player.user.id)
            p.GameUpdateCallback = (state:GameState) => {
                 player.emit("game_update", state)
@@ -86,27 +88,29 @@ export class GameService {
        })
     }
 
-    newSimpleGame(players: mySocket[]) {
-        this.newGame(players, PadelType.Simple, ArenaType.Simple);
+    newSimpleGame(players: mySocket[]): Game {
+        return this.newGame(players, PadelType.Simple, ArenaType.Simple);
     }
 
-    newGame(players: mySocket[], padelType: PadelType, arenaType: ArenaType) {
+    newGame(players: mySocket[], padelType: PadelType, arenaType: ArenaType): Game {
         const gamePlayers = this.create_players(players, padelType);
         const game = new Game({
                         id:0,
                         ball:Bodies.circle(0,0, 10),
                         players: gamePlayers,
                         obstacles:[],
-                        size: Vector.create(200, 500),
+                        size: Vector.create(500, 500),
                         scale:1})
         this.games.set(game.id, game)
-        game.ball
+        // game.ball
         game.subscribeGameEnd((game: Game)=> {
             // set the status and teh score to the database
             // remove the game from the map
             this.games.delete(game.id)
         })
+        return game
     }
+    
     getGame(id: number): Game | undefined{
         return this.games.get(id)
     }

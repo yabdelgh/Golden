@@ -1,14 +1,14 @@
 import { Position } from "./common/position";
 import { Shape } from "./shapes/shape";
 import { APlayer, PlayerMove } from "./Players/APlayer";
-import { Observable, Subject } from "rxjs";
+import { Observable, retry, Subject } from "rxjs";
 import { Arena } from "./Arena";
 import Matter, { Engine, Events, Pair, Runner, Vector } from "matter-js"
 import { Bodies, World, IWorldDefinition, Body, Composite } from "matter-js"
 import { GetBodySize } from "./common/utils/matter-js";
-// import random from "random";
+import {Random} from "random-js";
 
-let random
+const random = new Random();
 // import('random').then(randomModule => {
 //     random = randomModule
 // });
@@ -37,9 +37,9 @@ export interface GameState {
 
 export class Game {
     private _id;
-    private ball: Body;
-    private players: APlayer[];
-    private obstacles: Body[]
+    private _ball: Body;
+    private _players: APlayer[];
+    private _obstacles: Body[]
     private size: Vector;
     private _score: number[];
     private status: GameStatus = GameStatus.Initiating;
@@ -54,11 +54,11 @@ export class Game {
 
     constructor({ id, ball, players, obstacles, size, scale }: GameParams) {
         this._id = id;
-        this.ball = ball
-        this.players = players
+        this._ball = ball
+        this._players = players
         this.size = size
-        this.obstacles = obstacles
-        this._score = Array(this.players.length).fill(0);
+        this._obstacles = obstacles
+        this._score = Array(this._players.length).fill(0);
         this.ball_speed = Vector.create(5, -5)
 
         this._engine = Engine.create({
@@ -81,26 +81,26 @@ export class Game {
     }
 
     private subscribe_players_to_game_event() {
-        for (let player of this.players) {
+        for (let player of this._players) {
             this.subscribe(player.update_game_state.bind(player))
         }
     }
 
     private add_players_to_world() {
 
-        this.players[0].player_side = PlayerMove.Left
-        this.players[0].game_size = this.size
+        this._players[0].player_side = PlayerMove.Left
+        this._players[0].game_size = this.size
 
-        this.players[1].player_side = PlayerMove.Right
-        this.players[1].game_size = this.size
+        this._players[1].player_side = PlayerMove.Right
+        this._players[1].game_size = this.size
 
-        Composite.add(this.world, this.players.map(p => p.body))
-        Composite.add(this.world, this.players.map(p => p.goal))
+        Composite.add(this.world, this._players.map(p => p.body))
+        Composite.add(this.world, this._players.map(p => p.goal))
     }
 
     private add_obstacles_to_world() {
-        Composite.add(this.world, this.obstacles)
-        this.obstacles.forEach(o => {
+        Composite.add(this.world, this._obstacles)
+        this._obstacles.forEach(o => {
             Body.setStatic(o, true)
             o.render.fillStyle = "white"
             o.restitution = 1
@@ -108,16 +108,16 @@ export class Game {
     }
 
     private add_ball_to_world() {
-        Body.setPosition(this.ball, Vector.create(this.size.x / 2, this.size.y / 2))
-        Body.setVelocity(this.ball, this.ball_speed)
-        Body.setInertia(this.ball, Infinity)
-        this.ball.friction = 0;
-        this.ball.frictionStatic = 0;
-        this.ball.frictionAir = 0;
-        this.ball.restitution = 1
-        Composite.add(this.world, this.ball)
+        Body.setPosition(this._ball, Vector.create(this.size.x / 2, this.size.y / 2))
+        Body.setVelocity(this._ball, this.ball_speed)
+        Body.setInertia(this._ball, Infinity)
+        this._ball.friction = 0;
+        this._ball.frictionStatic = 0;
+        this._ball.frictionAir = 0;
+        this._ball.restitution = 1
+        Composite.add(this.world, this._ball)
         Events.on(this.engine, "collisionStart", () => {
-            console.log("ball collided start ", this.ball.velocity)
+            console.log("ball collided start ", this._ball.velocity)
             // this.ball.torque = 0
             // Body.setAngularVelocity(this.ball, 0)
             // Body.setAngle(this.ball, 0)
@@ -125,10 +125,10 @@ export class Game {
         Events.on(this.engine, "collisionEnd", (event) => {
             this.update_game_score(event.pairs)
             console.log("score", this._score)
-            console.log("ball collided end", this.ball.velocity)
-            const x = this.ball.velocity.x * 1.02
-            const y = this.ball.velocity.y * 1.02
-            Body.setVelocity(this.ball, Vector.create(x, y))
+            console.log("ball collided end", this._ball.velocity)
+            const x = this._ball.velocity.x * 1.02
+            const y = this._ball.velocity.y * 1.02
+            Body.setVelocity(this._ball, Vector.create(x, y))
         })
     }
 
@@ -138,8 +138,8 @@ export class Game {
     }
 
     private update_game_score(pair: Pair[]) {
-        const b1 = this.players[0].goal
-        const b2 = this.players[1].goal
+        const b1 = this._players[0].goal
+        const b2 = this._players[1].goal
 
         if (pair.some((p) => p.bodyA === b1 || p.bodyB === b1)) {
             this._score[0] += 1;
@@ -152,28 +152,28 @@ export class Game {
         this.rounds--;
         if (this.rounds == 0) {
             this.gameEndEvent.next({
-                ball: this.ball.position,
-                player1: this.players[0].body.position,
-                player2: this.players[1].body.position,
+                ball: this._ball.position,
+                player1: this._players[0].body.position,
+                player2: this._players[1].body.position,
             });
             this.stop();
         }
     }
 
     private set_ball_at_start(direction: PlayerMove) {
-        Body.setPosition(this.ball, Vector.create(this.size.x / 2, random.float(50, this.size.y - 50)))
+        Body.setPosition(this._ball, Vector.create(this.size.x / 2, random. real(50, this.size.y - 50)))
         if (direction === PlayerMove.Left)
-            Body.setVelocity(this.ball, Vector.create(5, random.float(-5, 5)))
+            Body.setVelocity(this._ball, Vector.create(5, random.real(-5, 5)))
         else if (direction === PlayerMove.Right)
-            Body.setVelocity(this.ball, Vector.create(-5, random.float(-5, 5)))
+            Body.setVelocity(this._ball, Vector.create(-5, random.real(-5, 5)))
     }
 
     private emit_game_state(event: any) {
         // console.log(this, event)
         this.emiter.next({
-            ball: this.ball.position,
-            player1: this.players[0].body.position,
-            player2: this.players[1].body.position,
+            ball: this._ball.position,
+            player1: this._players[0].body.position,
+            player2: this._players[1].body.position,
         });
     }
 
@@ -186,7 +186,7 @@ export class Game {
     }
 
     get_player(player_id: number): APlayer {
-        return this.players[player_id];
+        return this._players[player_id];
     }
 
     subscribe(event: any): void {
@@ -219,5 +219,17 @@ export class Game {
 
     public get id():number {
         return this._id;
+    }
+
+    public get  players(): APlayer[] {
+        return this._players;
+    }
+
+    public get obstacles(): Body[] {
+        return this._obstacles;
+    }
+
+    public get ball(): Body {
+        return this._ball;
     }
 }

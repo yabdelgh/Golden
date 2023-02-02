@@ -1,3 +1,5 @@
+import { Body, Vector } from "matter-js"
+
 export type Friend = {
     user1Id: number,
     user2Id: number,
@@ -37,4 +39,22 @@ export type User = {
     imageUrl?: string,
     isOnline: boolean,
     inGame: boolean
+}
+
+export type GameData = {
+    players: Object[],
+    obstacles: Object[],
+    ball: Object,
+}
+
+export type GameState = {
+    ball: Vector;
+    player1: Vector;
+    player2: Vector;
+}
+
+export type GameBodies = {
+    players:Body[];
+    obstacles:Body[];
+    ball:Body;
 }

@@ -1,11 +1,8 @@
 import {
   Box,
   Button,
-  IconButton,
   Input,
   InputGroup,
-  InputLeftElement,
-  InputRightElement,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -15,17 +12,15 @@ import { AiFillMessage } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { Room } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
-import { IoSend } from "react-icons/io5";
-import { TfiFaceSmile } from "react-icons/tfi";
-import { BsFillMicFill } from "react-icons/bs";
 import { FcIdea } from "react-icons/fc";
 import { useState } from "react";
 
 const MessageButton = ({ target, icon }: any) => {
-  const { user, rooms, setSelectedRoom, socket } = AppState();
+  const { rooms, setSelectedRoom, socket } = AppState();
   const [isLoading, setIsLoading] = useState(false);
   const [msg, setMsg] = useState('hello');
   const navigate = useNavigate();
+  const {user} = AppState();
   const message = () => {
     const room: Room = rooms.find((object: Room) => {
       return object.name === target.login && !object.isGroupChat;
@@ -42,7 +37,6 @@ const MessageButton = ({ target, icon }: any) => {
 
   const button = icon ? (
     <Button
-      color="teal"
       variant="unstyled"
       display={user.id === target.id ? "none" : "flex"}
       flexDir="column"
@@ -55,7 +49,6 @@ const MessageButton = ({ target, icon }: any) => {
     </Button>
   ) : (
     <Button
-      bg="teal"
       height="35px"
       display={user.id === target.id ? "none" : "flex"}
       onClick={() => message()}
@@ -64,22 +57,22 @@ const MessageButton = ({ target, icon }: any) => {
     </Button>
   );
   return (
-    <Popover gutter={-182} isLazy>
+    <Popover gutter={-100} isLazy>
       {({ onClose }) => (
         <>
           <PopoverTrigger>{button}</PopoverTrigger>
           <PopoverContent
             fontFamily="work sans"
-            width="470px"
-            height="180px"
+            width={{base: '380px', md:'500px'}}
+            height="140px"
             bg="#E9EBEE"
           >
             <Box
               display="flex"
               alignItems={"center"}
               justifyContent="flex-start"
-              pl="45px"
-              pt="15px"
+              pl="15px"
+              pt="5px"
             >
               <FcIdea size="20px" />
               <Text fontSize="20px" ml="2px" color="gray.500">
@@ -97,14 +90,16 @@ const MessageButton = ({ target, icon }: any) => {
                 fontFamily={"Inter"}
                 fontWeight="bold"
                 placeholder="Type a message"
-                p="10px"
-                fontSize="18px"
+                p="15px"
+                color='gray.700'
+                fontSize="15px"
                 focusBorderColor="gray.200"
                 borderRadius="lg"
-                height="55px"
-                width="80%"
+                height="45px"
+                width="95%"
+                onBlur={e => {setMsg(e.target.value)}}
               />
-              <InputLeftElement height="100%" ml="7px">
+              {/* <InputLeftElement height="100%" ml="7px">
                 <IconButton
                   variant={"unstyled"}
                   aria-label="emoji"
@@ -117,9 +112,9 @@ const MessageButton = ({ target, icon }: any) => {
                   aria-label="mic"
                   icon={<BsFillMicFill size="25px" color="gray" />}
                 />
-              </InputRightElement>
+              </InputRightElement> */}
             </InputGroup>
-            <Box height="80px" display="flex" justifyContent={"flex-end"}>
+            <Box height="60px" display="flex" justifyContent={"flex-end"}>
               <Button
                 height="65%"
                 display={ isLoading ? 'none' : 'flex'}
@@ -127,10 +122,9 @@ const MessageButton = ({ target, icon }: any) => {
                 bg="gray.300"
                 onClick={onClose}
                 mr="15px"
+                fontSize='15px'
               >
-                <Text mr="7px" fontSize="20px" color="gray.600">
                   cancel
-                </Text>
               </Button>
               <Button
                 mr="20px"
@@ -141,11 +135,9 @@ const MessageButton = ({ target, icon }: any) => {
                 variant={"solid"}
                 colorScheme="teal"
                 onClick={send}
+                fontSize='15px'
               >
-                <Text mr="7px" fontSize="20px">
                   send
-                </Text>
-                <IoSend size="20px" />
               </Button>
             </Box>
           </PopoverContent>

@@ -54,11 +54,11 @@ const CreateGroupModal = ({ children }: any) => {
         <ModalOverlay />
         <ModalContent
           border="5px white solid"
-          borderRadius="15px"
+          borderRadius="lg"
           fontFamily="Inter"
         >
           <ModalHeader>
-            <Text>Create a new group</Text>
+            <Text fontWeight='bolder' color='gray'>Create a new group</Text>
           </ModalHeader>
           <ModalBody>
             <FormControl mb="5px">

@@ -31,7 +31,8 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
     const user = await this.userService.validateUser({
       id,
       login,
-      email,
+     email,
+
     });
     if (!user) throw new UnauthorizedException('connection failed');
     return user;

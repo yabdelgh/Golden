@@ -7,9 +7,6 @@ import {
  // UseInterceptors,
   Query,
   ParseIntPipe,
-  Delete,
-  Req,
-  Patch,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -46,7 +43,6 @@ export class UserController {
   @Get()
   async getUser(@Query('id', ParseIntPipe) id: number) {
     const ret = await this.userservice.getUser(id);
-    console.log(ret);
     return ret;
   }
 

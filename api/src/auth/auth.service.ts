@@ -24,8 +24,8 @@ export class AuthService {
     });
     res.cookie('access_token', token, { httpOnly: true });
     if (payload.authenticated)
-      res.redirect(this.configService.get<String>('FRONT_HOST'));
-    else res.redirect(this.configService.get<String>('FRONT_HOST_TWOFA'));
+      res.redirect(`${this.configService.get<String>('FRONT_HOST')}/Profile`);
+    else res.redirect(`${this.configService.get<String>('FRONT_HOST')}/twoFA`);
   }
 
   async authenticate(userId: number, res: any, code: string) {

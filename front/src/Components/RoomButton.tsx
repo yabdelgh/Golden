@@ -28,7 +28,6 @@ const RoomButton = ({ ele, onClose }: any) => {
         border="2px solid white"
         size="md"
         name={ele.name}
-        // src={ele.imageUrl}
       />
       <Text fontWeight={"bold"} ml="10px">
         {ele.name}

@@ -26,12 +26,12 @@ import {
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { RoomUser } from "../../types";
 import { getUserByName, thereIsSomeOneOnline } from "../Utils/rooms";
+import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2"
 const ChatBox = () => {
   const {
     user,
     setShowUP,
     socket,
-    showUP,
     users,
     selectedRoom,
     setSelectedRoom,
@@ -44,7 +44,7 @@ const ChatBox = () => {
   const sendMessage = () => {
     socket.emit("chatMsg", { roomId: selectedRoom.id, msg });
   };
-  
+
   const getUserName = (id: number) => {
     const ret = users.find((user: any) => {
       return user.id === id;
@@ -55,7 +55,7 @@ const ChatBox = () => {
 
   const isMember = (userId: number): boolean => {
     if (selectedRoom.isGroupChat)
-      return selectedRoom.RoomUsers.some((object: RoomUser) => 
+      return selectedRoom.RoomUsers.some((object: RoomUser) =>
         object.userId === userId && object.status === 'Member'
       )
     return true;
@@ -68,16 +68,21 @@ const ChatBox = () => {
       alignItems="center"
       justifyContent="space-between"
       flexDirection="column"
-      width='100%'
-      minWidth='400px'
-      ml={{base: 232, md: 362}}
+      width={{ base: 'calc(100% - 330px)', md: 'calc(100% - 460px)' }}
+      height='calc(100% - 80px)'
+      position="fixed"
+      top='70'
+      ml={{ base: '310px', md: '380px' }}
+      mr='10px'
+      borderRadius='lg'
       border="3px white solid"
-      bgColor="#E9EBEE"
+      bg='white'
+      minW='400px'
     >
       {selectedRoom ? (
         <>
           <Box
-            height='70px'
+            height='60px'
             pl="15px"
             display="flex"
             alignItems="center"
@@ -90,9 +95,10 @@ const ChatBox = () => {
           >
             <Box display="flex" alignItems="center">
               <Avatar
+                border='3px solid white'
                 bg="teal"
                 color="white"
-             //   borderRadius={"15px"}
+                //   borderRadius={"15px"}
                 name={selectedRoom.name}
                 src={
                   selectedRoom.isGroupChat ? undefined : getUserByName(users, selectedRoom.name)?.imageUrl
@@ -104,7 +110,7 @@ const ChatBox = () => {
                   <AvatarBadge boxSize="0.9em" bg="#FF0000" />
                 )}
               </Avatar>
-              <Text ml="18px">{selectedRoom.name}</Text>
+              <Text ml="15px">{selectedRoom.name}</Text>
             </Box>
             <Box
               display="flex"
@@ -148,11 +154,11 @@ const ChatBox = () => {
                   selectedRoom.isGroupChat
                     ? (setUsersList(!usersList) && setShowUP(undefined))
                     : setShowUP((value: any) => {
-                        if (value)
-                          return undefined 
-                        else
-                          return getUserByName(users, selectedRoom.name);
-                      })
+                      if (value)
+                        return undefined
+                      else
+                        return getUserByName(users, selectedRoom.name);
+                    })
                 }
                 icon={
                   selectedRoom.isGroupChat ? (
@@ -164,83 +170,100 @@ const ChatBox = () => {
               />
             </Box>
           </Box>
-          <Box width="100%" height="82%" overflow={"scroll"} overflowX="hidden">
-            {msgs.length !== 0 ? (
-              msgs.map((msg: any) => {
-                if (msg.roomId === selectedRoom.id)
-                  return (
-                    <Box
-                      key={msg.id}
-                      pl="30px"
-                      color="gray"
-                      fontWeight="bold"
-                      pt="20px"
-                      pr="30px"
-                    >
-                      <Box display="flex" alignItems="center">
-                        <Text fontSize="15px" fontWeight="bolder" color="black">
-                          {getUserName(msg.userId)}
-                        </Text>
-                        <Text fontSize="12px" color="gray.400" ml="3px">
-                          {isMember(msg.userId) ? "" : "(ExMember)"}
-                        </Text>
-                        <Text pl="7px">{msg.createdAt}</Text>
-                      </Box>
-                      {msg.msg}
-                    </Box>
-                  );
-                else return undefined;
-              })
-            ) : (
-              <></>
-            )}
-          </Box>
-          <InputGroup
-            display="flex"
-            alignItems={"center"}
-            justifyContent="center"
-            minHeight="50px"
+          <Box width='100%' height='calc(100% - 55px)' borderRadius='10px'
+            bgColor="#BAD1C2"
+            border='3px solid white'
           >
-            <Input
-              fontFamily={"Inter"}
-              pl="50px"
-              fontWeight="bolder"
-              width="98%"
-              bg="white"
-              height="8%"
+
+            <Box width="100%" height="calc(100% - 70px)" overflow={"scroll"} overflowX="hidden">
+              {msgs.length !== 0 ? (
+                msgs.map((msg: any) => {
+                  if (msg.roomId === selectedRoom.id)
+                    return (
+                      <Box
+                        key={msg.id}
+                        pl="30px"
+                        color="gray"
+                        fontWeight="bold"
+                        pt="20px"
+                        pr="30px"
+                      >
+                        <Box display="flex" alignItems="center">
+                          <Text fontSize="15px" fontWeight="bolder" color="black">
+                            {getUserName(msg.userId)}
+                          </Text>
+                          <Text fontSize="12px" color="gray.400" ml="3px">
+                            {isMember(msg.userId) ? "" : "(ExMember)"}
+                          </Text>
+                          <Text pl="7px">{msg.createdAt}</Text>
+                        </Box>
+                        {msg.msg}
+                      </Box>
+                    );
+                  else return undefined;
+                })
+              ) : (
+                <></>
+              )}
+            </Box>
+            <InputGroup
+              display="flex"
+              alignItems={"center"}
+              justifyContent="center"
               minHeight="50px"
-              m="10px"
-              value={msg}
-              placeholder="Type a message"
-              focusBorderColor="gray.100"
-              onChange={(e) => setMsg(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  sendMessage();
-                  setMsg("");
-                }
-              }}
-            />
-            <InputLeftElement ml={"25px"} height="100%">
-              <IconButton
-                variant={"unstyled"}
-                aria-label="emoji"
-                icon={<TfiFaceSmile size="30px" color="gray" />}
+            >
+              <Input
+                fontFamily={"Inter"}
+                pl="50px"
+                fontWeight="bolder"
+                width="99%"
+                bg="white"
+                height="40px"
+                minHeight="50px"
+                m="10px"
+                value={msg}
+                placeholder="Type a message"
+                focusBorderColor="gray.100"
+                onChange={(e) => setMsg(e.target.value)}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage();
+                    setMsg("");
+                  }
+                }}
               />
-            </InputLeftElement>
-            <InputRightElement mr={"20px"} height="100%">
-              <IconButton
-                variant={"unstyled"}
-                aria-label="mic"
-                icon={<BsFillMicFill size="25px" color="gray" />}
-              />
-            </InputRightElement>
-          </InputGroup>
+              <InputLeftElement ml={"25px"} height="100%">
+                <IconButton
+                  variant={"unstyled"}
+                  aria-label="emoji"
+                  icon={<TfiFaceSmile size="30px" color="gray" />}
+                />
+              </InputLeftElement>
+              <InputRightElement mr={"20px"} height="100%">
+                <IconButton
+                  variant={"unstyled"}
+                  aria-label="mic"
+                  icon={<BsFillMicFill size="25px" color="gray" />}
+                />
+              </InputRightElement>
+            </InputGroup>
+          </Box>
         </>
       ) : (
-        <Text fontSize="30px" color="blackAlpha.500" m='30%'>
-          Select a room to start chatting
-        </Text>
+        <Box
+        height='90%'
+          color="gray.400"
+          display="flex"
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center"
+          fontSize={'50px'} 
+        >
+          <HiOutlineChatBubbleLeftRight size='100px' />
+          <Text fontSize="25px" mt='50px'>
+            Select a room to start chatting
+          </Text>
+        </Box>
       )}
     </Box>
   );

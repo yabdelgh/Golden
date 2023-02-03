@@ -4,7 +4,6 @@ import {
   Stack,
   Button,
   Avatar,
-  StackDivider,
   AvatarBadge,
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
@@ -43,11 +42,12 @@ const ChatList = () => {
       flexDir="column"
       p="3"
       top='70'
-      left='71'
+      left='85'
+      borderRadius={'lg'}
       bg="white"
-      height='100%'
+      height='calc(100% - 80px)'
       position='fixed'
-      w={{ base: "230px", md: "360px" }}
+      w={{base: '290px', md: '360px'}}
     >
       <Box display="flex" justifyContent="space-between">
         <Text fontSize="25px" fontFamily="Work sans" height="50px" m="5px">
@@ -64,9 +64,9 @@ const ChatList = () => {
           width="100%"
           overflowY="auto"
           spacing={0}
-         // divider={<StackDivider borderColor="gray.200" />}
-         // borderBottom="1px #EEEEEE solid"
-         // borderTop="1px #EEEEEE solid"
+        // divider={<StackDivider borderColor="gray.200" />}
+        // borderBottom="1px #EEEEEE solid"
+        // borderTop="1px #EEEEEE solid"
         >
           {rooms.map((room: any) => (
             <Box
@@ -94,7 +94,7 @@ const ChatList = () => {
                   room.isGroupChat
                     ? undefined
                     : getUserByName(users, room.name)?.imageUrl ||
-                      "/defaultProfilePic.png"
+                    "/defaultProfilePic.png"
                 }
               >
                 {thereIsSomeOneOnline(users, room) ? (

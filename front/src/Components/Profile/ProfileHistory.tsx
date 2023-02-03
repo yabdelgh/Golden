@@ -2,6 +2,7 @@ import { Avatar, Box, Text, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { AppState } from "../../Context/AppProvider";
+import { SlGameController } from "react-icons/sl"
 const ProfileHistory = () => {
   const [history, setHistory]: any = useState([]);
   const { userProfile, users, searchs, setSearchs } = AppState();
@@ -50,11 +51,14 @@ const ProfileHistory = () => {
 
   return (
     <Box
-      width="100%"
-      height="600px"
+      width={{ base: '100%', xl: '49%' }}
+      borderRadius={'lg'}
+          h={{base: '600px', xl: '48%'}}
+      bg='white'
       display="flex"
       flexDir="column"
       alignItems="center"
+      mb={'20px'}
     >
       <Text
         p="10px 0 30px 20px"
@@ -120,7 +124,19 @@ const ProfileHistory = () => {
                 </Text>
               </Box>
             ))}
-        </VStack> : <></> 
+        </VStack> : 
+        <Box
+          height='90%'
+          color="gray.400"
+          display="flex"
+          flexDir="column"
+          alignItems="center"
+          justifyContent="center"
+          fontSize={'50px'}
+        >
+          <SlGameController size='100px' />
+          <Text fontSize="25px" mt='50px'>You have no Games for now.</Text>
+        </Box>
       }
     </Box>
   );

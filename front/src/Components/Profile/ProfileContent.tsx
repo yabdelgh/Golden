@@ -21,10 +21,11 @@ const ProfileContent = () => {
   return (
     <Box
       display="flex"
+      border='3px solid red'
+      width={`calc(100% - 300px)`}
       flexWrap={"wrap"}
       justifyContent="space-between"
-      height={"fit-content"}
-      ml={{ base: "305px", md: "435px" }}
+      height='100%'
     >
       <ProfilecontentBox>
         <ProfileGraph wins={overview?.Wins} games={overview?.Games} />

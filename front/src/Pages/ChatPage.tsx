@@ -18,9 +18,9 @@ const ChatPage = () => {
     >
       <ChatList />
       <ChatBox />
-      <RightEle>
+      {/* <RightEle>
         {showUP ? <UserProfile /> : usersList ? <UsersList /> : undefined}
-      </RightEle>
+      </RightEle> */}
     </Box>
   );
 };

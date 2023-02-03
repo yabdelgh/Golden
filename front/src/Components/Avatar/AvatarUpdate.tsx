@@ -1,9 +1,16 @@
-import { Box, Button, cookieStorageManager, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  cookieStorageManager,
+  Image,
+  Text,
+} from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import axios from "axios";
 
 const AvatarPreview = ({ username, link }: any) => {
   const [avatar, setAvatar] = useState(link);
+  const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState(null);
   const [fileInServer, setFileInServer] = useState(null);
   const avatarRef = useRef<HTMLInputElement>(null);
@@ -22,13 +29,18 @@ const AvatarPreview = ({ username, link }: any) => {
     if (!file || file === fileInServer) return;
     const formData = new FormData();
     formData.append("avatar", file);
-    await axios.put("http://localhost:3333/api/user/avatar", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      },
-      withCredentials: true
-    });
-    setFileInServer(file);
+    try {
+      await axios.put("http://localhost:3333/api/user/avatar", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      setError(null);
+      setFileInServer(file);
+    } catch (err:any) {
+      setError("File Too Large (4MB max)");
+    }
   };
 
   return (
@@ -80,6 +92,15 @@ const AvatarPreview = ({ username, link }: any) => {
           Save
         </Button>
       </Box>
+      <Text color={"red"} display={error === null ? "none" : ""}>
+        Error: {error}
+      </Text>
+      <Text
+        color={"Green"}
+        display={(file === null || fileInServer !== file) ? "none" : ""}
+      >
+        Saved Successfully
+      </Text>
     </Box>
   );
 };

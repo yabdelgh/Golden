@@ -49,23 +49,6 @@ export class GameService {
         return ret;
     }
 
-  async getOverview(userId: number) {
-    const games = await this.prismaService.games.findMany({
-      where: {
-        OR: [{ redCornerId: userId }, { blueCornerId: userId }],
-      },
-    });
-    const nbrOfGames:number = games.length;
-    const nbrOfWins = games.filter(
-      (ele: any) =>
-        (userId === ele.redCornerId &&
-          ele.redCornerScore > ele.blueCornerScore) ||
-        (userId === ele.blueCornerId &&
-          ele.blueCornerScore > ele.redCornerScore),
-    ).length;
-    return { Games: nbrOfGames, Wins: nbrOfWins };
-  }
-
     async challenge(challengerId: number, challenge: any) {
         try {
             const ret = await this.prismaService.challenges.create({

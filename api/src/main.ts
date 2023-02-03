@@ -1,4 +1,4 @@
-git import { NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { AuthenticatedSocketIoAdapter } from './AuthenticatedSocketIoAdapter';

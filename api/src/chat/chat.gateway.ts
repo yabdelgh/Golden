@@ -24,6 +24,9 @@ import { GameService } from 'src/game/game.service';
 import { MatchMakerQueue } from 'src/utils/MatchMakerQueue';
 import { safeStringify } from 'src/utils/serialization';
 import { GameState } from 'src/game/Core/game';
+import { MoveStat, SocketGamePlayerMoveData } from 'src/utils/GameEnums';
+import { APlayer } from 'src/game/Core/Players/APlayer';
+import { Player } from 'src/game/Core/Players/player';
 
 export class mySocket extends Socket {
     user?: UserDto;
@@ -440,7 +443,8 @@ export class ChatGateway
             const game = this.gameService.newSimpleGame([socket, opponent[0]])
             socket.join("Game0")
             opponent[0].join("Game0")
-            game.subscribe((data:GameState) => {
+            game.subscribeWebClient((data: GameState) => {
+                console.log("sending game data to the front")
                 this.server.in("Game0").emit('gameDataUpdate', data)
             })
             game.start()
@@ -459,6 +463,7 @@ export class ChatGateway
             players: this.gameService.getGame(0).players.map(p => p.body),
             obstacles: this.gameService.getGame(0).obstacles,
             ball: this.gameService.getGame(0).ball,
+            gameSize: this.gameService.getGame(0).size
         }
         socket.emit("gameData", safeStringify(data))
 
@@ -469,6 +474,20 @@ export class ChatGateway
     async handleCancelQuickPairing(@ConnectedSocket() socket: mySocket) {
         this.matchMaker.cancel(Number(socket.id));
         //  socket.emit('notInGame');
+    }
+
+    @SubscribeMessage('gamePlayerMove')
+    async GamePlayerMove(@ConnectedSocket() socket: mySocket,
+        @MessageBody() move: SocketGamePlayerMoveData,) {
+        this.matchMaker.cancel(Number(socket.id));
+
+        const player: APlayer = this.gameService.getGame(0).get_player_by_id(socket.user.id)
+        if (player) {
+            if (move.action === MoveStat.Start)
+                (player as Player).start_moving(move.direction);
+            else if (move.action === MoveStat.Stop)
+                (player as Player).stop_moving();
+        }
     }
 
     handleDisconnect(@ConnectedSocket() socket: mySocket) {

@@ -203,13 +203,13 @@ function App() {
       setFriends(payload);
     });
 
-    socket.on("addFriend", (payload: Friend) => {
+    socket.on("Add Friend", (payload: Friend) => {
       setFriends((value: Friend[]) => {
         return [...value, payload];
       });
     });
 
-    socket.on("acceptFriend", (payload: Friend) => {
+    socket.on("Accept Request", (payload: Friend) => {
       setFriends((value: Friend[]) => {
         const index: number = value.findIndex(
           (ele: Friend) =>
@@ -219,8 +219,16 @@ function App() {
         return [...value];
       });
     });
+    
+    socket.on("Unfriend", (payload: Friend) => {
+      setFriends((value: Friend[]) => {
+        const index: number = value.findIndex((ele: Friend) => ele === payload);
+        value.splice(index, 1);
+        return [...value];
+      });
+    });
 
-    socket.on("removeFriend", (payload: Friend) => {
+    socket.on("Delete Request", (payload: Friend) => {
       setFriends((value: Friend[]) => {
         const index: number = value.findIndex((ele: Friend) => ele === payload);
         value.splice(index, 1);

@@ -40,7 +40,7 @@ const ProfileBar = () => {
           </Box>
           { userProfile.id !== user.id && 
 
-          <Box>
+          <Box display='flex' justifyContent='space-around' width='300px'>
             <MessageButton target={userProfile} icon={false}/>
             <FriendButton target={userProfile} icon={false}/>
           </Box>  

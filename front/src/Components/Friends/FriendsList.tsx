@@ -37,6 +37,7 @@ const FriendsList = () => {
         >
           Friends List
         </Text>
+
       {Friends.length ?
         users.map(
           (value1: any) =>
@@ -63,36 +64,14 @@ const FriendsList = () => {
               >
                 <Image
                   borderTopRadius="lg"
-                  height="60%"
+                 // height="60%"
                   width="100%"
                   src={value1.imageUrl || "/defaultProfilePic.png"}
                 />
-                <Text fontWeight="bolder" height="30px">
+                <Text fontWeight="bolder" >
                   {value1.login}
                 </Text>
-                :
-
-                {/* <Box
-                      mb="7px"
-                      display="flex"
-                      flexDir="column"
-                      justifyContent="space-between"
-                      width="90%"
-                      height="22%"
-                    >
-                      <Button
-                        bg="gray.400"
-                        height="35px"
-                        // onClick={() => removeFriend(value1.id)}
-                      >
-                        unfriend
-                      </Button>
-                      <Button bg="teal" height="35px">
-                        message
-                      </Button>
-                    </Box> */}
               </Box>
-          
             )
         ): 
         <Box

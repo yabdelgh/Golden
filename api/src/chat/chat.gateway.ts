@@ -188,18 +188,18 @@ export class ChatGateway
     this.chatService.status_broadcast(socket);
   }
 
-  @SubscribeMessage('addFriend')
+  @SubscribeMessage('Add Friend')
   async addFriend(
     @ConnectedSocket() socket: mySocket,
     @MessageBody() friendId: number,
   ) {
     const friend = await this.userService.addFriend(socket.user.id, friendId);
-    this.server.in(String(friendId)).emit('addFriend', friend);
-    socket.emit('addFriend', friend);
+    this.server.in(String(friendId)).emit('Add Friend', friend);
+    socket.emit('Add Friend', friend);
   }
 
-  @SubscribeMessage('removeFriend')
-  async removeFriend(
+  @SubscribeMessage('Unfriend')
+  async Unfriend(
     @ConnectedSocket() socket: mySocket,
     @MessageBody() friendId: number,
   ) {
@@ -207,12 +207,13 @@ export class ChatGateway
       socket.user.id,
       friendId,
     );
-    this.server.in(String(friendId)).emit('removeFriend', friend);
-    socket.emit('removeFriend', friend);
+    this.server.in(String(friendId)).emit('Unfriend', friend);
+    socket.emit('Unfriend', friend);
   }
 
-  @SubscribeMessage('acceptFriend')
-  async acceptFriend(
+  //accept friend request
+  @SubscribeMessage('Accept Request')
+  async AcceptFriend(
     @ConnectedSocket() socket: mySocket,
     @MessageBody() friendId: number,
   ) {
@@ -220,8 +221,21 @@ export class ChatGateway
       socket.user.id,
       friendId,
     );
-    this.server.in(String(friendId)).emit('acceptFriend', friend);
-    socket.emit('acceptFriend', friend);
+    this.server.in(String(friendId)).emit('Accept Request', friend);
+    socket.emit('Accept Request', friend);
+  }
+  //delete friend request
+  @SubscribeMessage('Delete Request')
+  async DeleteFriend(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() friendId: number,
+  ) {
+    const friend = await this.userService.removeFriend(
+      socket.user.id,
+      friendId,
+    );
+    this.server.in(String(friendId)).emit('Delete Request', friend);
+    socket.emit('Delete Request', friend);
   }
 
   @SubscribeMessage('mute')

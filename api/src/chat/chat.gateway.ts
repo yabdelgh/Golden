@@ -460,10 +460,13 @@ export class ChatGateway
     @SubscribeMessage('getGameData')
     async getGameData(@ConnectedSocket() socket: mySocket) {
         const data = {
+            //get the user data from the socket by the player id
+            playersData : this.gameService.getGame(0).players.map(p => {id : p.id}),
             players: this.gameService.getGame(0).players.map(p => p.body),
             obstacles: this.gameService.getGame(0).obstacles,
             ball: this.gameService.getGame(0).ball,
             gameSize: this.gameService.getGame(0).size
+
         }
         socket.emit("gameData", safeStringify(data))
 

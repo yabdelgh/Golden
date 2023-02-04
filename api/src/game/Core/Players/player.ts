@@ -12,8 +12,8 @@ enum PlayerMove {
 }
 
 export class Player extends APlayer {
-    movingDirection: PlayerMove
-    isMoving: boolean
+    // movingDirection: PlayerMove
+    // isMoving: boolean
     private _GameUpdateCallback: any = null
 
     public constructor(body: Body, id: number) { 
@@ -35,11 +35,13 @@ export class Player extends APlayer {
 
     public start_moving(dir :PlayerMove) {
        this.movingDirection = dir;
-       this.isMoving = true; 
+       this.isMoving = true;
+       this._playerMoveEvent.next(this.body.position)
     }
 
     public stop_moving() {
         this.isMoving = false
+        this._playerMoveEvent.next(this.body.position)
     }
     
     public set GameUpdateCallback(callback:Function) {

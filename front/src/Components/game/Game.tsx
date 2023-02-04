@@ -10,7 +10,7 @@ import Matter, {
   Events
 } from "matter-js";
 import React, { useEffect, useRef, useState } from "react";
-import { GameData, GameState, GameBodies } from "../../../types";
+import { GameData, GameState, GameBodies, SocketGamePlayerMoveData } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import _ from "lodash";
 import { removeNulls } from "../../Utils/cleanObject";
@@ -42,6 +42,8 @@ const ball = {
   velocityX: 3.5,
   velocityY: 2.5,
 };
+let Me: Player;
+let Opponent: Player;
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -63,9 +65,15 @@ const Game = () => {
         console.log(data);
         Body.setPosition(gameState.ball, data.ball);
         Body.setVelocity(gameState.ball, data.ball_velocity);
-        Body.setPosition(gameState.players[0],data.player1);
-        Body.setPosition(gameState.players[1],data.player2);
-        Events.on(engine, "afterUpdate", (event) => { 
+        Body.setPosition(gameState.players[0], data.players[0]);
+        Body.setPosition(gameState.players[1], data.players[1]);
+        gameState.gamePlayers.forEach((player, idx) => {
+            if(data.playersState.action == MoveStat.Start)
+              player.start_moving(data.playersState.direcion)
+            if(data.playersState.action == MoveStat.Stop)
+              player.stop_moving()
+        });
+        Events.on(engine, "afterUpdate", () => {
           gameState.gamePlayer[0].update_game_state({} as GameState)
           gameState.gamePlayer[1].update_game_state({} as GameState)
         })
@@ -85,7 +93,11 @@ const Game = () => {
           Body.create(removeNulls(o))
         );
         const ball = Body.create(removeNulls(data.ball));
-        const gamePlayers: Player[] = players.map(b => new Player(b, 0))
+        const gamePlayers: Player[] = players.map((b, i) => {
+          const p = new Player(b, data.playersData[i].id);
+          (data.playersData[i].id == user.id) ? Me = p : Opponent = p
+          return p
+        })
 
         // Body.setVelocity(ball, Vector.create(0, 0));
         engine && Composite.add(engine.world, [...players, ...obstacles, ball]);
@@ -138,18 +150,21 @@ const Game = () => {
 
     // setInterval(() => { Body.setVelocity(ball, Vector.create(Math.sign(ball.velocity.x) * 5, ball.velocity.y)); console.log(ball.velocity)}, 100)
     document.addEventListener("keydown", (e) => {
-      if (e.code === KeyboardCodes.ArrowUp) 
-        socket.emit("gamePlayerMove", {direction:PlayerMove.Up, action:MoveStat.Start});
-      if (e.code === KeyboardCodes.ArrowDown)
-      socket.emit("gamePlayerMove", {direction:PlayerMove.Down, action:MoveStat.Start});
+      let dir = PlayerMove.Right;
+      if (e.code === KeyboardCodes.ArrowUp)
+        dir = PlayerMove.Up
+      else if (e.code === KeyboardCodes.ArrowDown)
+        dir = PlayerMove.Down
+      socket.emit("gamePlayerMove", { direction: dir, action: MoveStat.Start });
+      Me.start_moving(dir)
     });
 
     document.addEventListener("keyup", (e) => {
-      if (
-        e.code === KeyboardCodes.ArrowUp ||
-        e.code === KeyboardCodes.ArrowDown
-      )
-      socket.emit("gamePlayerMove", { action:MoveStat.Stop});
+      if ( e.code === KeyboardCodes.ArrowUp || e.code === KeyboardCodes.ArrowDown)
+      {
+        Me.stop_moving()
+        socket.emit("gamePlayerMove", { action: MoveStat.Stop });
+      }
     });
 
     return () => {

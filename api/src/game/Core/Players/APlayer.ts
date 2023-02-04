@@ -18,6 +18,8 @@ export abstract class APlayer {
     move_step:number = 10;
     pos = Vector.create(0, 0)
     _padel_gap:number = 10
+    movingDirection: PlayerMove
+    isMoving: boolean
 
     private _id: number
     private _game_size = Vector.create(0, 0)
@@ -25,7 +27,7 @@ export abstract class APlayer {
     private _body: Body;
     private _goal: Body | null = null;
     private static moveStep: number = 5;
-    private _playerMoveEvent: Subject<Vector> = new Subject<any>();
+    protected _playerMoveEvent: Subject<Vector> = new Subject<any>();
 
     public constructor(body: Body, id:number) {
         this._body = body;
@@ -119,7 +121,7 @@ export abstract class APlayer {
         this.pos.y = y
         this.pos.x = x
         Body.setPosition(this.body, this.pos)
-        this._playerMoveEvent.next(this.pos)
+        // this._playerMoveEvent.next(this.pos)
     }
 
     public abstract update_game_state(state: GameState): void;

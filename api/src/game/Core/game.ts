@@ -32,8 +32,10 @@ interface GameParams {
 export interface GameState {
     ball_velocity: Vector;
     ball: Vector;
-    player1: Vector;
-    player2: Vector;
+    // player1: Vector;
+    // player2: Vector;
+    players: Vector[];
+    playersState: {action:number, direction:PlayerMove}[]
 }
 
 export class Game {
@@ -187,8 +189,11 @@ export class Game {
         emiter.next({
             ball_velocity: this._ball.velocity,
             ball: this._ball.position,
-            player1: this._players[0].body.position,
-            player2: this._players[1].body.position,
+            players: [this._players[0].body.position,this._players[1].body.position],
+            playersState : [
+                {action:this._players[0].isMoving?0:1, direction: this._players[0].movingDirection},
+                {action:this._players[1].isMoving?0:1, direction: this._players[1].movingDirection}
+            ]
         });
     }
 

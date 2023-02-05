@@ -5,9 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { ChatModule } from './chat/chat.module';
 import { GameModule } from './game/game.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
+    RedisModule,
     AuthModule,
     UserModule,
     ConfigModule.forRoot({

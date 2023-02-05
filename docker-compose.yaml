@@ -33,3 +33,9 @@ services:
       - api
     volumes:
       - ./front/src:/app/src
+  
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"

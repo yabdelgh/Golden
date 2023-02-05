@@ -39,6 +39,7 @@ export interface GameState {
 }
 
 export class Game {
+    private frames = 0;
     private _id;
     private _ball: Body;
     private _players: APlayer[];
@@ -63,16 +64,18 @@ export class Game {
         this._size = size
         this._obstacles = obstacles
         this._score = Array(this._players.length).fill(0);
-        this.ball_speed = Vector.create(5, -5)
+        this.ball_speed = Vector.create(500, -5)
 
         this._engine = Engine.create({
             enableSleeping: false,
             gravity: Vector.create(0, 0),
-            velocityIterations: 100,
-            positionIterations: 100,
+            // constraintIterations:20,
+            // velocityIterations: 20,
+            // positionIterations: 20,
         });
         this.engine.gravity.scale = 0;
         this.runner = Runner.create()
+        // this.runner.delta = 1000/20
         this.subscribe_players_to_game_event();
         this.subscribe_game_to_player()
         this.setComponentsToWorld()
@@ -80,6 +83,7 @@ export class Game {
     }
 
     public setComponentsToWorld() {
+        this.add_world_borders()
         this.add_players_to_world()
         this.add_obstacles_to_world()
         this.add_ball_to_world()
@@ -88,6 +92,7 @@ export class Game {
     private subscribe_players_to_game_event() {
         for (let player of this._players) {
             this.subscribe(player.update_game_state.bind(player))
+            console.log();
         }
     }
 
@@ -108,8 +113,8 @@ export class Game {
     }
 
     add_world_borders() {
-        this.obstacles.push(Bodies.rectangle(this._size.x / 2, 0, this._size.x, 1, { isStatic: true, restitution: 1 }))
-        this.obstacles.push(Bodies.rectangle(this._size.x / 2, this._size.y, this._size.x, 1, { isStatic: true, restitution: 1 }))
+        this._obstacles.push(Bodies.rectangle(this._size.x / 2, 0, this._size.x, 1, { isStatic: true, restitution: 1 }))
+        this._obstacles.push(Bodies.rectangle(this._size.x / 2, this._size.y, this._size.x, 1, { isStatic: true, restitution: 1 }))
     }
 
     private add_obstacles_to_world() {
@@ -123,8 +128,8 @@ export class Game {
 
     private add_ball_to_world() {
         Body.setPosition(this._ball, Vector.create(this._size.x / 2, this._size.y / 2))
-        Body.setVelocity(this._ball, this.ball_speed)
         Body.setInertia(this._ball, Infinity)
+        // Body.setVelocity(this._ball, this.ball_speed)
         this._ball.friction = 0;
         this._ball.frictionStatic = 0;
         this._ball.frictionAir = 0;
@@ -148,7 +153,18 @@ export class Game {
 
 
     private set_game_event() {
-        Events.on(this.engine, "afterUpdate", (event) => { this.emit_game_state(event, this.emiter) })
+        Events.on(this.engine, "afterUpdate", (event) => {
+            console.error("sending data")
+            this.emit_game_state(event, this.emiter)
+
+            // a bad solution to fix data race by reducing the fps
+            if (this.frames % 10) {
+                this.emit_game_state(event, this.webClientEvent)
+                this.frames = 0;
+            }
+            else
+                this.frames++
+        })
     }
 
     private update_game_score(pair: Pair[]) {
@@ -171,7 +187,7 @@ export class Game {
             //     player1: this._players[0].body.position,
             //     player2: this._players[1].body.position,
             // });
-            this.stop();
+            // this.stop();
         }
     }
 
@@ -199,6 +215,7 @@ export class Game {
 
     async start() {
         Runner.start(this.runner, this._engine)
+        this.set_ball_at_start(random.integer(0,1) == 1 ?  PlayerMove.Right : PlayerMove.Left)
     }
 
     async stop() {

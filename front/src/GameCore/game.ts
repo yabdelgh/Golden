@@ -81,6 +81,7 @@ export class Game {
         this.add_players_to_world()
         this.add_obstacles_to_world()
         this.add_ball_to_world()
+        this.add_world_borders()
     }
 
     private subscribe_players_to_game_event() {
@@ -106,8 +107,8 @@ export class Game {
     }
 
     add_world_borders() {
-        this.obstacles.push(Bodies.rectangle(this._size.x / 2, 0, this._size.x, 1, { isStatic: true, restitution: 1 }))
-        this.obstacles.push(Bodies.rectangle(this._size.x / 2, this._size.y, this._size.x, 1, { isStatic: true, restitution: 1 }))
+        this._obstacles.push(Bodies.rectangle(this._size.x / 2, 0, this._size.x, 1, { isStatic: true, restitution: 1 }))
+        this._obstacles.push(Bodies.rectangle(this._size.x / 2, this._size.y, this._size.x, 1, { isStatic: true, restitution: 1 }))
     }
 
     private add_obstacles_to_world() {
@@ -169,7 +170,7 @@ export class Game {
             //     player1: this._players[0].body.position,
             //     player2: this._players[1].body.position,
             // });
-            this.stop();
+            // this.stop();
         }
     }
 
@@ -205,7 +206,7 @@ export class Game {
     }
 
 
-    get_player_by_id(player_id: number): APlayer {
+    get_player_by_id(player_id: number): APlayer | undefined {
         if (player_id === this._players[0].id)
             return this._players[0];
         else if (player_id === this._players[1].id)

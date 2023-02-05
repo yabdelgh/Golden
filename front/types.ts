@@ -67,5 +67,4 @@ export type GameBodies = {
     players:Body[];
     obstacles:Body[];
     ball:Body;
-    gamePlayers: Player[];
 }

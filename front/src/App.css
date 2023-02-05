@@ -37,3 +37,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.canvas-container {
+  position: relative;
+}
+
+.matter-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+}

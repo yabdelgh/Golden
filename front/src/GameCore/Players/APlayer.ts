@@ -106,18 +106,18 @@ export abstract class APlayer {
                 x = x + this.move_step
                 break;
         }
-
         if (x < 50)
-            x = 50
+        x = 50
         if (x > 450)
-            x = 450
+        x = 450
         if (y < 0)
-            y = 0
+        y = 0
         if (y > 450)
-            y = 450
+        y = 450
         // console.log(x, y)
         this.pos.y = y
         this.pos.x = x
+        console.log(`"move from ${this.body.position.y} to ${this.pos.y}"`)
         Body.setPosition(this.body, this.pos)
         this._playerMoveEvent.next(this.pos)
     }

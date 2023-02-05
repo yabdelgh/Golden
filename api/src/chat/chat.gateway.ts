@@ -444,7 +444,6 @@ export class ChatGateway
             socket.join("Game0")
             opponent[0].join("Game0")
             game.subscribeWebClient((data: GameState) => {
-                console.log("sending game data to the front")
                 this.server.in("Game0").emit('gameDataUpdate', data)
             })
             game.start()
@@ -461,7 +460,7 @@ export class ChatGateway
     async getGameData(@ConnectedSocket() socket: mySocket) {
         const data = {
             //get the user data from the socket by the player id
-            playersData : this.gameService.getGame(0).players.map(p => {id : p.id}),
+            playersData : this.gameService.getGame(0).players.map(p => {return {id : p.id}}),
             players: this.gameService.getGame(0).players.map(p => p.body),
             obstacles: this.gameService.getGame(0).obstacles,
             ball: this.gameService.getGame(0).ball,
@@ -469,8 +468,6 @@ export class ChatGateway
 
         }
         socket.emit("gameData", safeStringify(data))
-
-        console.log("byeeeeeeee")
     }
 
     @SubscribeMessage('cancelQuickPairing')
@@ -486,8 +483,10 @@ export class ChatGateway
 
         const player: APlayer = this.gameService.getGame(0).get_player_by_id(socket.user.id)
         if (player) {
-            if (move.action === MoveStat.Start)
+            if (move.action === MoveStat.Start) {
+                console.log("player try to move", player.id);
                 (player as Player).start_moving(move.direction);
+            }
             else if (move.action === MoveStat.Stop)
                 (player as Player).stop_moving();
         }

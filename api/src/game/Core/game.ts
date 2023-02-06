@@ -207,8 +207,8 @@ export class Game {
     private emit_game_state(event: any, emiter: Subject<GameState>) {
         // console.log(this, event)
 
-        // this.lock.acquire('key', function(done) {
-        //     console.log("sending data")
+        // this.lock.acquire('key', (done) => {
+        //     console.log("--->", this.frameid)
         //     emiter.next({
         //         id: this.frameid++,
         //         ball_velocity: this._ball.velocity,
@@ -227,11 +227,12 @@ export class Game {
         // }, function(err, ret) {
             
         // });
-
-        // const id = this.frameid++;
+        let id = 0
+        if (emiter === this.webClientEvent)
+            id = this.frameid++;
         // if (this.frameid == 0)
             emiter.next({
-                id: this.frameid++,
+                id: id,
                 ball_velocity: this._ball.velocity,
                 ball: this._ball.position,
                 players: [this._players[0].body.position,this._players[1].body.position],

@@ -106,7 +106,7 @@ export class GameService {
         game.subscribeGameEnd((game: Game)=> {
             // set the status and teh score to the database
             // remove the game from the map
-            this.games.delete(game.id)
+            // this.games.delete(game.id)
         })
         return game
     }

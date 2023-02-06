@@ -42,18 +42,11 @@ const Game = () => {
   const [gameState, setGameState] = useState<GameBodies>();
 
   useEffect(() => {
-    console.log("game state", gameState, gameDataqueue.length);
     if (gameState) {
       Events.on(render, "beforeRender", () => {
-         if(gameDataqueue.length)
-          console.log(FrameId , gameDataqueue.peek().id)
-        if(gameDataqueue.length > 0 && FrameId == gameDataqueue.peek().id) {
+        if (gameDataqueue.length > 0 && FrameId == gameDataqueue.peek().id) {
           FrameId++;
         const data = gameDataqueue.dequeue();
-        // while ()
-          if (show)
-            console.log("data id", gameDataqueue);
-          show = false;
         Body.setPosition(gameState.ball, data.ball);
         Body.setPosition(gameState.players[0], data.players[0]);
         Body.setPosition(gameState.players[1], data.players[1]);
@@ -61,10 +54,6 @@ const Game = () => {
       })
       socket.on("gameDataUpdate", (data: GameState) => {
         gameDataqueue.queue(data);
-        console.log("gameDataUpdate", data);
-        // Body.setPosition(gameState.ball, data.ball);
-        // Body.setPosition(gameState.players[0], data.players[0]);
-        // Body.setPosition(gameState.players[1], data.players[1]);
       });
     }
     return () => {
@@ -95,7 +84,6 @@ const Game = () => {
   }, [render]);
 
   useEffect(() => {
-    socket.on("test",()=>{ console.log("a fuck you") })
     let constEngine;
     let constRender;
     if (!engine) {

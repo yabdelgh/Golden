@@ -447,7 +447,6 @@ export class ChatGateway
             await opponent[0].join("Game0")
             await socket.join("Game0")
             game.subscribeWebClient((data: GameState) => {
-                this.server.in("Game0").emit('test', {})
                 this.server.in("Game0").emit('gameDataUpdate', data)
             })
             setTimeout(() => {game.start()}, 3000)

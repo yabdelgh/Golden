@@ -64,7 +64,7 @@ export class AuthController {
     res.cookie('access_token', token, {
       httpOnly: true,
     });
-    res.redirect('http://localhost:3000/profile');
+    res.redirect('http://10.12.10.12:3000/profile');
   }
   
   @Get('2')
@@ -80,6 +80,6 @@ export class AuthController {
     res.cookie('access_token', token, {
       httpOnly: true,
     });
-    res.redirect('http://localhost:3000/profile');
+    res.redirect('http://10.12.10.12:3000/profile');
   }
 }

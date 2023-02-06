@@ -57,6 +57,7 @@ export type SocketGamePlayerMoveData = {
 }
 
 export type GameState = {
+    id: number
     ball_velocity: Vector;
     ball: Vector;
     players: Vector[];

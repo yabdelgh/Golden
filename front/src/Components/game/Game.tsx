@@ -22,7 +22,11 @@ import { removeNulls } from "../../Utils/cleanObject";
 import KeyboardCodes from "../../Utils/KeyboardCodes";
 import { MoveStat, PlayerMove } from "../../Utils/enums";
 import { Player } from "../../GameCore/Players/player";
+import PriorityQueue from "ts-priority-queue";
 
+const gameDataqueue = new PriorityQueue<GameState>({ comparator: function(a, b) { return a.id - b.id; }})
+let FrameId = 0;
+let show = true
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let divRef: any = React.createRef();
@@ -38,16 +42,33 @@ const Game = () => {
   const [gameState, setGameState] = useState<GameBodies>();
 
   useEffect(() => {
+    console.log("game state", gameState, gameDataqueue.length);
     if (gameState) {
-      socket.on("gameDataUpdate", (data: GameState) => {
-        console.log(data);
+      Events.on(render, "beforeRender", () => {
+         if(gameDataqueue.length)
+          console.log(FrameId , gameDataqueue.peek().id)
+        if(gameDataqueue.length > 0 && FrameId == gameDataqueue.peek().id) {
+          FrameId++;
+        const data = gameDataqueue.dequeue();
+        // while ()
+          if (show)
+            console.log("data id", gameDataqueue);
+          show = false;
         Body.setPosition(gameState.ball, data.ball);
         Body.setPosition(gameState.players[0], data.players[0]);
         Body.setPosition(gameState.players[1], data.players[1]);
+        }
+      })
+      socket.on("gameDataUpdate", (data: GameState) => {
+        gameDataqueue.queue(data);
+        console.log("gameDataUpdate", data);
+        // Body.setPosition(gameState.ball, data.ball);
+        // Body.setPosition(gameState.players[0], data.players[0]);
+        // Body.setPosition(gameState.players[1], data.players[1]);
       });
     }
     return () => {
-      socket.removeAllListeners("gameDataUpdate", render);
+      socket.removeAllListeners("gameDataUpdate");
     };
   }, [gameState]);
 
@@ -74,6 +95,7 @@ const Game = () => {
   }, [render]);
 
   useEffect(() => {
+    socket.on("test",()=>{ console.log("a fuck you") })
     let constEngine;
     let constRender;
     if (!engine) {

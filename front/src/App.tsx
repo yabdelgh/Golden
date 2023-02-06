@@ -42,7 +42,7 @@ function App() {
 
   useEffect(() => {
     setSocket(() =>
-      io("http://localhost:3333/chat", {
+      io("http://10.12.10.12:3333/chat", {
         withCredentials: true,
         reconnection: true,
       })
@@ -52,6 +52,7 @@ function App() {
   useEffect(() => {
     if (!socket) return;
     socket.onAny((eventName: string, payload: any) => {
+      console.log(eventName);
     });
 
     document.addEventListener("visibilitychange", () => {
@@ -61,6 +62,7 @@ function App() {
       });
     });
 
+  
     socket.on("me", (payload: User) => { setUser(payload); setUserProfile(payload) });
 
     socket.on("inGame", (payload: any) => {

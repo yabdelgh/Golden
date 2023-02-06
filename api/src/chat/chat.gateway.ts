@@ -34,7 +34,7 @@ export class mySocket extends Socket {
 
 @WebSocketGateway({
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'http://10.12.10.12:3000',
         credentials: true,
     },
     namespace: 'chat',
@@ -439,18 +439,18 @@ export class ChatGateway
             socket.user.inGame = true;
             this.server.in([...socket.rooms]).emit('inGame', { id: socket.user.id, inGame: true });
             const opponent: any = await this.server.in(`${pairing[0]}`).fetchSockets();
+            this.server
+            .in([...opponent[0].rooms])
+            .emit('inGame', { id: pairing[0], ingame: true });
             opponent[0].user.inGame = true;
             const game = this.gameService.newSimpleGame([socket, opponent[0]])
-            socket.join("Game0")
-            opponent[0].join("Game0")
+            await opponent[0].join("Game0")
+            await socket.join("Game0")
             game.subscribeWebClient((data: GameState) => {
+                this.server.in("Game0").emit('test', {})
                 this.server.in("Game0").emit('gameDataUpdate', data)
             })
-            game.start()
-            console.log(opponent)
-            this.server
-                .in([...opponent[0].rooms])
-                .emit('inGame', { id: pairing[0], ingame: true });
+            setTimeout(() => {game.start()}, 3000)
         }
         //  else
         //  socket.emit('waitAGame');

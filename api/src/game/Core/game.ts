@@ -30,6 +30,7 @@ interface GameParams {
 }
 
 export interface GameState {
+    id:number
     ball_velocity: Vector;
     ball: Vector;
     // player1: Vector;
@@ -37,8 +38,11 @@ export interface GameState {
     players: Vector[];
     playersState: {action:number, direction:PlayerMove}[]
 }
+const AsyncLock = require('async-lock');
 
 export class Game {
+    lock = new AsyncLock();
+    private frameid = 0;
     private frames = 0;
     private _id;
     private _ball: Body;
@@ -135,16 +139,16 @@ export class Game {
         this._ball.frictionAir = 0;
         this._ball.restitution = 1
         Composite.add(this.world, this._ball)
-        Events.on(this.engine, "collisionStart", () => {
-            console.log("ball collided start ", this._ball.velocity)
-            // this.ball.torque = 0
-            // Body.setAngularVelocity(this.ball, 0)
-            // Body.setAngle(this.ball, 0)
-        })
+        // Events.on(this.engine, "collisionStart", () => {
+        //     // console.log("ball collided start ", this._ball.velocity)
+        //     // this.ball.torque = 0
+        //     // Body.setAngularVelocity(this.ball, 0)
+        //     // Body.setAngle(this.ball, 0)
+        // })
         Events.on(this.engine, "collisionEnd", (event) => {
             this.update_game_score(event.pairs)
-            console.log("score", this._score)
-            console.log("ball collided end", this._ball.velocity)
+            // console.log("score", this._score)
+            // console.log("ball collided end", this._ball.velocity)
             const x = this._ball.velocity.x * 1.02
             const y = this._ball.velocity.y * 1.02
             Body.setVelocity(this._ball, Vector.create(x, y))
@@ -154,7 +158,7 @@ export class Game {
 
     private set_game_event() {
         Events.on(this.engine, "afterUpdate", (event) => {
-            console.error("sending data")
+            // console.error("sending data")
             this.emit_game_state(event, this.emiter)
 
             // a bad solution to fix data race by reducing the fps
@@ -202,15 +206,42 @@ export class Game {
 
     private emit_game_state(event: any, emiter: Subject<GameState>) {
         // console.log(this, event)
-        emiter.next({
-            ball_velocity: this._ball.velocity,
-            ball: this._ball.position,
-            players: [this._players[0].body.position,this._players[1].body.position],
-            playersState : [
-                {action:this._players[0].isMoving?0:1, direction: this._players[0].movingDirection},
-                {action:this._players[1].isMoving?0:1, direction: this._players[1].movingDirection}
-            ]
-        });
+
+        // this.lock.acquire('key', function(done) {
+        //     console.log("sending data")
+        //     emiter.next({
+        //         id: this.frameid++,
+        //         ball_velocity: this._ball.velocity,
+        //         ball: this._ball.position,
+        //         players: [this._players[0].body.position,this._players[1].body.position],
+        //         playersState : [
+        //             {action:this._players[0].isMoving?0:1, direction: this._players[0].movingDirection},
+        //             {action:this._players[1].isMoving?0:1, direction: this._players[1].movingDirection}
+        //         ]
+        //     });
+        //     done({}, {});
+        //     // Concurrency safe
+        //     // redis.get('key', function(err, value) {
+        //     //     redis.set('key', value * 2, cb);
+        //     // });
+        // }, function(err, ret) {
+            
+        // });
+
+        // const id = this.frameid++;
+        // if (this.frameid == 0)
+            emiter.next({
+                id: this.frameid++,
+                ball_velocity: this._ball.velocity,
+                ball: this._ball.position,
+                players: [this._players[0].body.position,this._players[1].body.position],
+                playersState : [
+                    {action:this._players[0].isMoving?0:1, direction: this._players[0].movingDirection},
+                    {action:this._players[1].isMoving?0:1, direction: this._players[1].movingDirection}
+                ]
+            });
+        // if (this.frameid < 10)
+        //     console.log("---->", this.frameid)
     }
 
     async start() {

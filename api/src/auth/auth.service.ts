@@ -1,9 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { authenticator } from 'otplib';
 import { UserService } from 'src/user/user.service';
 import { toFileStream } from 'qrcode';
+import { Redis } from 'ioredis';
+import { ExtractJwt } from 'passport-jwt';
 
 @Injectable()
 export class AuthService {
@@ -11,6 +13,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
+    @Inject('REDIS')
+    private readonly redis: Redis,
   ) {}
 
   async callback(user: any, res: any) {
@@ -64,16 +68,14 @@ export class AuthService {
     else throw new UnauthorizedException('Wrong authentication code');
   }
   
-  async logout(res: any) {
-    const payload = {
-      id: 0,
-      authenticated: false,
-    };
-    const token = await this.jwtService.signAsync(payload, {
-      expiresIn: 0,
-      secret: this.configService.get<string>('JWT_SECRET'),
+  async logout(req: any) {
+    const token = req?.cookies?.access_token ?? ExtractJwt.fromAuthHeaderAsBearerToken();
+    const payload = this.jwtService.verify(token, {
+      secret: this.configService.get('JWT_SECRET'),
     });
-    res.cookie('access_token', token, { httpOnly: true });
-    res.end();
+    const expiresIn = payload.exp - payload.iat;
+    await this.redis.set(token, 'expired', 'EX', expiresIn);
+    await this.redis.expire(token, expiresIn);
+    return { message: 'logout' };
   }
 }

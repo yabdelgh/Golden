@@ -19,8 +19,8 @@ export class AuthController {
   
   @Get('logout')
   @UseGuards(JwtAuthGuard)
-  async logout(@Res() res) {
-    return this.authService.logout(res);
+  async logout(@Req() req) {
+    return this.authService.logout(req);
   }
 
   @Get('42/callback')

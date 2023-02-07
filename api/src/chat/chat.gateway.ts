@@ -29,7 +29,7 @@ export class mySocket extends Socket {
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONT_HOST,
     credentials: true,
   },
   namespace: 'chat',

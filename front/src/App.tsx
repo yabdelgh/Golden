@@ -1,9 +1,9 @@
 import "./App.css";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
 import { Friend, Msg, User, Room, RoomUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
@@ -11,14 +11,12 @@ import ProfilePage from "./Pages/ProfilePage";
 import GamePage from "./Pages/GamePage";
 import WorldPage from "./Pages/WorldPage";
 import TwoFAPage from "./Pages/TwoFAPage";
-import { Box, useDisclosure } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import SecurityPage from "./Pages/SecurityPage";
-import { io, Manager } from "socket.io-client";
+import { io } from "socket.io-client";
 import UseHere from "./Pages/UseHere";
-import { validateHeaderValue } from "http";
 import LoadingPage from "./Pages/LoadingPage";
 import ChatHeader from "./Components/ChatHeader";
-
 function App() {
   const {
     setUserProfile,
@@ -38,16 +36,19 @@ function App() {
     setChallenges,
   } = AppState();
   const navigate = useNavigate();
-
+  const location = useLocation();
   useEffect(() => {
     setSocket(() =>
-      io("http://localhost:3333/chat", {
+      io(`${process.env.REACT_APP_BACK_HOST}/chat`, {
         withCredentials: true,
         reconnection: true,
       })
     );
   }, [setSocket]);
-
+  useLayoutEffect(() => {
+    if ( location.pathname !== '/' && !user.login && location.pathname !== '/twoFA')
+      navigate('/'); 
+  });
   useEffect(() => {
     if (!socket) return;
     socket.onAny((eventName: string, payload: any) => {
@@ -292,8 +293,7 @@ function App() {
       setChallenges((value: any) => {
         const newVal = value.filter(
           (ele: any) =>
-            ele.challengerId !== payload.challengerId ||
-            ele.challengedId !== ele.challengedId
+            ele.challengerId !== payload.challengerId
         );
         return [...newVal];
       });
@@ -303,8 +303,7 @@ function App() {
       setChallenges((value: any) => {
         const newVal = value.filter(
           (ele: any) =>
-            ele.challengerId !== payload.challengerId ||
-            ele.challengedId !== ele.challengedId
+             ele.challengedId !== payload.challengedId
         );
         return [...newVal];
       });
@@ -337,24 +336,28 @@ function App() {
         <Route path="/useHere" element={<UseHere />} />
         <Route
           path="/chat"
-          element={user.login ? <ChatPage /> : <LoginPage />}
+          element={<ChatPage />}
         />
         <Route
           path="/profile"
-          element={user.login ? <ProfilePage /> : <LoginPage />}
+          element={<ProfilePage />}
         />
         <Route
           path="/game"
-          element={user.login ? <GamePage /> : <LoginPage />}
+          element={<GamePage /> }
         />
         <Route
           path="/world"
-          element={user.login ? <WorldPage /> : <LoginPage />}
+          element={<WorldPage />}
         />
-        <Route path="/twoFa" element={<TwoFAPage />} />
+        <Route path="/twoFA" element={<TwoFAPage />} />
         <Route
           path="/security"
-          element={user.login ? <SecurityPage /> : <LoginPage />}
+          element={<SecurityPage /> }
+        />
+        <Route
+          path="*"
+          element={<div>404 not found</div>}
         />
       </Routes>
       <ChatHeader />

@@ -52,7 +52,7 @@ const LoginPage = () => {
           FREE, FAN AND READY TO PLAY!
         </Text>
         <Box width='100%' display='flex' justifyContent='center'>
-          <a href="http://localhost:3333/api/auth/login">
+          <a href={`${process.env.REACT_APP_BACK_HOST}/api/auth/login`}>
             <Button
               bg="#FF5323"
               width="310px"

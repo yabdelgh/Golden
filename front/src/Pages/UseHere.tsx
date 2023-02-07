@@ -26,7 +26,7 @@ const UseHere = () => {
         <Button variant='solid' colorScheme='gray' width={"130px"}
         onClick={() => navigate('/')}
         >CLOSE</Button>
-        <a href="http://localhost:3000/">
+        <a href={process.env.REACT_APP_FRONT_HOST}>
           <Button variant="solid" colorScheme="teal" width={"130px"} m='10px'
           >
             USE HERE

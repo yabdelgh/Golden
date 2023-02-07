@@ -22,7 +22,8 @@ const TwoFAPage = () => {
       .then((res) => {
         navigate("/profile");
       })
-  };
+  }
+    ;
 
   return (
     <Box
@@ -31,7 +32,7 @@ const TwoFAPage = () => {
       borderRadius="lg"
       bg="white"
       mt="10%"
-      display="flex"
+    display="flex"
       flexDir="column"
       alignItems="center"
     >

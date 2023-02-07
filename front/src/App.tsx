@@ -42,7 +42,7 @@ function App() {
 
   useEffect(() => {
     setSocket(() =>
-      io("http://10.12.10.12:3333/chat", {
+      io("http://10.12.13.4:3333/chat", {
         withCredentials: true,
         reconnection: true,
       })

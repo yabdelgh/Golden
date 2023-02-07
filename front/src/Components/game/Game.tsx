@@ -44,6 +44,8 @@ const Game = () => {
   useEffect(() => {
     if (gameState) {
       Events.on(render, "beforeRender", () => {
+        if (FrameId == 0 && gameDataqueue.length)
+          FrameId = gameDataqueue.peek().id
         if (gameDataqueue.length > 0 && FrameId == gameDataqueue.peek().id) {
           FrameId++;
         const data = gameDataqueue.dequeue();
@@ -53,7 +55,8 @@ const Game = () => {
         }
       })
       socket.on("gameDataUpdate", (data: GameState) => {
-        gameDataqueue.queue(data);
+        if (FrameId <= gameDataqueue.peek().id)
+          gameDataqueue.queue(data);
       });
     }
     return () => {

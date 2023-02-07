@@ -52,7 +52,7 @@ const LoginPage = () => {
           FREE, FAN AND READY TO PLAY!
         </Text>
         <Box width='100%' display='flex' justifyContent='center'>
-          <a href="http://10.12.10.12:3333/api/auth/login">
+          <a href="http://10.12.13.4:3333/api/auth/login">
             <Button
               bg="#FF5323"
               width="310px"

@@ -70,10 +70,10 @@ model ChatRooms {
 model games {
   id Int @id @default(autoincrement())
   redCornerId Int
-  redCornerScore Int
+  redCornerScore Int @default(0)
   redCorner User @relation(name:"fk_redCorner", fields: [redCornerId], references: [id])
   blueCornerId Int
-  blueCornerScore Int
+  blueCornerScore Int @default(0)
   blueCorner User @relation(name:"fk_blueCorner", fields: [blueCornerId], references: [id])
   createdAt DateTime @default(now())
   map String @default("default")

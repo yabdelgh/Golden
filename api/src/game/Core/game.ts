@@ -38,10 +38,8 @@ export interface GameState {
     players: Vector[];
     playersState: {action:number, direction:PlayerMove}[]
 }
-const AsyncLock = require('async-lock');
 
 export class Game {
-    lock = new AsyncLock();
     private frameid = 0;
     private frames = 0;
     private _id;
@@ -56,7 +54,7 @@ export class Game {
     private remaining_rounds: number = 0;
     private _engine: Engine;
     emiter: Subject<GameState> = new Subject<GameState>();
-    gameEndEvent: Subject<GameState> = new Subject<GameState>();
+    gameEndEvent: Subject<Game> = new Subject<Game>();
     webClientEvent: Subject<GameState> = new Subject<GameState>();
     private runner: Runner;
     private ball_speed: Vector;
@@ -185,13 +183,7 @@ export class Game {
         }
         this.rounds--;
         if (this.rounds == 0) {
-            this.emit_game_state({}, this.gameEndEvent)
-            // this.gameEndEvent.next({
-            //     ball: this._ball.position,
-            //     player1: this._players[0].body.position,
-            //     player2: this._players[1].body.position,
-            // });
-            // this.stop();
+            this.gameEndEvent.next(this)
         }
     }
 

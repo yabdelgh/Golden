@@ -40,6 +40,10 @@ export class UserDto {
   inGame?: boolean;
 
   @IsOptional()
+  @IsNumber()
+  gameId?: number;
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   twoFactorAuthenticationCode?: String;

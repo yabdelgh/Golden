@@ -10,10 +10,10 @@ import { PadelType, ArenaType } from '../utils/GameEnums'
 @Injectable()
 export class GameService {
     games: Map<number, Game> = new Map<number, Game>; // use map instead
-    constructor(private readonly prismaService: PrismaService) { }
+    constructor(private readonly prisma: PrismaService) { }
 
     async getHistory(userId: number) {
-        const ret = await this.prismaService.games.findMany({
+        const ret = await this.prisma.games.findMany({
             where: {
                 OR: [{ redCornerId: userId }, { blueCornerId: userId }],
             },
@@ -23,7 +23,7 @@ export class GameService {
     }
 
     async getOverview(userId: number) {
-        const games = await this.prismaService.games.findMany({
+        const games = await this.prisma.games.findMany({
             where: {
                 OR: [{ redCornerId: userId }, { blueCornerId: userId }],
             },
@@ -42,7 +42,7 @@ export class GameService {
     }
 
     async getChallenges(userId: number) {
-        const ret = await this.prismaService.challenges.findMany({
+        const ret = await this.prisma.challenges.findMany({
             where: {
                 OR: [{ challengedId: userId }, { challengerId: userId }],
             },
@@ -52,7 +52,7 @@ export class GameService {
 
     async challenge(challengerId: number, challenge: any) {
         try {
-            const ret = await this.prismaService.challenges.create({
+            const ret = await this.prisma.challenges.create({
                 data: {
                     challengerId,
                     challengedId: challenge.challengedId,
@@ -66,7 +66,7 @@ export class GameService {
     }
 
     async deleteChallenge(challengerId: number, challengedId: number) {
-        const ret = await this.prismaService.challenges.delete({
+        const ret = await this.prisma.challenges.delete({
             where: {
                 challengerId_challengedId: { challengerId, challengedId },
             },
@@ -75,43 +75,57 @@ export class GameService {
     }
 
     create_players(players: mySocket[], padelType: PadelType): APlayer[] {
-       // create player by setting the id for each player and set the callback for sending data to the client
-       // should create a padel factory and use it like that: PadelFactory.create(padelType): body
-       return players.map(player => {
-           const padel = Bodies.rectangle(0,0, 20, 100)
-           console.log("player-socket", player.user)
-           const p =  new Player(padel, player.user.id)
-           p.GameUpdateCallback = (state:GameState) => {
+        // create player by setting the id for each player and set the callback for sending data to the client
+        // should create a padel factory and use it like that: PadelFactory.create(padelType): body
+        return players.map(player => {
+            const padel = Bodies.rectangle(0, 0, 20, 100)
+            console.log("player-socket", player.user)
+            const p = new Player(padel, player.user.id)
+            p.GameUpdateCallback = (state: GameState) => {
                 player.emit("game_update", state)
             }
             return p
-       })
+        })
     }
 
-    newSimpleGame(players: mySocket[]): Game {
+    newSimpleGame(players: mySocket[]): Promise<Game> {
         return this.newGame(players, PadelType.Simple, ArenaType.Simple);
     }
 
-    newGame(players: mySocket[], padelType: PadelType, arenaType: ArenaType): Game {
+    async newGame(players: mySocket[], padelType: PadelType, arenaType: ArenaType): Promise<Game> {
+        const dbgame = await this.prisma.games.create({
+            data: {
+                blueCornerId: players[0].user.id,
+                redCornerId: players[1].user.id,
+                map: "",
+            }
+        })
+        players.forEach(p => p.user.gameId = dbgame.id)
         const gamePlayers = this.create_players(players, padelType);
         const game = new Game({
-                        id:0,
-                        ball:Bodies.circle(0,0, 10),
-                        players: gamePlayers,
-                        obstacles:[],
-                        size: Vector.create(500, 500),
-                        scale:1})
+            id: dbgame.id,
+            ball: Bodies.circle(0, 0, 10),
+            players: gamePlayers,
+            obstacles: [],
+            size: Vector.create(500, 500),
+            scale: 1
+        })
         this.games.set(game.id, game)
         // game.ball
-        game.subscribeGameEnd((game: Game)=> {
+        game.subscribeGameEnd((game: Game) => {
             // set the status and teh score to the database
             // remove the game from the map
-            // this.games.delete(game.id)
+            console.log(game.score)
+            this.prisma.games.update({
+                where: { id: game.id },
+                data: { blueCornerScore: game.score[0], redCornerScore: game.score[1] }
+            })
+            this.games.delete(game.id)
         })
         return game
     }
-    
-    getGame(id: number): Game | undefined{
+
+    getGame(id: number): Game | undefined {
         return this.games.get(id)
     }
 }

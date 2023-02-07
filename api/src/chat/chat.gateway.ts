@@ -34,7 +34,7 @@ export class mySocket extends Socket {
 
 @WebSocketGateway({
     cors: {
-        origin: 'http://10.12.10.12:3000',
+        origin: 'http://10.12.13.4:3000',
         credentials: true,
     },
     namespace: 'chat',
@@ -440,33 +440,38 @@ export class ChatGateway
             this.server.in([...socket.rooms]).emit('inGame', { id: socket.user.id, inGame: true });
             const opponent: any = await this.server.in(`${pairing[0]}`).fetchSockets();
             this.server
-            .in([...opponent[0].rooms])
-            .emit('inGame', { id: pairing[0], ingame: true });
+                .in([...opponent[0].rooms])
+                .emit('inGame', { id: pairing[0], ingame: true });
             opponent[0].user.inGame = true;
-            const game = this.gameService.newSimpleGame([socket, opponent[0]])
-            await opponent[0].join("Game0")
-            await socket.join("Game0")
+            const game = await this.gameService.newSimpleGame([socket, opponent[0]])
+            await opponent[0].join(`Game${game.id}`)
+            await socket.join(`Game${game.id}`)
             game.subscribeWebClient((data: GameState) => {
-                this.server.in("Game0").emit('gameDataUpdate', data)
+                this.server.in(`Game${game.id}`).emit('gameDataUpdate', data)
             })
-            setTimeout(() => {game.start()}, 3000)
+            setTimeout(() => { game.start() }, 3000)
         }
         //  else
         //  socket.emit('waitAGame');
     }
 
     @SubscribeMessage('getGameData')
-    async getGameData(@ConnectedSocket() socket: mySocket) {
-        const data = {
-            //get the user data from the socket by the player id
-            playersData : this.gameService.getGame(0).players.map(p => {return {id : p.id}}),
-            players: this.gameService.getGame(0).players.map(p => p.body),
-            obstacles: this.gameService.getGame(0).obstacles,
-            ball: this.gameService.getGame(0).ball,
-            gameSize: this.gameService.getGame(0).size
+    async getGameDataById(@ConnectedSocket() socket: mySocket, @MessageBody() gameId: number = null) {
+        if (!gameId)
+            gameId = socket.user.gameId
+        const game = this.gameService.getGame(gameId)
+        if (game) {
+            const data = {
+                //get the user data from the socket by the player id
+                playersData: game.players.map(p => { return { id: p.id } }),
+                players: game.players.map(p => p.body),
+                obstacles: game.obstacles,
+                ball: game.ball,
+                gameSize: game.size
 
+            }
+            socket.emit("gameData", safeStringify(data))
         }
-        socket.emit("gameData", safeStringify(data))
     }
 
     @SubscribeMessage('cancelQuickPairing')
@@ -478,9 +483,8 @@ export class ChatGateway
     @SubscribeMessage('gamePlayerMove')
     async GamePlayerMove(@ConnectedSocket() socket: mySocket,
         @MessageBody() move: SocketGamePlayerMoveData,) {
-        this.matchMaker.cancel(Number(socket.id));
-
-        const player: APlayer = this.gameService.getGame(0).get_player_by_id(socket.user.id)
+        const game = this.gameService.getGame(socket.user.gameId)
+        const player: APlayer = game && game.get_player_by_id(socket.user.id)
         if (player) {
             if (move.action === MoveStat.Start) {
                 console.log("player try to move", player.id);

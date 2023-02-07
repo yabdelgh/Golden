@@ -136,9 +136,13 @@ const Game = () => {
   }, []);
 
   return (
-    <div className="canvas-container">
-      <div id="render" className="matter-canvas" ref={divRef} />
-    </div> 
+    <>
+      <Box position={"absolute"} top={"100px"} left={"100px"}>User profile1</Box>
+      <Box position={"absolute"} top={"100px"} right={"40px"}>User profile2</Box>
+      <div className="canvas-container">
+        <div id="render" className="matter-canvas" ref={divRef} />
+      </div> 
+    </>
   )
 };
 

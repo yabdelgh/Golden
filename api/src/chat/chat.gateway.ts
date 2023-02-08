@@ -457,14 +457,19 @@ export class ChatGateway
 
     @SubscribeMessage('getGameData')
     async getGameData(@ConnectedSocket() socket: mySocket) {
+        console.log(this.gameService.getGame(0).players);
+        const id1 = this.gameService.getGame(0).players[0].id
+        const id2 = this.gameService.getGame(0).players[1].id
+        const user1 = await this.userService.getUser(id1)
+        const user2 = await this.userService.getUser(id2)
         const data = {
             //get the user data from the socket by the player id
             playersData : this.gameService.getGame(0).players.map(p => {return {id : p.id}}),
             players: this.gameService.getGame(0).players.map(p => p.body),
             obstacles: this.gameService.getGame(0).obstacles,
             ball: this.gameService.getGame(0).ball,
-            gameSize: this.gameService.getGame(0).size
-
+            gameSize: this.gameService.getGame(0).size,
+            usersOfPlayers: [user1, user2]
         }
         socket.emit("gameData", safeStringify(data))
     }

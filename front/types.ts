@@ -49,6 +49,7 @@ export type GameData = {
     players: Object[],
     obstacles: Object[],
     ball: Object,
+    usersOfPlayers: any[]
 }
 
 export type SocketGamePlayerMoveData = {
@@ -61,7 +62,8 @@ export type GameState = {
     ball_velocity: Vector;
     ball: Vector;
     players: Vector[];
-    playersState: SocketGamePlayerMoveData
+    playersState: SocketGamePlayerMoveData;
+    score: number[];
 }
 
 export type GameBodies = {

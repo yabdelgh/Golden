@@ -36,7 +36,8 @@ export interface GameState {
     // player1: Vector;
     // player2: Vector;
     players: Vector[];
-    playersState: {action:number, direction:PlayerMove}[]
+    playersState: {action:number, direction:PlayerMove}[];
+    score: number[];
 }
 const AsyncLock = require('async-lock');
 
@@ -239,7 +240,8 @@ export class Game {
                 playersState : [
                     {action:this._players[0].isMoving?0:1, direction: this._players[0].movingDirection},
                     {action:this._players[1].isMoving?0:1, direction: this._players[1].movingDirection}
-                ]
+                ],
+                score: this._score
             });
         // if (this.frameid < 10)
         //     console.log("---->", this.frameid)

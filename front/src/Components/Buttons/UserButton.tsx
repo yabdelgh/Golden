@@ -1,6 +1,6 @@
 import { Avatar, Button, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { AppState } from "../Context/AppProvider";
+import { AppState } from "../../Context/AppProvider";
 
 const User = ({ id, isOnline }: any) => {
   const [user, setUser]: any[] = useState({ login: "not found" });

@@ -9,7 +9,6 @@ import { IoMdNotifications } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
 import { Avatar } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { AppState } from "../Context/AppProvider";
 import axios from "axios";
 import { HiOutlineLockClosed, HiOutlineLogout } from "react-icons/hi";
@@ -23,7 +22,6 @@ import {
 import { CgProfile} from 'react-icons/cg'
 import {
   IoGameControllerOutline,
-  IoChatbubblesOutline,
 } from "react-icons/io5";
 import SearchModal from "./SearchModal";
 import {

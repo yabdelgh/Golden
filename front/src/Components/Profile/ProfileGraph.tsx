@@ -15,7 +15,6 @@ export default function ProfileGraph({ wins, games }: any) {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      // tooltip: false,
       datalabels: {
         formatter: (value: any, ctx: any) => {
           let sum = 0;
@@ -35,8 +34,6 @@ export default function ProfileGraph({ wins, games }: any) {
     onHover: function (e: any) {
       e.native.target.style.cursor = "pointer";
     },
-    // rotation: 270,
-    // events: ["click"],
     onClick: function (event: any, element: any) {
       console.log(element[0].index);
     },

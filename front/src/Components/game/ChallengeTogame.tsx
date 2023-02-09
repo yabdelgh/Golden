@@ -11,10 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 import { AppState } from "../../Context/AppProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { User } from "../../../types";
-import { thereIsSomeOneOnline } from "../../Utils/rooms";
-import { setMaxIdleHTTPParsers } from "http";
 
 const ChallengeTogame = ({
   setInvit,

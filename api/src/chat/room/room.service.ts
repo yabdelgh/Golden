@@ -17,6 +17,7 @@ export class RoomService {
     return hash;
   }
 
+
   async getRooms(userId: number): Promise<chatRoomDto[]> {
     const rooms: chatRoomDto[] = await this.prisma.chatRooms.findMany({
       where: {

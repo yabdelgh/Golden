@@ -1,11 +1,9 @@
 import { Avatar, Box, Button, Text } from "@chakra-ui/react";
-import { Navigate, useNavigate } from "react-router-dom";
 import { User } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 
 const Challenge = ({ challenge , onClose}: any) => {
   const { user, users, socket } = AppState();
-  const navigate = useNavigate();
   if (!user ||  users.length === 0) return <></>;
   if (challenge.challengedId === user.id) {
     const opponent = users.find(

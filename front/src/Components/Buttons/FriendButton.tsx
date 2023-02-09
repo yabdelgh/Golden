@@ -1,5 +1,5 @@
 import { Box, Button } from "@chakra-ui/react";
-import { useEffect, useReducer, useState, } from "react";
+import { useEffect, useState, } from "react";
 import { AppState } from "../../Context/AppProvider";
 
 const FriendButton = ({ target }: any) => {
@@ -16,7 +16,7 @@ const FriendButton = ({ target }: any) => {
             setAction('Accept Request');
         else
             setAction('Delete Request');
-    }, [userProfile, Friends]);
+    }, [userProfile, Friends, target]);
 
 
     return (

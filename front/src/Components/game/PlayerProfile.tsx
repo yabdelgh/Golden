@@ -1,5 +1,4 @@
 import { Box, Image, Text } from '@chakra-ui/react'
-import React from 'react'
 import { IoIosPeople } from 'react-icons/io'
 
 const PlayerProfile = ({ target, color }: any) => {

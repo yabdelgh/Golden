@@ -1,5 +1,5 @@
 import { Box, Button, Text } from "@chakra-ui/react";
-import { AppState } from "../Context/AppProvider";
+import { AppState } from "../../Context/AppProvider";
 const TwoFactorDoc = ({ barCode, verify, setBarCode, setVerify }: any) => {
     const { user } = AppState();
   

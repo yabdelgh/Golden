@@ -16,7 +16,7 @@ import SecurityPage from "./Pages/SecurityPage";
 import { io } from "socket.io-client";
 import UseHere from "./Pages/UseHere";
 import LoadingPage from "./Pages/LoadingPage";
-import ChatHeader from "./Components/ChatHeader";
+import ChatHeader from "./Components/AppHeader";
 function App() {
   const {
     setUserProfile,

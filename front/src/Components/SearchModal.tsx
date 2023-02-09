@@ -12,7 +12,7 @@ import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Room, User } from "../../types";
 import { AppState } from "../Context/AppProvider";
-import RoomButton from "./RoomButton";
+import RoomButton from "./Buttons/RoomButton";
 import TmpButton from "./TmpButton";
 
 const SearchModal = ({ children }: any) => {

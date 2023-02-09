@@ -10,7 +10,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaCog } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 const MoreButton = ({ target }: any) => {
   const { selectedRoom, socket, user } = AppState();

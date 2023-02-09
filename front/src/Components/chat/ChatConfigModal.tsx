@@ -5,7 +5,6 @@ import {
   ModalHeader,
   ModalBody,
   useDisclosure,
-  IconButton,
   Text,
   Box,
   FormControl,
@@ -15,7 +14,7 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { AppState } from "../Context/AppProvider";
+import { AppState } from "../../Context/AppProvider";
 
 const ChatConfigModal = ({ children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,11 +36,11 @@ const ChatConfigModal = ({ children }: any) => {
         <ModalOverlay />
         <ModalContent
           border="5px white solid"
-          borderRadius="15px"
+          borderRadius="5px"
           fontFamily="Inter"
         >
           <ModalHeader>
-            <Text>Chat settings</Text>
+            <Text color='gray.400'>Chat settings</Text>
           </ModalHeader>
           <ModalBody>
             <FormControl mb="5px">
@@ -51,7 +50,10 @@ const ChatConfigModal = ({ children }: any) => {
                   focusBorderColor="gray.200"
                 />
                 <InputRightElement width="5rem">
-                  <Button m="10px" height="75%" bg="green.300">
+                  <Button m="10px" height="75%" bg="#BAD1C2"
+                    fontSize='14px'
+                    color='gray.500'
+                  >
                     invite
                   </Button>
                 </InputRightElement>
@@ -68,7 +70,9 @@ const ChatConfigModal = ({ children }: any) => {
                   <Button
                     m="10px"
                     height="75%"
-                    bg="green.300"
+                    fontSize='14px'
+                    color='gray.500'
+                    bg="#BAD1C2"
                     onClick={(e) => updateRoom()}
                   >
                     update

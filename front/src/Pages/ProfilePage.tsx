@@ -3,10 +3,8 @@ import FriendsList from "../Components/Friends/FriendsList";
 import ProfileBar from "../Components/Profile/ProfileBar";
 import ProfileGraph from "../Components/Profile/ProfileGraph";
 import ProfileHistory from "../Components/Profile/ProfileHistory";
-import { AppState } from "../Context/AppProvider";
 
 const ProfilePage = () => {
-  const { userProfile, user } = AppState();
   return (
     <Box
       display='flex'

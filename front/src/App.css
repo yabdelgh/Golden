@@ -8,6 +8,7 @@
   background-color: 	#E9EBEE;
   font-family: 'work sans';
   user-select: none;
+  overflow: hidden;
 }
 *{
   -webkit-user-drag: none;
@@ -36,4 +37,37 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.debug{
+  border: 1px solid red;
+}
+.debug > *{
+  border: 1px solid green;
+}
+
+.debug > * > *{
+  border: 1px solid blue;
+}
+
+
+.scale-up
+{
+  animation: scaleup 700ms ease;
+}
+
+@keyframes scaleup {
+  0% {
+    max-width: 0px;
+  }
+  100% {
+    max-width: 20rem;
+  }
+}
+
+
+@media screen and (max-width: 1200px) {
+  .md-none {
+    display: none;
+  }
 }

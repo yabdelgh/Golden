@@ -1,6 +1,6 @@
-import { Box, Button, Image, Text } from "@chakra-ui/react";
+import { Box,Image, Text } from "@chakra-ui/react";
 import { SlPeople } from "react-icons/sl";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 
 const FriendsList = () => {

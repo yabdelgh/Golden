@@ -1,7 +1,7 @@
 import { Box, HStack, Image, Text, useRadioGroup } from "@chakra-ui/react";
 import RadioEx from "../RadioEx";
 
-const Maps = ({ setMap}: any) => {
+const Maps = ({ setMap }: any) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "Maps",
     defaultValue: "default",
@@ -10,15 +10,13 @@ const Maps = ({ setMap}: any) => {
 
   return (
     <HStack
-          {...getRootProps()}
+      {...getRootProps()}
       width="100%"
       display="flex"
-     // height="150px"
-          m='10px'
-          p='10px'
-      border='2px solid #C1C2C7'
-          borderRadius='lg'
-
+      m="10px"
+      p="10px"
+      border="2px solid #C1C2C7"
+      borderRadius="lg"
       justifyContent="space-around"
     >
       <RadioEx {...getRadioProps({ value: "default" })}>
@@ -27,7 +25,7 @@ const Maps = ({ setMap}: any) => {
           <Text>default</Text>
         </Box>
       </RadioEx>
-      <RadioEx {...getRadioProps({ value: "pyramids"})}>
+      <RadioEx {...getRadioProps({ value: "pyramids" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
           <Image src="defaultMap.png" width="130px" draggable={false} />
           <Text>Pyramids</Text>

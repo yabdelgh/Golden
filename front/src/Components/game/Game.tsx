@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppState } from "../../Context/AppProvider";
-import PlayerProfile from "../PlayerProfile";
+import PlayerProfile from "./PlayerProfile";
 
 const FPS = 60;
 const PLAYER_WIDTH = 12;

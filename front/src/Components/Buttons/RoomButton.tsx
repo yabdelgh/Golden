@@ -1,6 +1,6 @@
 import { Avatar, Button, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { AppState } from "../Context/AppProvider";
+import { AppState } from "../../Context/AppProvider";
 
 const RoomButton = ({ ele, onClose }: any) => {
 

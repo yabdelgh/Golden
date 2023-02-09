@@ -17,14 +17,14 @@ function RadioEx( props : any) {
         borderRadius="md"
         boxShadow="md"
         _checked={{
-          bg: "teal",
+          bg: props.bg || "teal",
         }}
         _focus={{
           boxShadow: "none",
-          borderColor:'gray'
+          borderColor:'none'
         }}
-        px={5}
-        py={3}
+        px={4}
+        py={2}
       >
         {props.children}
       </Box>

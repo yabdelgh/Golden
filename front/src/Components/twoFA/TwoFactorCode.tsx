@@ -8,8 +8,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-import { User } from "../../types";
-import { AppState } from "../Context/AppProvider";
+import { AppState } from "../../Context/AppProvider";
 
 const TwoFactorCode = ({ verify, setVerify }: any) => {
   const { user, setUser } = AppState();
@@ -20,13 +19,14 @@ const TwoFactorCode = ({ verify, setVerify }: any) => {
         token,
         value: !user.isTwoFactorAuthenticationEnabled,
       })
-      .then(() =>(
+      .then(() => {
         setUser((data: any) => {
           data.isTwoFactorAuthenticationEnabled =
             !data.isTwoFactorAuthenticationEnabled;
           return data;
-        }), setVerify(false)
-      )
+        });
+        setVerify(false)
+      }
       )
   };
   return (

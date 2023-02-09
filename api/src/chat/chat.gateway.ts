@@ -211,7 +211,6 @@ export class ChatGateway
     socket.emit('Unfriend', friend);
   }
 
-  //accept friend request
   @SubscribeMessage('Accept Request')
   async AcceptFriend(
     @ConnectedSocket() socket: mySocket,

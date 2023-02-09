@@ -22,8 +22,7 @@ const TwoFAPage = () => {
       .then((res) => {
         navigate("/profile");
       })
-  }
-    ;
+  };
 
   return (
     <Box
@@ -43,7 +42,7 @@ const TwoFAPage = () => {
         fontFamily="Work sans"
         fontWeight="bold"
       >
-        King-Pong
+        Golden
       </Text>
       <Text fontSize="40px">Two-factor authentication</Text>
       <FormControl

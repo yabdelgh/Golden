@@ -6,7 +6,6 @@ import { AppState } from "../Context/AppProvider";
 import Game from "../Components/game/Game";
 import WaitAGame from "../Components/game/WaitAGame";
 import { User } from "../../types";
-import { validateHeaderValue } from "http";
 
 const GamePage = () => {
   const { user, setUser, socket} = AppState();
@@ -53,39 +52,3 @@ const GamePage = () => {
 };
 
 export default GamePage;
-
-{
-  /* <Box
-          m="10px"
-          display="flex"
-          flexDir="column"
-          alignItems="center"
-          justifyContent={"space-around"}
-          height="600px"
-          width="500px"
-          border="3px solid white"
-          borderRadius="lg"
-        >
-          <Box bg="white" width="90%" pl="120px" borderRadius="lg">
-            <Text fontSize="40px">Challenges</Text>
-          </Box>
-          <Box
-            height="470px"
-            width="90%"
-            border="3px solid white"
-            bg="white"
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            justifyContent={"center"}
-          >
-            {challegens ? (
-              challegens.map(() => <>hello</>)
-            ) : (
-              <Text fontFamily={"Inter"} fontSize="20px">
-                No challegens
-              </Text>
-            )}
-          </Box>
-        </Box> */
-}

@@ -1,9 +1,9 @@
 import { Box } from "@chakra-ui/react";
 import { useState } from "react";
 import Lottie from "react-lottie";
-import TwoFactorBarCode from "../Components/TwoFactorBarCode";
-import TwoFactorCode from "../Components/TwoFactorCode";
-import TwoFactorDoc from "../Components/TwoFactorDoc";
+import TwoFactorBarCode from "../Components/twoFA/TwoFactorBarCode";
+import TwoFactorCode from "../Components/twoFA/TwoFactorCode";
+import TwoFactorDoc from "../Components/twoFA/TwoFactorDoc";
 import animationData from "./secuity-2fa-code.json";
 
 const SecurityPage = () => {

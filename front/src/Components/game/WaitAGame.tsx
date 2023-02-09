@@ -1,11 +1,9 @@
 import { Box, Button, Text } from "@chakra-ui/react"
 import Lottie from "react-lottie";
 import { AppState } from "../../Context/AppProvider";
-import User from "../UserButton";
 import  animationData from './loadingPong.json'
 
 const WaitAGame = () => {
-
   const { socket, user, setUser} = AppState();
 
   const defaultOptions = {

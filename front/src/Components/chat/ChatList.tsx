@@ -8,9 +8,9 @@ import {
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
 import CreateGroupModal from "./CreateGroupModal";
-import { AppState } from "../Context/AppProvider";
+import { AppState } from "../../Context/AppProvider";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import { getUserByName, thereIsSomeOneOnline } from "../Utils/rooms";
+import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
 
 const ChatList = () => {
   const {
@@ -40,14 +40,12 @@ const ChatList = () => {
     <Box
       display="flex"
       flexDir="column"
-      p="3"
-      top='70'
-      left='85'
-      borderRadius={'lg'}
+      borderRadius="lg"
       bg="white"
-      height='calc(100% - 80px)'
-      position='fixed'
-      w={{base: '290px', md: '360px'}}
+      p="3"
+      height="100%"
+      w={{ base: "290px", md: "360px" }}
+      mr="5px"
     >
       <Box display="flex" justifyContent="space-between">
         <Text fontSize="25px" fontFamily="Work sans" height="50px" m="5px">
@@ -64,9 +62,9 @@ const ChatList = () => {
           width="100%"
           overflowY="auto"
           spacing={0}
-        // divider={<StackDivider borderColor="gray.200" />}
-        // borderBottom="1px #EEEEEE solid"
-        // borderTop="1px #EEEEEE solid"
+          // divider={<StackDivider borderColor="gray.200" />}
+          // borderBottom="1px #EEEEEE solid"
+          // borderTop="1px #EEEEEE solid"
         >
           {rooms.map((room: any) => (
             <Box
@@ -86,15 +84,15 @@ const ChatList = () => {
               <Avatar
                 color="white"
                 bg="teal"
-                ml='10px'
-                size={'md'}
-                border='3px solid white'
+                ml="10px"
+                size={"md"}
+                border="3px solid white"
                 name={room.name}
                 src={
                   room.isGroupChat
                     ? undefined
                     : getUserByName(users, room.name)?.imageUrl ||
-                    "/defaultProfilePic.png"
+                      "/defaultProfilePic.png"
                 }
               >
                 {thereIsSomeOneOnline(users, room) ? (

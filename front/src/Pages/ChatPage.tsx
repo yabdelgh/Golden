@@ -1,26 +1,18 @@
 import { Box } from "@chakra-ui/react";
-import ChatBox from "../Components/ChatBox";
-import ChatList from "../Components/ChatList";
-import UsersList from "../Components/UsersList";
-import RightEle from "../Components/RightEle";
-import UserProfile from "../Components/UserProfile";
-import { AppState } from "../Context/AppProvider";
-import NavBar from "../Components/NavBar/NavBar";
+import ChatBox from "../Components/chat/ChatBox";
+import ChatList from "../Components/chat/ChatList";
 
 const ChatPage = () => {
-  const { showUP, usersList } = AppState();
-
   return (
     <Box
       width="100%"
       display="flex"
-      m='70px 0px 0px 72px'
+      m="70px 0px 10px 80px"
+      height="calc(100vh - 80px)"
+      p="0px 5px 0px 5px"
     >
       <ChatList />
       <ChatBox />
-      {/* <RightEle>
-        {showUP ? <UserProfile /> : usersList ? <UsersList /> : undefined}
-      </RightEle> */}
     </Box>
   );
 };

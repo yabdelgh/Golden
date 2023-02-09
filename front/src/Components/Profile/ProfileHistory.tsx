@@ -45,7 +45,7 @@ const ProfileHistory = () => {
       axios
         .get(`/api/game/history/${userProfile.id}`)
         .then(async (payload: any) => {
-          const ret = await payload.data.map((value: any) => setMatch(value));
+          payload.data.map((value: any) => setMatch(value));
         });
   }, [userProfile]);
 

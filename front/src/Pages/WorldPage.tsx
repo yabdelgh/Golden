@@ -8,7 +8,6 @@ import {
   InputRightElement,
   Text,
 } from "@chakra-ui/react";
-import ChatHeader from "../Components/ChatHeader";
 import { AppState } from "../Context/AppProvider";
 import { GiWorld } from "react-icons/gi";
 import { IoIosPeople } from "react-icons/io";
@@ -75,7 +74,6 @@ const WorldPage = () => {
             <Box display="flex" flexDir="column" alignItems="center">
               <IoIosPeople size="40px" />
               <Text fontWeight="bold" mt="7px">
-                {/* {roomProfile.RoomUsers.length} */}
                 113k
               </Text>
               <Text color="gray.700">Members</Text>

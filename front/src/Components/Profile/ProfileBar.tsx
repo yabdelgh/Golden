@@ -4,7 +4,7 @@ import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
 
 const ProfileBar = () => {
-  const { userProfile, Friends, user } = AppState();
+  const { userProfile, user } = AppState();
   
   return (
           <Box 

@@ -11,5 +11,6 @@ import { GameModule } from 'src/game/game.module';
 @Module({
   imports: [PrismaModule, JwtModule, RoomModule, MsgModule, UserModule, GameModule],
   providers: [ChatService, ChatGateway],
+  exports: [ChatGateway]
 })
 export class ChatModule {}

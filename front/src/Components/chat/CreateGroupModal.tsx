@@ -15,12 +15,16 @@ import {
   InputRightElement,
   RadioGroup,
   HStack,
-  Radio,
   useToast,
+  useRadioGroup,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { AppState } from "../Context/AppProvider";
-import { warningToast } from "../Utils/Toast";
+import { FcLock } from "react-icons/fc";
+import { GiWorld } from "react-icons/gi";
+import { AppState } from "../../Context/AppProvider";
+import { warningToast } from "../../Utils/Toast";
+import RadioEx from "../RadioEx";
+import { FcKey } from "react-icons/fc";
 
 const CreateGroupModal = ({ children }: any) => {
   const { socket } = AppState();
@@ -33,11 +37,16 @@ const CreateGroupModal = ({ children }: any) => {
 
   const createNewGroup = () => {
     if (name === "") warningToast(toast, "Please enter a group name");
-    else if (access === "protected" && password === "")
-      warningToast(toast, "Please enter a password");
+    else if (access === "protected" && password.length < 4)
+      warningToast(toast, "Please enter a strong password");
     else socket.emit("addRoom", { id: 0, name, access, password });
   };
 
+  const { getRadioProps } = useRadioGroup({
+    name: "access",
+    defaultValue: "protected",
+    onChange: setAccess,
+  });
   return (
     <Box>
       {children ? (
@@ -54,11 +63,13 @@ const CreateGroupModal = ({ children }: any) => {
         <ModalOverlay />
         <ModalContent
           border="5px white solid"
-          borderRadius="lg"
+          borderRadius="5px"
           fontFamily="Inter"
         >
           <ModalHeader>
-            <Text fontWeight='bolder' color='gray'>Create a new group</Text>
+            <Text fontWeight="bold" color="gray.500">
+              Create a new group
+            </Text>
           </ModalHeader>
           <ModalBody>
             <FormControl mb="5px">
@@ -68,7 +79,7 @@ const CreateGroupModal = ({ children }: any) => {
                 onBlur={(e) => setName(e.target.value)}
               />
             </FormControl>
-            {access === "Protected" && (
+            {access === "protected" && (
               <FormControl id="Password" isRequired>
                 <InputGroup size="md">
                   <Input
@@ -90,21 +101,35 @@ const CreateGroupModal = ({ children }: any) => {
                 </InputGroup>
               </FormControl>
             )}
-            <FormControl as="fieldset" m="15px 40px">
+            <FormControl as="fieldset" m="15px 0px">
               <RadioGroup onChange={setAccess} value={access}>
-                <HStack spacing="24px">
-                  <Radio value="Private">Private</Radio>
-                  <Radio value="Public">Public</Radio>
-                  <Radio value="Protected">Protected</Radio>
+                <HStack spacing="16px">
+                  <RadioEx {...getRadioProps({ value: "private" })} bg='#BAD1C2'>
+                    <Box display={"flex"} alignItems={"center"} width='fit-content'>
+                      <FcLock size="20px" />
+                      <Text m="0px 5px">Private</Text>
+                    </Box>
+                  </RadioEx>
+                  <RadioEx {...getRadioProps({ value: "protected" })} bg='#BAD1C2'>
+                    <Box display={"flex"} alignItems={"center"}>
+                      <FcKey size="20px" />
+                      <Text m="0px 5px">Protected</Text>
+                    </Box>
+                  </RadioEx>
+                  <RadioEx {...getRadioProps({ value: "public" })} bg='#BAD1C2'>
+                    <Box display={"flex"} alignItems={"center"}>
+                      <GiWorld size="20px" />
+                      <Text m='0px 5px'>public</Text>
+                    </Box>
+                  </RadioEx>
                 </HStack>
               </RadioGroup>
             </FormControl>
             <Button
               width="100%"
               mb="5px"
-              bg="green.300"
+              bg="#BAD1C2"
               onClick={createNewGroup}
-           //   autoFocus
             >
               create
             </Button>

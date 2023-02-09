@@ -3,19 +3,29 @@ import React from "react";
 
 const PlayerScore = ({ name, score, image }: any) => {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      borderWidth="2px"
+      borderRadius="20px"
+      p="40px"
+      w="300px"
+    >
       <Image
         src={image}
         rounded="100%"
-        w="100px"
-        h="100px"
+        w="150px"
+        h="150px"
         objectFit="cover"
-        mb="10px"
+        mb="20px"
       />
-      <Text fontSize="20px" fontWeight="bold">
+      <Text fontSize="30px" fontWeight="bold" color="gray.800">
         {name}
       </Text>
-      <Text fontSize="16px">Score: {score}</Text>
+      <Text fontSize="30px" fontWeight="bold" color="gray.600">
+        Score: {score}
+      </Text>
     </Box>
   );
 };

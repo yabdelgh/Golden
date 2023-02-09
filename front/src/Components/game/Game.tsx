@@ -64,11 +64,11 @@ const Game = () => {
         }
       });
       socket.on("gameDataUpdate", (data: GameState) => {
-        if (data.score[0] != score1) {
-          setScore1(data.score[0]);
+        if (data.score[1] != score1) {
+          setScore1(data.score[1]);
         }
-        if (data.score[1] != score2) {
-          setScore2(data.score[1]);
+        if (data.score[0] != score2) {
+          setScore2(data.score[0]);
         }
         gameDataqueue.queue(data);
       });

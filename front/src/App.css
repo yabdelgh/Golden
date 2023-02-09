@@ -37,3 +37,36 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.debug{
+  border: 1px solid red;
+}
+.debug > *{
+  border: 1px solid green;
+}
+
+.debug > * > *{
+  border: 1px solid blue;
+}
+
+
+.scale-up
+{
+  animation: scaleup 500ms ease;
+}
+
+@keyframes scaleup {
+  0% {
+    max-width: 0px;
+  }
+  100% {
+    max-width: 30rem;
+  }
+}
+
+
+@media screen and (max-width: 1400px) {
+  .md-none {
+    display: none;
+  }
+}

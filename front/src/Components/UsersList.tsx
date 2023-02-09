@@ -23,23 +23,31 @@ const UsersList = () => {
     usersList,
     setUsersList,
   } = AppState();
-  
+
   const [onlineCounter, setOnlineCounter] = useState(0);
   const [offlineCounter, setOfflineCounter] = useState(0);
 
   useEffect(() => {
     selectedRoom &&
-    setOnlineCounter(() => {
-      const ret = users.filter((user: User) => (user.isOnline &&
-        selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id)));
+      setOnlineCounter(() => {
+        const ret = users.filter(
+          (user: User) =>
+            user.isOnline &&
+            selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id)
+        );
         setOfflineCounter(selectedRoom.RoomUsers.length - ret.length - 1);
         return ret.length;
-      })
-  },[users, selectedRoom])
+      });
+  }, [users, selectedRoom]);
 
   return (
     <>
-      <Box display="flex" alignItems={"center"} justifyContent="space-between">
+      <Box
+        display="flex"
+        alignItems={"center"}
+        justifyContent="space-between"
+        width={"100%"}
+      >
         <FormControl height="30px" width="80%" margin="20px">
           <InputGroup>
             <Input
@@ -71,7 +79,11 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <UserButton id={roomUser.userId} isOnline={true} key={roomUser.userId} />
+            <UserButton
+              id={roomUser.userId}
+              isOnline={true}
+              key={roomUser.userId}
+            />
           ))
         ) : (
           <></>
@@ -83,7 +95,11 @@ const UsersList = () => {
       <Box display="flex" flexDir="column">
         {selectedRoom ? (
           selectedRoom.RoomUsers.map((roomUser: any) => (
-            <UserButton id={roomUser.userId} isOnline={false} key={roomUser.userId} />
+            <UserButton
+              id={roomUser.userId}
+              isOnline={false}
+              key={roomUser.userId}
+            />
           ))
         ) : (
           <></>

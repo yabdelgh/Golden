@@ -12,6 +12,7 @@ import { UserService } from './user.service';
 //import { diskStorage } from 'multer';
 import { UserDto } from './dtos/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 /*export const storage = {
   storage: diskStorage({
@@ -25,18 +26,19 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
   }),
 };*/
 
+@ApiTags('user')
 @Controller('user')
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userservice: UserService) {}
-  
+
   @Get()
   async getUser(@Query('id', ParseIntPipe) id: number) {
     const ret = await this.userservice.getUser(id);
     return ret;
   }
 
- /* @Post()
+  /* @Post()
   async createUser(@Body() user) {
     return this.userservice.createUser(user);
   }

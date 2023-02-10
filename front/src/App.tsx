@@ -45,10 +45,12 @@ function App() {
       })
     );
   }, [setSocket]);
-  useLayoutEffect(() => {
+  
+  useEffect(() => {
     if ( location.pathname !== '/' && !user.login && location.pathname !== '/twoFA')
-      navigate('/'); 
-  });
+      navigate('/');
+  },[]);
+
   useEffect(() => {
     if (!socket) return;
     socket.onAny((eventName: string, payload: any) => {
@@ -61,7 +63,7 @@ function App() {
       });
     });
 
-    socket.on("me", (payload: User) => { setUser(payload); setUserProfile(payload) });
+    socket.on("me", (payload: User) => {setUser(payload); setUserProfile(payload) });
 
     socket.on("inGame", (payload: any) => {
       setUser((value: User) => {
@@ -91,12 +93,12 @@ function App() {
     });
 
     socket.on("rooms", (payload: Room[]) => {
-      for (const ele of payload) ele.isGroupChat = true;
+      // for (const ele of payload) ele.isGroupChat = true;
       setRooms((value: Room[]) => [...value, ...payload]);
     });
 
     socket.on("dMRooms", (payload: Room[]) => {
-      for (const ele of payload) ele.isGroupChat = false;
+      // for (const ele of payload) ele.isGroupChat = false;
       setRooms((value: Room[]) => [...value, ...payload]);
     });
 
@@ -330,7 +332,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={user.login ? <ProfilePage /> : <LoginPage />}
+          element={<LoginPage />}
         />
         <Route path="/loading" element={<LoadingPage />} />
         <Route path="/useHere" element={<UseHere />} />

@@ -8,21 +8,22 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
-import { AppState } from "../Context/AppProvider";
-import UserButton from "./Buttons/UserButton";
-import { User } from "../../types";
+import { AppState } from "../../Context/AppProvider";
+import { RoomUser, User } from "../../../types";
 import { useEffect, useState } from "react";
-
+import UserButton from "../Buttons/UserButton";
 const UsersList = () => {
-  const {
-    searchKey,
-    setSearchKey,
-    users,
-    selectedRoom,
-  } = AppState();
-
+  const { searchKey, setSearchKey, users, selectedRoom } = AppState();
   const [onlineCounter, setOnlineCounter] = useState(0);
   const [offlineCounter, setOfflineCounter] = useState(0);
+
+  const getUsers = (status: boolean): User[] => {
+        if (!selectedRoom)
+          return [];
+        return selectedRoom.RoomUsers
+          .map((roomUser: RoomUser) => users.find((ele: any) => ele.id === roomUser.userId && ele.isOnline === status ))
+          .filter((user: User) => user && user.login.includes(searchKey))}
+
 
   useEffect(() => {
     selectedRoom &&
@@ -38,14 +39,19 @@ const UsersList = () => {
   }, [users, selectedRoom]);
 
   return (
-    <>
+    < Box
+    minWidth='20rem'
+    width="20rem"
+    >
       <Box
         display="flex"
         alignItems={"center"}
         justifyContent="space-between"
         width={"100%"}
+        
+        
       >
-        <FormControl height="30px" width="100%" margin="5px" mb='20px'>
+        <FormControl height="30px" width="100%" margin="5px" mb="20px">
           <InputGroup>
             <Input
               placeholder="Search"
@@ -66,35 +72,15 @@ const UsersList = () => {
         online __ {onlineCounter}
       </Text>
       <Box display="flex" flexDir="column">
-        {selectedRoom ? (
-          selectedRoom.RoomUsers.map((roomUser: any) => (
-            <UserButton
-              id={roomUser.userId}
-              isOnline={true}
-              key={roomUser.userId}
-            />
-          ))
-        ) : (
-          <></>
-        )}
+        {getUsers(true).map((user) => <UserButton user={user} key={user.id}/>)}
       </Box>
       <Text m="10px" color="gray.400">
         offline __ {offlineCounter}
       </Text>
       <Box display="flex" flexDir="column">
-        {selectedRoom ? (
-          selectedRoom.RoomUsers.map((roomUser: any) => (
-            <UserButton
-              id={roomUser.userId}
-              isOnline={false}
-              key={roomUser.userId}
-            />
-          ))
-        ) : (
-          <></>
-        )}
+        {getUsers(false).map((user) => <UserButton user={user} key={user.id}/>)}
       </Box>
-    </>
+    </Box>
   );
 };
 

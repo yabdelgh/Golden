@@ -82,6 +82,7 @@ export class ChatGateway
       this.chatService.status_broadcast(socket);
     } catch (err) {
       socket.disconnect(true);
+      console.log(err);
     }
     // get users with the status
   }
@@ -356,6 +357,7 @@ export class ChatGateway
     );
     const user = await this.userService.getUser(roomUser.userId);
     socket.join(`room${roomUser.roomId}`);
+    
     socket.emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
     this.server
       .in(`room${roomUser.roomId}`)

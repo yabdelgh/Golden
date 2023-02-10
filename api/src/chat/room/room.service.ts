@@ -44,8 +44,9 @@ export class RoomService {
         },
       },
     });
-
-    return rooms;
+    return rooms.map((ele: chatRoomDto) => { 
+      return {...ele, isGroupChat: true}
+    })
   }
 
   async getDMRooms(userId: number): Promise<any> {
@@ -101,7 +102,10 @@ export class RoomService {
           },
         },
       });
-      return ret;
+      return {
+        ...ret,
+        isGroupChat: ret.name !== '' 
+      };
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError)
         if (err.code === 'P2002')

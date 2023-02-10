@@ -1,6 +1,8 @@
 import { Box } from "@chakra-ui/react";
+import { useLocation } from "react-router-dom";
 import ChatBox from "../Components/chat/ChatBox";
 import ChatList from "../Components/chat/ChatList";
+import { AppState } from "../Context/AppProvider";
 
 const ChatPage = () => {
   return (

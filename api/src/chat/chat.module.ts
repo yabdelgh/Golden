@@ -7,10 +7,12 @@ import { RoomModule } from './room/room.module';
 import { MsgModule } from './msg/msg.module';
 import { UserModule } from 'src/user/user.module';
 import { GameModule } from 'src/game/game.module';
+import { ChatController } from './chat.controller';
 
 @Module({
   imports: [PrismaModule, JwtModule, RoomModule, MsgModule, UserModule, GameModule],
   providers: [ChatService, ChatGateway],
-  exports: [ChatGateway]
+  exports: [ChatGateway],
+  controllers: [ChatController]
 })
 export class ChatModule {}

@@ -27,6 +27,7 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
       alignItems="center"
       height="100%"
       width="100%"
+      minWidth='20rem'
       min-width="25rem"
       minHeight="400px"
       mt="10px"

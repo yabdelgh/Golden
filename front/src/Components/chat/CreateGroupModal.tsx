@@ -21,31 +21,46 @@ import {
 import { useState } from "react";
 import { FcLock } from "react-icons/fc";
 import { GiWorld } from "react-icons/gi";
-import { AppState } from "../../Context/AppProvider";
-import { warningToast } from "../../Utils/Toast";
+import { errorToast, successToast, warningToast } from "../../Utils/Toast";
 import RadioEx from "../RadioEx";
 import { FcKey } from "react-icons/fc";
+import axios from "axios";
+import { AppState } from "../../Context/AppProvider";
+import { Room } from "../../../types";
 
 const CreateGroupModal = ({ children }: any) => {
-  const { socket } = AppState();
   const toast = useToast();
   const [name, setName] = useState("");
   const [show, setShow] = useState(false);
-  const [access, setAccess] = useState("private");
+  const [access, setAccess] = useState<'Public' | 'Protected' | 'Private'>("Public");
   const [password, setPassword] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {setRooms} = AppState();
 
   const createNewGroup = () => {
     if (name === "") warningToast(toast, "Please enter a group name");
-    else if (access === "protected" && password.length < 4)
+    else if (access === "Protected" && password.length < 4)
       warningToast(toast, "Please enter a strong password");
-    else socket.emit("addRoom", { id: 0, name, access, password });
+    else
+    {
+      console.log({password,access});
+      axios.post('/api/chat/createRoom', {id: 0, name, access, password})
+      .then((payload) => {
+        onClose();
+        successToast(toast, "group created successfully");
+        setRooms((value: Room[]) => [payload.data, ...value]);
+        setAccess('Public');
+        setPassword("");
+      })
+      .catch((payload) => {errorToast(toast, payload)});
+      
+    } 
   };
 
   const { getRadioProps } = useRadioGroup({
     name: "access",
-    defaultValue: "protected",
-    onChange: setAccess,
+    value: access,
+    onChange: (value : 'Public' | 'Protected' | 'Private') => setAccess(value),
   });
   return (
     <Box>
@@ -79,7 +94,7 @@ const CreateGroupModal = ({ children }: any) => {
                 onBlur={(e) => setName(e.target.value)}
               />
             </FormControl>
-            {access === "protected" && (
+            {access === "Protected" && (
               <FormControl id="Password" isRequired>
                 <InputGroup size="md">
                   <Input
@@ -102,21 +117,21 @@ const CreateGroupModal = ({ children }: any) => {
               </FormControl>
             )}
             <FormControl as="fieldset" m="15px 0px">
-              <RadioGroup onChange={setAccess} value={access}>
+              <RadioGroup>
                 <HStack spacing="16px">
-                  <RadioEx {...getRadioProps({ value: "private" })} bg='#BAD1C2'>
+                  <RadioEx {...getRadioProps({ value: "Private" })} bg='#BAD1C2'>
                     <Box display={"flex"} alignItems={"center"} width='fit-content'>
                       <FcLock size="20px" />
                       <Text m="0px 5px">Private</Text>
                     </Box>
                   </RadioEx>
-                  <RadioEx {...getRadioProps({ value: "protected" })} bg='#BAD1C2'>
+                  <RadioEx {...getRadioProps({ value: "Protected" })} bg='#BAD1C2'>
                     <Box display={"flex"} alignItems={"center"}>
                       <FcKey size="20px" />
                       <Text m="0px 5px">Protected</Text>
                     </Box>
                   </RadioEx>
-                  <RadioEx {...getRadioProps({ value: "public" })} bg='#BAD1C2'>
+                  <RadioEx {...getRadioProps({ value: "Public" })} bg='#BAD1C2'>
                     <Box display={"flex"} alignItems={"center"}>
                       <GiWorld size="20px" />
                       <Text m='0px 5px'>public</Text>

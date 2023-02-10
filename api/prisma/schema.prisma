@@ -57,7 +57,7 @@ model BlockedUser {
 
 model ChatRooms {
 	id Int @id @default(autoincrement())
-	name String
+	name String @default("")
 	status RoomStatus @default(Opened)
 	access RoomAccess  @default(Public)
 	password String?
@@ -118,6 +118,7 @@ enum RoomAccess {
   Private
   Protected
   Public
+  DirectMessage
 }
 
 enum RoomStatus {

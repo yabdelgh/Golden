@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class chatRoomDto {
    
@@ -19,4 +19,9 @@ export class chatRoomDto {
     @IsOptional()
     @IsString()
     password?: string;
+    
+    @IsOptional()
+    @IsBoolean()
+    isGroupChat?: boolean
+
 }

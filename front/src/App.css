@@ -53,7 +53,7 @@
 
 .scale-up
 {
-  animation: scaleup 700ms ease;
+  animation: scaleup 400ms ease-in-out;
 }
 
 @keyframes scaleup {
@@ -69,5 +69,12 @@
 @media screen and (max-width: 1200px) {
   .md-none {
     display: none;
+  }
+  .md-disabled{
+    pointer-events: none;
+  }
+  .md-disabled *{
+    filter: grayscale(100%);
+    fill: #9c9c9c;
   }
 }

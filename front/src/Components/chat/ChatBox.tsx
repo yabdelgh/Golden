@@ -25,7 +25,7 @@ import { RoomUser } from "../../../types";
 import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import UserProfile from "../UserProfile";
-import UsersList from "../UsersList";
+import UsersList from "./UsersList";
 import { ImUsers, ImUser } from "react-icons/im";
 
 const ChatBox = () => {
@@ -145,8 +145,10 @@ const ChatBox = () => {
               <IconButton
                 variant={"ghost"}
                 aria-label="Member List"
+               className="md-disabled"
                 onClick={() =>
-                  selectedRoom.isGroupChat
+                  {
+                    selectedRoom.isGroupChat
                     ? setUsersList(!usersList) && setShowUP(undefined)
                     : setShowUP((value: any) => {
                         if (value) return undefined;
@@ -159,12 +161,15 @@ const ChatBox = () => {
                           return getUserByName(users, selectedRoom.name);
                         }
                       })
+
+                  }
+                  
                 }
                 icon={
                   selectedRoom.isGroupChat ? (
-                    <ImUsers size="25px" />
+                    <ImUsers size="22px" />
                   ) : (
-                    <ImUser size="25px" />
+                    <ImUser size="22px" />
                   )
                 }
               />
@@ -177,7 +182,7 @@ const ChatBox = () => {
             flexDirection="row-reverse"
           >
             {(showUP || usersList) && (
-              <Box className="md-none scale-up" width="20rem">
+              <Box className="md-none scale-up " width="20rem">
                 {showUP && <UserProfile showUP={showUP} />}
                 {usersList && <UsersList />}
               </Box>

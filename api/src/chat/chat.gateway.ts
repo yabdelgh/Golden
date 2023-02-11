@@ -15,7 +15,7 @@ import { Server, Socket } from 'socket.io';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { UserService } from 'src/user/user.service';
 import { ChatService } from './chat.service';
-import { chatMsgDto } from './dtos/chatMsg.dto';
+import { BlockUserDto, chatMsgDto, searchDto } from './dtos/chatMsg.dto';
 import { MsgService } from './msg/msg.service';
 import { RoomService } from './room/room.service';
 import { chatRoomDto } from './dtos/chatRoom.dto';
@@ -74,8 +74,10 @@ export class ChatGateway
           await this.getConnectedUsers(),
         ),
       );
-      //socket.emit('users', await this.userService.getUsers(userId));
-      socket.emit("blockedUsers", await this.userService.getBlockedUsers(userId));
+      socket.emit(
+        'blockedUsers',
+        await this.userService.getBlockedUsers(userId),
+      );
       socket.emit('rooms', await this.chatService.getRooms(socket));
       socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
       socket.emit('friends', await this.chatService.getFriends(userId));
@@ -137,6 +139,34 @@ export class ChatGateway
     payload.userId = client.user.id;
     const msg = await this.msgService.addMsg(payload);
     this.server.in(`room${msg.roomId}`).emit('chatMsg', msg);
+  }
+
+  @SubscribeMessage('blockUser')
+  async blockUser(
+    @ConnectedSocket() client: mySocket,
+    @MessageBody()
+    payload: BlockUserDto,
+  ) {
+    const { blockerId, blockedId } = payload;
+    await this.userService.blockUser(blockerId, blockedId);
+    client.emit(
+      'blockedUsers',
+      await this.userService.getBlockedUsers(blockerId),
+    );
+  }
+
+  @SubscribeMessage('unblockUser')
+  async unblockUser(
+    @ConnectedSocket() client: mySocket,
+    @MessageBody()
+    payload: BlockUserDto,
+  ) {
+    const { blockerId, blockedId } = payload;
+    await this.userService.unblockUser(blockerId, blockedId);
+    client.emit(
+      'blockedUsers',
+      await this.userService.getBlockedUsers(blockerId),
+    );
   }
 
   @SubscribeMessage('addRoom')
@@ -308,12 +338,20 @@ export class ChatGateway
   @SubscribeMessage('searchs')
   async searchs(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: string,
+    @MessageBody() payload: searchDto,
   ) {
+    const { search, userId } = payload;
+    console.log(search, userId);
+
     const user = await this.prismaService.user.findFirst({
       where: {
+        BlockedBy: {
+          none: {
+            blockerId: userId,
+          },
+        },
         login: {
-          startsWith: payload,
+          startsWith: search,
         },
       },
       select: {
@@ -327,7 +365,7 @@ export class ChatGateway
       const room = await this.prismaService.chatRooms.findFirst({
         where: {
           name: {
-            startsWith: payload,
+            startsWith: search,
           },
           NOT: {
             OR: [
@@ -358,7 +396,7 @@ export class ChatGateway
     );
     const user = await this.userService.getUser(roomUser.userId);
     socket.join(`room${roomUser.roomId}`);
-    
+
     socket.emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
     this.server
       .in(`room${roomUser.roomId}`)
@@ -448,8 +486,12 @@ export class ChatGateway
     const pairing = this.matchMaker.pairing();
     if (pairing) {
       socket.user.inGame = true;
-      this.server.in([...socket.rooms]).emit('inGame', { id: socket.user.id, inGame: true });
-      const opponent: any = await this.server.in(`${pairing[0]}`).fetchSockets();
+      this.server
+        .in([...socket.rooms])
+        .emit('inGame', { id: socket.user.id, inGame: true });
+      const opponent: any = await this.server
+        .in(`${pairing[0]}`)
+        .fetchSockets();
       opponent[0].user.inGame = true;
       this.server
         .in([...opponent[0].rooms])

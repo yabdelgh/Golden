@@ -1,31 +1,73 @@
 import { useToast } from "@chakra-ui/react";
 import { createContext, useContext, useEffect, useState } from "react";
- 
 
 const AppContext = createContext<any | null>(null);
 
-const AppProvider = ({ children }: any) => {
+export type AppStateType = {
+  socket: any;
+  setSocket: React.Dispatch<React.SetStateAction<any>>;
+  user: any;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
+  challenges: any[];
+  setChallenges: React.Dispatch<React.SetStateAction<any[]>>;
+  users: any[];
+  setUsers: React.Dispatch<React.SetStateAction<any[]>>;
+  rooms: any[];
+  setRooms: React.Dispatch<React.SetStateAction<any[]>>;
+  Friends: any[];
+  setFriends: React.Dispatch<React.SetStateAction<any[]>>;
+  msgs: any[];
+  setMsgs: React.Dispatch<React.SetStateAction<any[]>>;
+  searchKey: string;
+  setSearchKey: React.Dispatch<React.SetStateAction<string>>;
+  searchs: any[];
+  setSearchs: React.Dispatch<React.SetStateAction<any[]>>;
+  dMRooms: any;
+  setDMRooms: React.Dispatch<React.SetStateAction<any>>;
+  userProfile: any;
+  setUserProfile: React.Dispatch<React.SetStateAction<any>>;
+  roomProfile: any;
+  setRoomProfile: React.Dispatch<React.SetStateAction<any>>;
+  selectedRoom: any;
+  setSelectedRoom: React.Dispatch<React.SetStateAction<any>>;
+  usersList: boolean | undefined;
+  setUsersList: any;
+  showUP: any;
+  setShowUP: React.Dispatch<React.SetStateAction<any>>;
+  isOnline: boolean;
+  setIsOnline: React.Dispatch<React.SetStateAction<boolean>>;
+  toast: any;
+  isSmallerThan1200: boolean;
+  setIsSmallerThan1200: React.Dispatch<React.SetStateAction<boolean>>;
+  isSmallerThan1800: boolean;
+  setIsSmallerThan1800: React.Dispatch<React.SetStateAction<boolean>>;
+  blockedUsers: any[];
+  setBlockedUsers: React.Dispatch<React.SetStateAction<any[]>>;
+};
 
-  const [socket, setSocket]: any = useState(undefined);
-  const [user, setUser]: any = useState({});
-  const [challenges, setChallenges] = useState([]); 
-  const [users, setUsers]: any = useState([]);
-  const [rooms, setRooms]: any = useState([]);
-  const [Friends, setFriends]: any = useState([]);
-  const [msgs, setMsgs]: any = useState([]);
-  const [searchKey, setSearchKey] = useState('');
-  const [searchs, setSearchs] = useState([]);
-  const [dMRooms, setDMRooms]: any = useState([]);
-  const [userProfile, setUserProfile]: any = useState({});
-  const [roomProfile, setRoomProfile] = useState();
-  const [selectedRoom, setSelectedRoom] = useState();
-  const [usersList, setUsersList] = useState(false);
+const AppProvider = ({ children }: any) => {
+  const [socket, setSocket] = useState<any>(undefined);
+
+  const [user, setUser] = useState<any>({});
+  const [challenges, setChallenges] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [Friends, setFriends] = useState<any[]>([]);
+  const [msgs, setMsgs] = useState<any[]>([]);
+  const [searchKey, setSearchKey] = useState("");
+  const [searchs, setSearchs] = useState<any[]>([]);
+  const [dMRooms, setDMRooms] = useState<any>([]);
+  const [userProfile, setUserProfile] = useState<any>({});
+  const [roomProfile, setRoomProfile] = useState<any>();
+  const [selectedRoom, setSelectedRoom] = useState<any>();
+  const [usersList, setUsersList] = useState<boolean | undefined>(false);
   const [showUP, setShowUP] = useState(undefined);
   const [isOnline, setIsOnline] = useState(true);
   const toast = useToast();
   const [isSmallerThan1200, setIsSmallerThan1200] = useState(false);
   const [isSmallerThan1800, setIsSmallerThan1800] = useState(false);
-  
+  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
+
   useEffect(() => {
     const handleResize = () => {
       setIsSmallerThan1200(window.innerWidth < 1720);
@@ -35,7 +77,6 @@ const AppProvider = ({ children }: any) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   return (
     <AppContext.Provider
@@ -75,6 +116,8 @@ const AppProvider = ({ children }: any) => {
         setSelectedRoom,
         usersList,
         setUsersList,
+        blockedUsers,
+        setBlockedUsers,
       }}
     >
       {children}
@@ -82,7 +125,7 @@ const AppProvider = ({ children }: any) => {
   );
 };
 
-export const AppState = () => {
+export const AppState = (): AppStateType => {
   return useContext(AppContext);
 };
 

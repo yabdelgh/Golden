@@ -1,11 +1,10 @@
-
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RoomStatus } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async validateUser(user: any) {
     return await this.prisma.user.upsert({
@@ -20,8 +19,8 @@ export class UserService {
       select: {
         id: true,
         isTwoFactorAuthenticationEnabled: true,
-      }
-    })
+      },
+    });
   }
 
   async createUser(user: any) {
@@ -39,7 +38,7 @@ export class UserService {
       select: {
         id: true,
         login: true,
-        email: true
+        email: true,
       },
     });
     return user;
@@ -53,8 +52,8 @@ export class UserService {
         login: true,
         email: true,
         imageUrl: true,
-        isTwoFactorAuthenticationEnabled: true
-      }
+        isTwoFactorAuthenticationEnabled: true,
+      },
     });
     /* if (user === null)
       throw new BadRequestException('user not found');*/
@@ -63,14 +62,19 @@ export class UserService {
 
   async getUserSecret(id: number): Promise<string> {
     const user = await this.prisma.user.findFirst({
-      where: { id }
+      where: { id },
     });
     return user.twoFactorAuthenticationCode;
   }
-  
-  async getUsers(id: number) { 
+
+  async getUsers(id: number) {
     const users = await this.prisma.user.findMany({
       where: {
+        Blocked: {
+          none: {
+            blockedId: id,
+          },
+        },
         OR: [
           {
             UserRooms: {
@@ -79,37 +83,36 @@ export class UserService {
                   NOT: { status: RoomStatus.Deleted },
                   RoomUsers: {
                     some: {
-                      userId: id
-                    }
-                  }
-                }
-              }
-            }
+                      userId: id,
+                    },
+                  },
+                },
+              },
+            },
           },
           {
             FriendTo: {
               some: {
-                user1Id: id
-              }
-            }
+                user1Id: id,
+              },
+            },
           },
           {
             FriendWith: {
               some: {
-                user1Id: id
-              }
-            }
+                user1Id: id,
+              },
+            },
           },
-
         ],
-        NOT: {id}
+        NOT: { id },
       },
       select: {
         id: true,
         login: true,
         email: true,
         imageUrl: true,
-      }
+      },
     });
     return users;
   }
@@ -187,13 +190,13 @@ export class UserService {
         OR: [
           {
             user1Id,
-            user2Id
+            user2Id,
           },
           {
             user1Id: user2Id,
-            user2Id: user1Id
-          }
-        ]
+            user2Id: user1Id,
+          },
+        ],
       },
     });
     return user;

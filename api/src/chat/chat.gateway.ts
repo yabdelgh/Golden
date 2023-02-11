@@ -75,6 +75,7 @@ export class ChatGateway
         ),
       );
       //socket.emit('users', await this.userService.getUsers(userId));
+      socket.emit("blockedUsers", await this.userService.getBlockedUsers(userId));
       socket.emit('rooms', await this.chatService.getRooms(socket));
       socket.emit('dMRooms', await this.chatService.getDMRooms(socket));
       socket.emit('friends', await this.chatService.getFriends(userId));
@@ -224,7 +225,7 @@ export class ChatGateway
     this.server.in(String(friendId)).emit('Accept Request', friend);
     socket.emit('Accept Request', friend);
   }
-  //delete friend request
+  // delete friend request
   @SubscribeMessage('Delete Request')
   async DeleteFriend(
     @ConnectedSocket() socket: mySocket,

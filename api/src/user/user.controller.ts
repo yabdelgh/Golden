@@ -4,6 +4,9 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  Post,
+  Delete,
+  Req,
 } from '@nestjs/common';
 //import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
@@ -36,6 +39,20 @@ export class UserController {
     return ret;
   }
 
+  @Post('block')
+  async blockUser(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
+    return this.userservice.blockUser(user.id, id);
+  }
+
+  @Delete('block')
+  async unblockUser(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
+    return this.userservice.unblockUser(user.id, id);
+  }
+
+  @Get('block')
+  async getBlokedUsers(@Req() { user }) {
+    return this.userservice.getBlockedUsers(user.id);
+  }
  /* @Post()
   async createUser(@Body() user) {
     return this.userservice.createUser(user);
@@ -55,21 +72,7 @@ export class UserController {
   async findUser(@Query('username') username: string) {
     return this.userservice.findUser(username);
   }
-
-  @Post('block')
-  async blockUser(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
-    return this.userservice.blockUser(user.id, id);
-  }
-
-  @Delete('block')
-  async unblockUser(@Query('id', ParseIntPipe) id: number, @Req() { user }) {
-    return this.userservice.unblockUser(user.id, id);
-  }
-
-  @Get('block')
-  async getBlokedUsers(@Req() { user }) {
-    return this.userservice.getBlockedUsers(user.id);
-  }
+  
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', storage))

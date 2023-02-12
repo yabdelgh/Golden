@@ -5,7 +5,7 @@ import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
 import { useEffect, useLayoutEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
-import { Friend, Msg, User, Room, RoomUser } from "../types";
+import { Friend, Msg, User, Room, RoomUser, BlockedUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
 import ProfilePage from "./Pages/ProfilePage";
 import GamePage from "./Pages/GamePage";
@@ -34,6 +34,7 @@ function App() {
     setFriends,
     setSearchs,
     setChallenges,
+    setBlockedUsers,
   } = AppState();
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,16 +46,19 @@ function App() {
       })
     );
   }, [setSocket]);
-  
+
   useEffect(() => {
-    if ( location.pathname !== '/' && !user.login && location.pathname !== '/twoFA')
-      navigate('/');
-  },[]);
+    if (
+      location.pathname !== "/" &&
+      !user.login &&
+      location.pathname !== "/twoFA"
+    )
+      navigate("/");
+  }, []);
 
   useEffect(() => {
     if (!socket) return;
-    socket.onAny((eventName: string, payload: any) => {
-    });
+    socket.onAny((eventName: string, payload: any) => {});
 
     document.addEventListener("visibilitychange", () => {
       setIsOnline((value: boolean) => {
@@ -63,7 +67,10 @@ function App() {
       });
     });
 
-    socket.on("me", (payload: User) => {setUser(payload); setUserProfile(payload) });
+    socket.on("me", (payload: User) => {
+      setUser(payload);
+      setUserProfile(payload);
+    });
 
     socket.on("inGame", (payload: any) => {
       setUser((value: User) => {
@@ -90,6 +97,21 @@ function App() {
 
     socket.on("users", (payload: User[]) => {
       setUsers(payload);
+    });
+    socket.on("blockedUsers", (payload: any[]) => {
+      setBlockedUsers(payload);
+    });
+    socket.on("blockUser", (payload: BlockedUser) => {
+      setBlockedUsers((value) => [...value, payload]);
+    });
+    socket.on("unblockUser", (payload: BlockedUser) => {
+      setBlockedUsers((value: BlockedUser[]) =>
+        value.filter(
+          (ele) =>
+            ele.blockerId !== payload.blockerId ||
+            ele.blockedId !== payload.blockedId
+        )
+      );
     });
 
     socket.on("rooms", (payload: Room[]) => {
@@ -222,7 +244,15 @@ function App() {
         return [...value];
       });
     });
-    
+
+    socket.on("Unfriend", (payload: Friend) => {
+      setFriends((value: Friend[]) => {
+        const index: number = value.findIndex((ele: Friend) => ele === payload);
+        value.splice(index, 1);
+        return [...value];
+      });
+    });
+
     socket.on("Unfriend", (payload: Friend) => {
       setFriends((value: Friend[]) => {
         const index: number = value.findIndex((ele: Friend) => ele === payload);
@@ -281,7 +311,7 @@ function App() {
       }
     );
 
-    socket.on("searchs", (payload: string[]) => {
+    socket.on("search", (payload: string[]) => {
       setSearchs((value: string[]) => {
         return [...value, payload];
       });
@@ -294,8 +324,7 @@ function App() {
     socket.on("cancelChallenge", (payload: any) => {
       setChallenges((value: any) => {
         const newVal = value.filter(
-          (ele: any) =>
-            ele.challengerId !== payload.challengerId
+          (ele: any) => ele.challengerId !== payload.challengerId
         );
         return [...newVal];
       });
@@ -304,8 +333,7 @@ function App() {
     socket.on("declineChallenge", (payload: any) => {
       setChallenges((value: any) => {
         const newVal = value.filter(
-          (ele: any) =>
-             ele.challengedId !== payload.challengedId
+          (ele: any) => ele.challengedId !== payload.challengedId
         );
         return [...newVal];
       });
@@ -330,37 +358,16 @@ function App() {
   return (
     <Box className="App">
       <Routes>
-        <Route
-          path="/"
-          element={<LoginPage />}
-        />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/loading" element={<LoadingPage />} />
         <Route path="/useHere" element={<UseHere />} />
-        <Route
-          path="/chat"
-          element={<ChatPage />}
-        />
-        <Route
-          path="/profile"
-          element={<ProfilePage />}
-        />
-        <Route
-          path="/game"
-          element={<GamePage /> }
-        />
-        <Route
-          path="/world"
-          element={<WorldPage />}
-        />
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/game" element={<GamePage />} />
+        <Route path="/world" element={<WorldPage />} />
         <Route path="/twoFA" element={<TwoFAPage />} />
-        <Route
-          path="/security"
-          element={<SecurityPage /> }
-        />
-        <Route
-          path="*"
-          element={<div>404 not found</div>}
-        />
+        <Route path="/security" element={<SecurityPage />} />
+        <Route path="*" element={<div>404 not found</div>} />
       </Routes>
       <ChatHeader />
       <NavBar />

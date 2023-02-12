@@ -12,28 +12,29 @@ const NavBar = () => {
     <Box
       bg="white"
       width="70px"
-      height='calc(100% - 80px)'
+      height="calc(100% - 80px)"
       position="fixed"
-      top='70'
-      left='2'
-      borderRadius='lg'
+      top="70"
+      left="2"
+      borderRadius="lg"
       display={user.login ? "flex" : "none"}
       flexDir="column"
       alignItems="center"
-      userSelect='none'
+      userSelect="none"
     >
       <Avatar
-        bg="teal"
         color="white"
         mt="10px"
         width="50px"
         height="50px"
-        borderRadius="15px"
+        borderRadius="20px"
         cursor="pointer"
-        
         name={user.login}
         src={user.imageUrl || "/defaultProfilePic.png"}
-        onClick={() => { setUserProfile(user); navigate("/profile") }}
+        onClick={() => {
+          setUserProfile(user);
+          navigate("/profile");
+        }}
       />
       <IconButton
         mt="20px"

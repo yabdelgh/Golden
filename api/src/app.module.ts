@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { ChatModule } from './chat/chat.module';
 import { GameModule } from './game/game.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -12,10 +14,18 @@ import { GameModule } from './game/game.module';
     UserModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
+      isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveStaticOptions: {
+        redirect: false,
+        index: false,
+      },
     }),
     PrismaModule,
     ChatModule,
-    GameModule],
+    GameModule,
+  ],
 })
 export class AppModule {}

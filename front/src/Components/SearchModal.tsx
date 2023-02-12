@@ -17,9 +17,9 @@ import TmpButton from "./TmpButton";
 
 const SearchModal = ({ children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { users, rooms, socket, searchs} = AppState();
+  const { users, rooms, socket, searchs, user } = AppState();
   const [searchPong, setSearchPong]: any = useState("");
- 
+
   const search = (e: any) => {
     setSearchPong(e.target.value);
     !users.some((ele: User) => ele.login.includes(e.target.value)) &&
@@ -28,7 +28,9 @@ const SearchModal = ({ children }: any) => {
         if (ele.login) return ele.login.includes(e.target.value);
         else return ele.name.includes(e.target.value);
       }) &&
-      socket.emit("searchs", e.target.value);
+      socket.emit("search", {
+        search: e.target.value,
+      });
   };
 
   return (
@@ -73,27 +75,31 @@ const SearchModal = ({ children }: any) => {
             flexDir="column"
             fontFamily="Inter"
             mb="20px"
-            maxH='400px'
-            overflowY='scroll'
-            overflowX='hidden'
+            maxH="400px"
+            overflowY="scroll"
+            overflowX="hidden"
           >
-            {searchs && searchPong !== '' &&
+            {searchs &&
+              searchPong !== "" &&
               searchs.map((ele: any) => {
                 if (ele.login && ele.login.includes(searchPong))
                   return <TmpButton ele={ele} onClose={onClose} key={ele.id} />;
                 else if (ele.name && ele.name.includes(searchPong))
-                  return <RoomButton ele={ele} onClose={onClose} key={ele.id} />;
-                else
-                  return undefined;
+                  return (
+                    <RoomButton ele={ele} onClose={onClose} key={ele.id} />
+                  );
+                else return undefined;
               })}
-            {users && searchPong !== '' &&
+            {users &&
+              searchPong !== "" &&
               users.map(
                 (ele: User) =>
                   ele.login.includes(searchPong) && (
                     <TmpButton ele={ele} onClose={onClose} key={ele.id} />
                   )
               )}
-            {rooms && searchPong !== '' &&
+            {rooms &&
+              searchPong !== "" &&
               rooms.map(
                 (ele: Room) =>
                   ele.isGroupChat &&

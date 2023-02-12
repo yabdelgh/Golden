@@ -1,10 +1,4 @@
-import {
-  Box,
-  Text,
-  Button,
-  IconButton,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Text, Button, IconButton, useDisclosure } from "@chakra-ui/react";
 import { IoMdNotifications } from "react-icons/io";
 import { BsSearch } from "react-icons/bs";
 import { Avatar } from "@chakra-ui/react";
@@ -19,15 +13,10 @@ import {
   PopoverBody,
   PopoverArrow,
 } from "@chakra-ui/react";
-import { CgProfile} from 'react-icons/cg'
-import {
-  IoGameControllerOutline,
-} from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
+import { IoGameControllerOutline } from "react-icons/io5";
 import SearchModal from "./SearchModal";
-import {
-  Drawer,
-  DrawerContent,
-} from "@chakra-ui/react";
+import { Drawer, DrawerContent } from "@chakra-ui/react";
 import Challenge from "./game/Challenge";
 
 function DrawerExample() {
@@ -47,16 +36,27 @@ function DrawerExample() {
         <DrawerContent
           mt="70px"
           mr="50px"
-          width='30px'
+          width="30px"
           height="fit-content"
           borderRadius="lg"
           display="flex"
-          alignItems='center'
-          justifyContent='space-around'
+          alignItems="center"
+          justifyContent="space-around"
         >
-          <Text mt='15px'>Challenges ({challenges.length})</Text>
-          {challenges.length !== 0 && <Challenge challenge={challenges[0]} onClose={onClose} />}
-          <Button m='10px' variant="solid" colorScheme="teal" width="95%" onClick={() => { onClose(); navigate('/game') }}>
+          <Text mt="15px">Challenges ({challenges.length})</Text>
+          {challenges.length !== 0 && (
+            <Challenge challenge={challenges[0]} onClose={onClose} />
+          )}
+          <Button
+            m="10px"
+            variant="solid"
+            colorScheme="teal"
+            width="95%"
+            onClick={() => {
+              onClose();
+              navigate("/game");
+            }}
+          >
             create a game
           </Button>
         </DrawerContent>
@@ -87,9 +87,9 @@ const ChatHeader = () => {
       justifyContent="space-around"
       alignItems="center"
       position="fixed"
-      minWidth={'700px'}
-      top='0'
-      left='0'
+      minWidth={"700px"}
+      top="0"
+      left="0"
     >
       <Text
         color="teal"
@@ -111,7 +111,7 @@ const ChatHeader = () => {
         alignItems="center"
       >
         <DrawerExample />
-            <IoMdNotifications size="35px" />
+        <IoMdNotifications size="35px" />
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
           <PopoverTrigger>
             <Avatar

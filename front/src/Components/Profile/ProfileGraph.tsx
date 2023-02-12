@@ -7,7 +7,6 @@ import { TbTrendingUp } from "react-icons/tb";
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export default function ProfileGraph({ wins, games }: any) {
-
   const loses = games - wins;
 
   const options = {
@@ -43,8 +42,8 @@ export default function ProfileGraph({ wins, games }: any) {
     labels: ["Loses", "Wins"],
     datasets: [
       {
-        data: wins < 1 ? [loses] : loses < 1 ? [wins]: [wins, loses],
-        backgroundColor: wins < 1 ? ["#ff5252"]:["#00ad8e", "#ff5252"],
+        data: wins < 1 ? [loses] : loses < 1 ? [wins] : [wins, loses],
+        backgroundColor: wins < 1 ? ["#ff5252"] : ["#00ad8e", "#ff5252"],
         borderWidth: 0,
       },
     ],
@@ -52,14 +51,12 @@ export default function ProfileGraph({ wins, games }: any) {
 
   return (
     <Box
-          width={{base: '100%', xl:'49%'}}
-          h={{base: '600px', xl: '48%'}}
-          display="flex"
-          flexDir="column"
-          alignItems="center"
-          borderRadius='lg'
-          justifyContent={'center'}
-          bg='white'
+      display="flex"
+      flexDir="column"
+      alignItems="center"
+      borderRadius="lg"
+      justifyContent={"center"}
+      bg="white"
     >
       <Text
         m="10px"
@@ -71,57 +68,58 @@ export default function ProfileGraph({ wins, games }: any) {
       >
         Performance Overview
       </Text>
-      {(games !== undefined  && games !== 0) ? 
-
-      <Box width="100%" height="90%" display="flex" justifyContent="flex-end">
-        <Box
-          ml="30px"
-          width="40%"
-          display="flex"
-          flexDir="column"
-          alignItems="center"
-          justifyContent="center"
-        >
+      {games !== undefined && games !== 0 ? (
+        <Box width="100%" height="90%" display="flex" justifyContent="flex-end">
           <Box
-            fontFamily="Inter"
-            fontSize="50px"
-            fontWeight="bold"
+            ml="30px"
+            width="40%"
             display="flex"
-            alignItems={"flex-end"}
-            color="gray.700"
+            flexDir="column"
+            alignItems="center"
+            justifyContent="center"
           >
-            {games}
-            <Text fontSize="25px" fontWeight="normal" m="10px">
-              Games
-            </Text>
+            <Box
+              fontFamily="Inter"
+              fontSize="50px"
+              fontWeight="bold"
+              display="flex"
+              alignItems={"flex-end"}
+              color="gray.700"
+            >
+              {games}
+              <Text fontSize="25px" fontWeight="normal" m="10px">
+                Games
+              </Text>
+            </Box>
+            <Box display="flex" fontSize="18px">
+              <Text m="5px" color="#00ad8e">
+                {wins} Wins,
+              </Text>
+              <Text m="5px" color="#ff5252">
+                {games - wins} Loses
+              </Text>
+            </Box>
           </Box>
-          <Box display="flex" fontSize="18px">
-            <Text m="5px" color="#00ad8e">
-              {wins} Wins,
-            </Text>
-            <Text m="5px" color="#ff5252">
-              {games - wins} Loses
-            </Text>
+          <Box width="60%" height="70%" mb="15%">
+            <Pie options={options} data={data} />
           </Box>
         </Box>
-        <Box width="60%" height="70%" mb="15%">
-          <Pie options={options} data={data} />
-        </Box>
-      </Box>
-    :
+      ) : (
         <Box
-          height='90%'
+          height="90%"
           color="gray.400"
           display="flex"
           flexDir="column"
           alignItems="center"
           justifyContent="center"
-          fontSize={'50px'}
+          fontSize={"50px"}
         >
-          <TbTrendingUp size='100px' />
-          <Text fontSize="25px" mt='50px'>You have no Games for now.</Text>
+          <TbTrendingUp size="100px" />
+          <Text fontSize="25px" mt="50px">
+            You have no Games for now.
+          </Text>
         </Box>
-      }
-    </Box> 
+      )}
+    </Box>
   );
 }

@@ -1,10 +1,10 @@
-import { Box,Image, Text } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 import { SlPeople } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 
 const FriendsList = () => {
-  const { users, Friends, setUserProfile } = AppState(); 
+  const { users, Friends, setUserProfile } = AppState();
   const navigate = useNavigate();
   // const addFriend = (id: number) => {
   //   socket.emit("addFriend", id);
@@ -17,28 +17,24 @@ const FriendsList = () => {
   // };
   return (
     <Box
-          width={{base: '100%', xl:'49%'}}
-          h={{base: '600px', xl: '48%'}}
-          display="flex"
-          flexDir="column"
-          alignItems="center"
-          borderRadius='lg'
-          justifyContent={'center'}
-          bg='white'
-          mb={"20px"}
+      display="flex"
+      flexDir="column"
+      alignItems="center"
+      borderRadius="lg"
+      justifyContent={"center"}
+      bg="white"
     >
-        <Text
-          width='95%'
-          m="10px"
-          ml="20px"
-          fontSize="25px"
-          fontWeight="bold"
-          color="gray.500"
-        >
-          Friends List
-        </Text>
+      <Text
+        m="10px"
+        ml="20px"
+        fontSize="25px"
+        fontWeight="bold"
+        color="gray.500"
+      >
+        Friends List
+      </Text>
 
-      {Friends.length ?
+      {Friends.length ? (
         users.map(
           (value1: any) =>
             Friends.some(
@@ -59,41 +55,44 @@ const FriendsList = () => {
                 justifyContent="space-between"
                 key={value1.id}
                 boxShadow="1px 5px 5px gray"
-                cursor='pointer'
-                onClick={() => { setUserProfile(value1);  navigate('/profile')}}
+                cursor="pointer"
+                onClick={() => {
+                  setUserProfile(value1);
+                  navigate("/profile");
+                }}
               >
                 <Image
                   borderTopRadius="lg"
-                 // height="60%"
+                  // height="60%"
                   width="100%"
                   src={value1.imageUrl || "/defaultProfilePic.png"}
                 />
-                <Text fontWeight="bolder" >
-                  {value1.login}
-                </Text>
+                <Text fontWeight="bolder">{value1.login}</Text>
               </Box>
             )
-        ): 
+        )
+      ) : (
         <Box
-          height='90%'
-          width='100%'
+          height="90%"
+          width="100%"
           color="gray.400"
           display="flex"
           flexDir="column"
           alignItems="center"
           justifyContent="center"
-          fontSize={'50px'}
+          fontSize={"50px"}
         >
-          <SlPeople size='100px' />
-          <Text fontSize="25px" mt='50px'>You have no Friends for now.</Text>
+          <SlPeople size="100px" />
+          <Text fontSize="25px" mt="50px">
+            You have no Friends for now.
+          </Text>
         </Box>
-        }
+      )}
     </Box>
   );
 };
 
 export default FriendsList;
-
 
 // {Friends &&
 //   users.map(

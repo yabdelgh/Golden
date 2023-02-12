@@ -144,22 +144,24 @@ export class UserService {
   }
 
   async blockUser(blockerId: number, blockedId: number) {
-    const user = await this.prisma.blockedUser.create({
+    return await this.prisma.blockedUser.create({
       data: {
         blockerId,
         blockedId,
       },
     });
-    return user;
   }
 
   async unblockUser(blockerId: number, blockedId: number) {
-    const user = await this.prisma.blockedUser.delete({
+    return await this.prisma.blockedUser.delete({
       where: {
         blockerId_blockedId: { blockerId, blockedId },
       },
+      select: {
+        blockedId: true,
+        blockerId: true,
+      },
     });
-    return user;
   }
 
   async getBlockedUsers(blockerId: number) {
@@ -168,6 +170,7 @@ export class UserService {
         blockerId,
       },
       select: {
+        blockerId: true,
         blockedId: true,
       },
     });

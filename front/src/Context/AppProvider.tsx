@@ -1,5 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { createContext, useContext, useEffect, useState } from "react";
+import { BlockedUser } from "../../types";
 
 const AppContext = createContext<any | null>(null);
 
@@ -41,8 +42,8 @@ export type AppStateType = {
   setIsSmallerThan1200: React.Dispatch<React.SetStateAction<boolean>>;
   isSmallerThan1800: boolean;
   setIsSmallerThan1800: React.Dispatch<React.SetStateAction<boolean>>;
-  blockedUsers: any[];
-  setBlockedUsers: React.Dispatch<React.SetStateAction<any[]>>;
+  blockedUsers: BlockedUser[];
+  setBlockedUsers: React.Dispatch<React.SetStateAction<BlockedUser[]>>;
 };
 
 const AppProvider = ({ children }: any) => {
@@ -66,7 +67,7 @@ const AppProvider = ({ children }: any) => {
   const toast = useToast();
   const [isSmallerThan1200, setIsSmallerThan1200] = useState(false);
   const [isSmallerThan1800, setIsSmallerThan1800] = useState(false);
-  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
+  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
 
   useEffect(() => {
     const handleResize = () => {

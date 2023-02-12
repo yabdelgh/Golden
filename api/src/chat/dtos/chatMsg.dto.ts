@@ -21,13 +21,9 @@ export class chatMsgDto {
 }
 export class BlockUserDto {
   @IsNumber()
-  blockerId: number;
-  @IsNumber()
   blockedId: number;
 }
 export class searchDto {
-  @IsNumber()
-  userId: number;
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)

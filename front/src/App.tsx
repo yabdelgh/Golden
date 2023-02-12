@@ -5,7 +5,7 @@ import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
 import { useEffect, useLayoutEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
-import { Friend, Msg, User, Room, RoomUser } from "../types";
+import { Friend, Msg, User, Room, RoomUser, BlockedUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
 import ProfilePage from "./Pages/ProfilePage";
 import GamePage from "./Pages/GamePage";
@@ -99,7 +99,19 @@ function App() {
       setUsers(payload);
     });
     socket.on("blockedUsers", (payload: any[]) => {
-      setBlockedUsers(payload.map((v) => v.blockedId));
+      setBlockedUsers(payload);
+    });
+    socket.on("blockUser", (payload: BlockedUser) => {
+      setBlockedUsers((value) => [...value, payload]);
+    });
+    socket.on("unblockUser", (payload: BlockedUser) => {
+      setBlockedUsers((value: BlockedUser[]) =>
+        value.filter(
+          (ele) =>
+            ele.blockerId !== payload.blockerId ||
+            ele.blockedId !== payload.blockedId
+        )
+      );
     });
 
     socket.on("rooms", (payload: Room[]) => {
@@ -299,7 +311,7 @@ function App() {
       }
     );
 
-    socket.on("searchs", (payload: string[]) => {
+    socket.on("search", (payload: string[]) => {
       setSearchs((value: string[]) => {
         return [...value, payload];
       });

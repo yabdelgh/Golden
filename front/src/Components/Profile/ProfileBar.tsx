@@ -4,7 +4,6 @@ import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
 
 type BlockUserDto = {
-  blockerId: number;
   blockedId: number;
 };
 
@@ -13,14 +12,12 @@ const ProfileBar = () => {
 
   const BlockUser = async () => {
     socket.emit("blockUser", {
-      blockerId: user.id,
       blockedId: userProfile.id,
     } as BlockUserDto);
   };
 
   const UnblockUser = () => {
     socket.emit("unblockUser", {
-      blockerId: user.id,
       blockedId: userProfile.id,
     } as BlockUserDto);
   };
@@ -77,17 +74,19 @@ const ProfileBar = () => {
               <Button
                 height="35px"
                 onClick={
-                  blockedUsers.includes(userProfile.id)
+                  blockedUsers.find(
+                    (blockedUser) => blockedUser.blockedId === userProfile.id
+                  )
                     ? UnblockUser
                     : BlockUser
                 }
               >
-                {blockedUsers.includes(userProfile.id) ? "Unblock" : "Block"}
+                {blockedUsers.find(
+                  (blockedUser) => blockedUser.blockedId === userProfile.id
+                )
+                  ? "Unblock"
+                  : "Block"}
               </Button>
-              <Box>
-                blockedUsers:
-                {JSON.stringify(blockedUsers)}
-              </Box>
             </Box>
           )}
           {/* <Box display='flex' width='40%' justifyContent={'space-around'}>

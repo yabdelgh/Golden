@@ -22,12 +22,15 @@ const SearchModal = ({ children }: any) => {
 
   const search = (e: any) => {
     setSearchPong(e.target.value);
-    if (e.target.value.length > 3) {
-      //   socket.emit("searchs", {
-      //     search: e.target.value,
-      //     userId: user.id,
-      //   });
-    }
+    !users.some((ele: User) => ele.login.includes(e.target.value)) &&
+      !rooms.some((ele: Room) => ele.name.includes(e.target.value)) &&
+      !searchs.some((ele: any) => {
+        if (ele.login) return ele.login.includes(e.target.value);
+        else return ele.name.includes(e.target.value);
+      }) &&
+      socket.emit("search", {
+        search: e.target.value,
+      });
   };
 
   return (

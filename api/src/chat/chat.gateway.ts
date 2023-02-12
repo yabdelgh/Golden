@@ -56,7 +56,9 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
 
-  afterInit() {}
+  afterInit() {
+    // console.log('init');
+  }
 
   async getConnectedUsers(): Promise<UserDto[]> {
     const clients: any = await this.server.fetchSockets();
@@ -147,12 +149,13 @@ export class ChatGateway
     @MessageBody()
     payload: BlockUserDto,
   ) {
-    const { blockerId, blockedId } = payload;
-    await this.userService.blockUser(blockerId, blockedId);
-    client.emit(
-      'blockedUsers',
-      await this.userService.getBlockedUsers(blockerId),
+    const { blockedId } = payload;
+    const blockUser = await this.userService.blockUser(
+      client.user.id,
+      blockedId,
     );
+    client.emit('blockUser', blockUser);
+    this.server.in(`${blockedId}`).emit('blockUser', blockUser);
   }
 
   @SubscribeMessage('unblockUser')
@@ -161,12 +164,13 @@ export class ChatGateway
     @MessageBody()
     payload: BlockUserDto,
   ) {
-    const { blockerId, blockedId } = payload;
-    await this.userService.unblockUser(blockerId, blockedId);
-    client.emit(
-      'blockedUsers',
-      await this.userService.getBlockedUsers(blockerId),
+    const { blockedId } = payload;
+    const unblockUser = await this.userService.unblockUser(
+      client.user.id,
+      blockedId,
     );
+    client.emit('unblockUser', unblockUser);
+    this.server.in(`${blockedId}`).emit('unblockUser', unblockUser);
   }
 
   @SubscribeMessage('addRoom')
@@ -335,19 +339,18 @@ export class ChatGateway
       role: ret.role,
     });
   }
-  @SubscribeMessage('searchs')
-  async searchs(
+  @SubscribeMessage('search')
+  async search(
     @ConnectedSocket() socket: mySocket,
     @MessageBody() payload: searchDto,
   ) {
-    const { search, userId } = payload;
-    console.log(search, userId);
+    const { search } = payload;
 
     const user = await this.prismaService.user.findFirst({
       where: {
         BlockedBy: {
           none: {
-            blockerId: userId,
+            blockedId: socket.user.id,
           },
         },
         login: {
@@ -360,7 +363,7 @@ export class ChatGateway
         imageUrl: true,
       },
     });
-    if (user) socket.emit('searchs', user);
+    if (user) socket.emit('search', user);
     else {
       const room = await this.prismaService.chatRooms.findFirst({
         where: {
@@ -380,7 +383,7 @@ export class ChatGateway
           access: true,
         },
       });
-      if (room) socket.emit('searchs', room);
+      if (room) socket.emit('search', room);
     }
   }
 

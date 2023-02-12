@@ -6,17 +6,17 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { chatRoomDto } from '../dtos/chatRoom.dto';
 import { WsException } from '@nestjs/websockets';
+import { MsgService } from '../msg/msg.service';
 
 @Injectable()
 export class RoomService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private msgService: MsgService) {}
 
   async hash(password: any) {
     if (password === undefined) return '';
     const hash = await argon.hash(password);
     return hash;
   }
-
 
   async getRooms(userId: number): Promise<chatRoomDto[]> {
     const rooms: chatRoomDto[] = await this.prisma.chatRooms.findMany({
@@ -26,6 +26,7 @@ export class RoomService {
           some: {
             userId,
             NOT: { ban: true },
+            status: RoomUserStatus.Member,
           },
         },
       },
@@ -44,9 +45,9 @@ export class RoomService {
         },
       },
     });
-    return rooms.map((ele: chatRoomDto) => { 
-      return {...ele, isGroupChat: true}
-    })
+    return rooms.map((ele: chatRoomDto) => {
+      return { ...ele, isGroupChat: true };
+    });
   }
 
   async getDMRooms(userId: number): Promise<any> {
@@ -68,17 +69,21 @@ export class RoomService {
           },
           select: {
             userId: true,
-            user: true
+            user: true,
           },
         },
       },
     });
-    
-    return rooms.map((ele: any) => { 
-      return {id: ele.id, name: ele.RoomUsers[0].user.login, isGroupChat: false}
-    })
+
+    return rooms.map((ele: any) => {
+      return {
+        id: ele.id,
+        name: ele.RoomUsers[0].user.login,
+        isGroupChat: false,
+      };
+    });
   }
-  
+
   async getRoom(roomId: number) {
     try {
       const ret = await this.prisma.chatRooms.findFirst({
@@ -97,14 +102,14 @@ export class RoomService {
               role: true,
               ban: true,
               mute: true,
-              status: true
+              status: true,
             },
           },
         },
       });
       return {
         ...ret,
-        isGroupChat: ret.name !== '' 
+        isGroupChat: ret.name !== '',
       };
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError)
@@ -112,14 +117,14 @@ export class RoomService {
           throw new ForbiddenException('room name already exist');
     }
   }
-  
-  async createDirectMsgRoom(user1Id: number, user2Id: number) { 
+
+  async createDirectMsgRoom(user1Id: number, user2Id: number) {
     try {
       const ret = await this.prisma.chatRooms.create({
         data: {
           name: '',
           RoomUsers: {
-            create: [{ userId: user1Id }, { userId: user2Id }]
+            create: [{ userId: user1Id }, { userId: user2Id }],
           },
         },
         select: {
@@ -127,11 +132,11 @@ export class RoomService {
           RoomUsers: {
             select: {
               userId: true,
-              user: true
+              user: true,
             },
-          }
-        }
-      })
+          },
+        },
+      });
       return ret;
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError)
@@ -217,7 +222,7 @@ export class RoomService {
                 role: true,
                 ban: true,
                 mute: true,
-                status: true
+                status: true,
               },
             },
           },
@@ -437,6 +442,7 @@ export class RoomService {
         id: roomId,
         status: RoomStatus.Opened,
         NOT: { access: RoomAccess.Private },
+        RoomUsers: { none: { userId, ban: true } },
       },
     });
     if (room) {
@@ -445,10 +451,9 @@ export class RoomService {
         if (!tt) throw new WsException('password incorrect');
       }
       try {
-
         const roomUser: RoomUser = await this.prisma.roomUser.upsert({
           where: {
-            roomId_userId: { roomId, userId }
+            roomId_userId: { roomId, userId },
           },
           update: { status: RoomUserStatus.Member },
           create: {
@@ -457,11 +462,8 @@ export class RoomService {
           },
         });
         return roomUser;
-    
-      }
-      catch (err) { 
-
-      throw new WsException(err.message)
+      } catch (err) {
+        throw new WsException(err.message);
       }
     } else throw new WsException('Ambiguous credentials');
   }
@@ -489,18 +491,28 @@ export class RoomService {
     else throw new ForbiddenException('Ambiguous credentials');
   }
 
-  async leaveRoom(userId: number, roomId: number) {
+  async leaveRoom(userId: number, roomId: number): Promise<string> {
     try {
-      await this.prisma.roomUser.update({
-        where: {
-          roomId_userId: { roomId, userId },
-        },
-        data: {
-          status: RoomUserStatus.ExMember,
-        },
-      });
-    }
-    catch(err) { 
+      const msg = await this.msgService.getFirstMsg(userId, roomId);
+      if (msg) {
+        await this.prisma.roomUser.update({
+          where: {
+            roomId_userId: { roomId, userId },
+          },
+          data: {
+            status: RoomUserStatus.ExMember,
+          },
+        });
+        return 'leaveRoom';
+      } else {
+        await this.prisma.roomUser.delete({
+          where: {
+            roomId_userId: { roomId, userId },
+          },
+        });
+        return 'removeFromRoom';
+      }
+    } catch (err) {
       throw new WsException('Ambiguous credentials');
     }
   }

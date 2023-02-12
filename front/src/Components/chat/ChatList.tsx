@@ -40,12 +40,12 @@ const ChatList = () => {
     <Box
       display="flex"
       flexDir="column"
-      borderRadius="lg"
+      // borderRadius="lg"
       bg="white"
       p="3"
       height="100%"
       w={{ base: "290px", md: "360px" }}
-      mr="5px"
+      mr="2px"
     >
       <Box display="flex" justifyContent="space-between">
         <Text fontSize="25px" fontFamily="Work sans" height="50px" m="5px">

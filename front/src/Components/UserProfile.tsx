@@ -4,7 +4,6 @@ import { Room, RoomUser } from "../../types";
 import ProfileButton from "./Buttons/ProfileButton";
 import ChallengeButton from "./Buttons/ChallengeButton";
 import MoreButton from "./Buttons/MoreButton";
-import { useEffect } from "react";
 
 const UserProfile = ({ showUP }: { showUP: any }) => {
   const { selectedRoom } = AppState();
@@ -15,9 +14,6 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
         ?.role;
     return undefined;
   };
-  useEffect(() => {
-    console.log("showUP", showUP);
-  }, [showUP]);
 
   return (
     <Box

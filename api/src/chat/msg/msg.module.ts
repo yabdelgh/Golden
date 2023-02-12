@@ -3,7 +3,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { MsgService } from './msg.service';
 
 @Module({
-    imports: [PrismaModule],
+  imports: [PrismaModule],
   providers: [MsgService],
   exports: [MsgService],
 })

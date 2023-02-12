@@ -1,5 +1,4 @@
 import { Avatar, Button, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { AppState } from "../../Context/AppProvider";
 
 const UserButton = ({ user }: any) => {

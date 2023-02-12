@@ -24,13 +24,13 @@ export class AuthService {
     });
     res.cookie('access_token', token, { httpOnly: true });
     if (payload.authenticated)
-      res.redirect(`${this.configService.get<String>('FRONT_HOST')}/Profile`);
-    else res.redirect(`${this.configService.get<String>('FRONT_HOST')}/twoFA`);
+      res.redirect(`${this.configService.get<string>('FRONT_HOST')}/Profile`);
+    else res.redirect(`${this.configService.get<string>('FRONT_HOST')}/twoFA`);
   }
 
   async authenticate(userId: number, res: any, code: string) {
     const secret: string = await this.userService.getUserSecret(userId);
-     const isValid : boolean = authenticator.verify({ token: code, secret });
+    const isValid: boolean = authenticator.verify({ token: code, secret });
     if (!isValid) throw new UnauthorizedException('bad code');
     const payload = { id: userId, authenticated: true };
     const token = await this.jwtService.signAsync(payload, {
@@ -38,7 +38,7 @@ export class AuthService {
       secret: this.configService.get<string>('JWT_SECRET'),
     });
     res.cookie('access_token', token, { httpOnly: true });
-    res.end()
+    res.end();
   }
 
   async generate(userId: number, res: any) {
@@ -63,7 +63,7 @@ export class AuthService {
       });
     else throw new UnauthorizedException('Wrong authentication code');
   }
-  
+
   async logout(res: any) {
     const payload = {
       id: 0,

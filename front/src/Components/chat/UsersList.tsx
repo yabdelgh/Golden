@@ -13,17 +13,22 @@ import { RoomUser, User } from "../../../types";
 import { useEffect, useState } from "react";
 import UserButton from "../Buttons/UserButton";
 const UsersList = () => {
-  const { searchKey, setSearchKey, users, selectedRoom } = AppState();
+  const { searchKey, setSearchKey, users, selectedRoom, rooms } = AppState();
   const [onlineCounter, setOnlineCounter] = useState(0);
   const [offlineCounter, setOfflineCounter] = useState(0);
 
   const getUsers = (status: boolean): User[] => {
-        if (!selectedRoom)
-          return [];
-        return selectedRoom.RoomUsers
-          .map((roomUser: RoomUser) => users.find((ele: any) => ele.id === roomUser.userId && ele.isOnline === status ))
-          .filter((user: User) => user && user.login.includes(searchKey))}
-
+    if (!selectedRoom) return [];
+    return selectedRoom.RoomUsers.map((roomUser: RoomUser) => {
+      if (roomUser.status === "Member")
+        return users.find(
+          (ele: any) => ele.id === roomUser.userId && ele.isOnline === status
+        );
+      return undefined;
+    }).filter((user: User) => {
+      return user && user.login.includes(searchKey);
+    });
+  };
 
   useEffect(() => {
     selectedRoom &&
@@ -31,25 +36,26 @@ const UsersList = () => {
         const ret = users.filter(
           (user: User) =>
             user.isOnline &&
-            selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id)
+            selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id && ele.status !== 'ExMember')
         );
-        setOfflineCounter(selectedRoom.RoomUsers.length - ret.length - 1);
         return ret.length;
       });
-  }, [users, selectedRoom]);
+      setOfflineCounter(() => {
+        const ret = users.filter(
+          (user: User) =>
+            !user.isOnline &&
+            selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id && ele.status !== 'ExMember')
+        );
+        return ret.length;})
+  }, [users, selectedRoom, rooms]);
 
   return (
-    < Box
-    minWidth='20rem'
-    width="20rem"
-    >
+    <Box minWidth="20rem" width="20rem">
       <Box
         display="flex"
         alignItems={"center"}
         justifyContent="space-between"
         width={"100%"}
-        
-        
       >
         <FormControl height="30px" width="100%" margin="5px" mb="20px">
           <InputGroup>
@@ -72,13 +78,17 @@ const UsersList = () => {
         online __ {onlineCounter}
       </Text>
       <Box display="flex" flexDir="column">
-        {getUsers(true).map((user) => <UserButton user={user} key={user.id}/>)}
+        {getUsers(true).map((user) => (
+          <UserButton user={user} key={user.id} />
+        ))}
       </Box>
       <Text m="10px" color="gray.400">
         offline __ {offlineCounter}
       </Text>
       <Box display="flex" flexDir="column">
-        {getUsers(false).map((user) => <UserButton user={user} key={user.id}/>)}
+        {getUsers(false).map((user) => (
+          <UserButton user={user} key={user.id} />
+        ))}
       </Box>
     </Box>
   );

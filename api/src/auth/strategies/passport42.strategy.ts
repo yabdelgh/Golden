@@ -23,16 +23,15 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
   }
 
   async validate(
-   accessToken: string,
+    accessToken: string,
     refreshToken: string,
     profile: any,
   ): Promise<any> {
-    const { id, login, email, imageUrl } = profile;
+    const { id, login, email } = profile;
     const user = await this.userService.validateUser({
       id,
       login,
-     email,
-
+      email,
     });
     if (!user) throw new UnauthorizedException('connection failed');
     return user;

@@ -10,9 +10,16 @@ import { GameModule } from 'src/game/game.module';
 import { ChatController } from './chat.controller';
 
 @Module({
-  imports: [PrismaModule, JwtModule, RoomModule, MsgModule, UserModule, GameModule],
+  imports: [
+    PrismaModule,
+    JwtModule,
+    RoomModule,
+    MsgModule,
+    UserModule,
+    GameModule,
+  ],
   providers: [ChatService, ChatGateway],
   exports: [ChatGateway],
-  controllers: [ChatController]
+  controllers: [ChatController],
 })
 export class ChatModule {}

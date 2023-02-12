@@ -12,11 +12,12 @@ const NavBar = () => {
     <Box
       bg="white"
       width="70px"
-      height="calc(100% - 80px)"
+      // height="calc(100% - 80px)"
+      height='100%'
       position="fixed"
-      top="70"
-      left="2"
-      borderRadius="lg"
+      top="62"
+       left="0"
+      // borderRadius="lg"
       display={user.login ? "flex" : "none"}
       flexDir="column"
       alignItems="center"

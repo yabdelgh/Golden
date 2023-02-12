@@ -15,10 +15,10 @@ export class ChatService {
     private roomService: RoomService,
     private prisma: PrismaService,
     private userService: UserService,
-  ) { }
+  ) {}
 
   async getUserFromsocket(socket: mySocket): Promise<number> {
-    let token: string = String(socket.handshake.headers.cookie);
+    let token = String(socket.handshake.headers.cookie);
     token = token.replace('access_token=', '');
     const user = await this.jwtService.verify(token, {
       secret: this.config.get('JWT_SECRET'),
@@ -51,8 +51,7 @@ export class ChatService {
       if (connectedUser !== undefined) {
         ele1.isOnline = connectedUser.isOnline;
         ele1.inGame = connectedUser.inGame;
-      }
-      else {
+      } else {
         ele1.isOnline = false;
         ele1.inGame = false;
       }

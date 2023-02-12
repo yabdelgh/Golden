@@ -87,7 +87,6 @@ export class ChatGateway
       this.chatService.status_broadcast(socket);
     } catch (err) {
       socket.disconnect(true);
-      console.log(err);
     }
     // get users with the status
   }
@@ -305,20 +304,26 @@ export class ChatGateway
       payload.value,
     );
     if (ret) {
-      if (!payload.value)
-        this.server
-          .in(String(payload.userId))
-          .socketsJoin(`room${payload.roomId}`);
-      else
-        this.server
-          .in(String(payload.userId))
-          .socketsLeave(`room${payload.roomId}`);
-
       this.server.in(`room${payload.roomId}`).emit('ban', {
         userId: ret.userId,
         roomId: ret.roomId,
         val: payload.value,
       });
+      if (!payload.value && ret.status === 'Member') {
+        this.server
+          .in(`${payload.userId}`)
+          .emit('addRoom', await this.roomService.getRoom(payload.roomId));
+        this.server
+          .in(String(payload.userId))
+          .socketsJoin(`room${payload.roomId}`);
+      } else if (ret.status === 'Member') {
+        this.server
+          .in(`${payload.userId}`)
+          .emit('deleteRoom', { id: payload.roomId });
+        this.server
+          .in(String(payload.userId))
+          .socketsLeave(`room${payload.roomId}`);
+      }
     }
   }
 
@@ -348,7 +353,7 @@ export class ChatGateway
 
     const user = await this.prismaService.user.findFirst({
       where: {
-        BlockedBy: {
+        Blocked: {
           none: {
             blockedId: socket.user.id,
           },
@@ -369,6 +374,9 @@ export class ChatGateway
         where: {
           name: {
             startsWith: search,
+          },
+          RoomUsers: {
+            none: { userId: socket.user.id, ban: true },
           },
           NOT: {
             OR: [
@@ -399,7 +407,6 @@ export class ChatGateway
     );
     const user = await this.userService.getUser(roomUser.userId);
     socket.join(`room${roomUser.roomId}`);
-
     socket.emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
     this.server
       .in(`room${roomUser.roomId}`)
@@ -411,10 +418,14 @@ export class ChatGateway
     @ConnectedSocket() socket: mySocket,
     @MessageBody() payload: { roomId: number },
   ) {
-    await this.roomService.leaveRoom(socket.user.id, payload.roomId);
-    this.server
-      .in(`room${payload.roomId}`)
-      .emit('leaveRoom', { roomId: payload.roomId, userId: socket.user.id });
+    const action: string = await this.roomService.leaveRoom(
+      socket.user.id,
+      payload.roomId,
+    );
+    socket.broadcast
+      .to(`room${payload.roomId}`)
+      .emit(action, { roomId: payload.roomId, userId: socket.user.id });
+    socket.emit('deleteRoom', { id: payload.roomId });
     socket.leave(`room${payload.roomId}`);
   }
 

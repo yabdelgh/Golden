@@ -1,6 +1,5 @@
-import { BadRequestException, Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { UserService } from 'src/user/user.service';
 import { ChatGateway } from './chat.gateway';
 import { chatRoomDto } from './dtos/chatRoom.dto';
 import { RoomService } from './room/room.service';
@@ -14,10 +13,12 @@ export class ChatController {
   ) {}
 
   @Post('createRoom')
-  async createRoom(@Req() {user}, @Body() payload) {
-    const room: chatRoomDto = await this.roomService.createRoom(payload, user.id);
-    console.log('createRoom',room);
-    
+  async createRoom(@Req() { user }, @Body() payload) {
+    const room: chatRoomDto = await this.roomService.createRoom(
+      payload,
+      user.id,
+    );
+
     this.chatGateway.server.in(`${user.id}`).socketsJoin(`room${room.id}`);
     room.isGroupChat = true;
     return room;

@@ -3,7 +3,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
 import { Friend, Msg, User, Room, RoomUser, BlockedUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
@@ -20,7 +20,6 @@ import ChatHeader from "./Components/AppHeader";
 function App() {
   const {
     setUserProfile,
-    user,
     setIsOnline,
     setMsgs,
     setUser,
@@ -35,6 +34,7 @@ function App() {
     setSearchs,
     setChallenges,
     setBlockedUsers,
+    user,
   } = AppState();
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,6 +54,7 @@ function App() {
       location.pathname !== "/twoFA"
     )
       navigate("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -102,6 +103,9 @@ function App() {
       setBlockedUsers(payload);
     });
     socket.on("blockUser", (payload: BlockedUser) => {
+      setSearchs((value) =>
+        value.filter((ele) => ele.id !== payload.blockerId)
+      );
       setBlockedUsers((value) => [...value, payload]);
     });
     socket.on("unblockUser", (payload: BlockedUser) => {
@@ -195,6 +199,22 @@ function App() {
       });
     });
 
+    socket.on(
+      "removeFromRoom",
+      (payload: { roomId: number; userId: number }) => {
+        setRooms((rooms: Room[]) => {
+          const index1 = rooms.findIndex(
+            (object) => object.id === payload.roomId
+          );
+          const index2 = rooms[index1].RoomUsers.findIndex(
+            (object) => object.userId === payload.userId
+          );
+          rooms[index1].RoomUsers.splice(index2, 1);
+          return [...rooms];
+        });
+      }
+    );
+
     socket.on("updateRoom", (payload: Room) => {
       setRooms((rooms: Room[]) => {
         const index = rooms.findIndex((ele: Room) => {
@@ -224,7 +244,6 @@ function App() {
     });
 
     socket.on("friends", (payload: Friend[]) => {
-      console.log(payload);
       setFriends(payload);
     });
 

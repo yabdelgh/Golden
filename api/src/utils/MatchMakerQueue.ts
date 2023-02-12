@@ -5,14 +5,14 @@ class MatchMakerQueue<T> {
     this.data.push(item);
   }
 
-  cancel(item: T) { 
-    this.data = this.data.filter(value => value === item);
+  cancel(item: T) {
+    this.data = this.data.filter((value) => value === item);
   }
 
   pairing(): T[] | undefined {
     const ret: T[] = [];
 
-    if (this.data.length > 1) { 
+    if (this.data.length > 1) {
       ret[0] = this.data.shift();
       ret[1] = this.data.shift();
       return ret;
@@ -21,4 +21,4 @@ class MatchMakerQueue<T> {
   }
 }
 
-export { MatchMakerQueue }
+export { MatchMakerQueue };

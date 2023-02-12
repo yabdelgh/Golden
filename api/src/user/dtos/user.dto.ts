@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 
 export class UserDto {
-  
   @IsOptional()
   @IsNumber()
   id?: number;
@@ -30,11 +29,11 @@ export class UserDto {
   @IsOptional()
   @IsBoolean()
   isTwoFactorAuthenticationEnabled?: boolean;
-  
+
   @IsOptional()
   @IsBoolean()
   isOnline?: boolean;
-  
+
   @IsOptional()
   @IsBoolean()
   inGame?: boolean;
@@ -42,5 +41,5 @@ export class UserDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  twoFactorAuthenticationCode?: String;
+  twoFactorAuthenticationCode?: string;
 }

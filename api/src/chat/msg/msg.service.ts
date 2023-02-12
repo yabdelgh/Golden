@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { RoomUserStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserDto } from 'src/user/dtos/user.dto';
 import { chatMsgDto } from '../dtos/chatMsg.dto';
 
 @Injectable()
@@ -44,11 +43,12 @@ export class MsgService {
     } else throw new WsException('Unauthorized');
   }
 
-  async removeMsg(msgId: number) {}
-
-  async updateMsg(msgId: number, msg: string) {}
-
-  async getMsg(msgId: number) {}
-
-  async getRoomMsg(roomId: number) {}
+  async getFirstMsg(userId: number, roomId: number) {
+    return await this.prisma.roomUserMsg.findFirst({
+      where: {
+        roomId: roomId,
+        userId: userId,
+      },
+    });
+  }
 }

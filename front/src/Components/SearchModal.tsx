@@ -17,7 +17,7 @@ import TmpButton from "./TmpButton";
 
 const SearchModal = ({ children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { users, rooms, socket, searchs, user } = AppState();
+  const { users, rooms, socket, searchs} = AppState();
   const [searchPong, setSearchPong]: any = useState("");
 
   const search = (e: any) => {

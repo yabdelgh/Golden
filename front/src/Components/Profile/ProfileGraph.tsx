@@ -35,7 +35,6 @@ export default function ProfileGraph({ wins, games }: any) {
       e.native.target.style.cursor = "pointer";
     },
     onClick: function (event: any, element: any) {
-      console.log(element[0].index);
     },
   };
 

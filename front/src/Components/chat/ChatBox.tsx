@@ -70,7 +70,7 @@ const ChatBox = () => {
       width="100%"
       bg="white"
       height="100%"
-      borderRadius="lg"
+      // borderRadius="lg"
       border="3px white solid"
     >
       {selectedRoom ? (
@@ -152,18 +152,10 @@ const ChatBox = () => {
                     ? setUsersList(!usersList) && setShowUP(undefined)
                     : setShowUP((value: any) => {
                         if (value) return undefined;
-                        else {
-                          console.log(
-                            "selectedRoom.name: ",
-                            getUserByName(users, selectedRoom.name)
-                          );
-
+                        else 
                           return getUserByName(users, selectedRoom.name);
-                        }
                       })
-
                   }
-                  
                 }
                 icon={
                   selectedRoom.isGroupChat ? (
@@ -198,10 +190,9 @@ const ChatBox = () => {
               <Box
                 width="100%"
                 height="calc(100% - 70px)"
-                overflow={"scroll"}
-                overflowX="hidden"
+                overflow={"hidden"}
               >
-                {msgs.length !== 0 ? (
+                {msgs.length !== 0 && (
                   msgs.map((msg: any) => {
                     if (msg.roomId === selectedRoom.id)
                       return (
@@ -231,8 +222,6 @@ const ChatBox = () => {
                       );
                     else return undefined;
                   })
-                ) : (
-                  <></>
                 )}
               </Box>
               <InputGroup
@@ -243,6 +232,7 @@ const ChatBox = () => {
               >
                 <Input
                   fontFamily={"Inter"}
+                  disabled={selectedRoom.RoomUsers?.some((ele: RoomUser) => ele.userId === user.id && ele.mute)}
                   pl="60px"
                   fontWeight="bolder"
                   width="99%"

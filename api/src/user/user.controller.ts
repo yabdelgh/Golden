@@ -13,7 +13,6 @@ import { UserService } from './user.service';
 //import { v4 as uuidv4 } from 'uuid';
 //import * as path from 'path';
 //import { diskStorage } from 'multer';
-import { UserDto } from './dtos/user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 /*export const storage = {
@@ -32,7 +31,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userservice: UserService) {}
-  
+
   @Get()
   async getUser(@Query('id', ParseIntPipe) id: number) {
     const ret = await this.userservice.getUser(id);
@@ -53,7 +52,7 @@ export class UserController {
   async getBlokedUsers(@Req() { user }) {
     return this.userservice.getBlockedUsers(user.id);
   }
- /* @Post()
+  /* @Post()
   async createUser(@Body() user) {
     return this.userservice.createUser(user);
   }

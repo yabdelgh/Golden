@@ -356,7 +356,7 @@ function App() {
   }, [socket]);
 
   return (
-    <Box className="App">
+    <Box className="App" padding="4rem 0.5rem 0.5rem 5rem">
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/loading" element={<LoadingPage />} />

@@ -6,13 +6,7 @@ import { AppState } from "../Context/AppProvider";
 
 const ChatPage = () => {
   return (
-    <Box
-      width="100%"
-      display="flex"
-      m="70px 0px 10px 80px"
-      height="calc(100vh - 80px)"
-      p="0px 5px 0px 5px"
-    >
+    <Box width="100%" display="flex" m="0px" height="calc(100vh - 80px)">
       <ChatList />
       <ChatBox />
     </Box>

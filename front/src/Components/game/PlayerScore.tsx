@@ -1,31 +1,37 @@
 import { Box, Image, Text } from "@chakra-ui/react";
 import React from "react";
 
-const PlayerScore = ({ name, score, image }: any) => {
+const PlayerScore = ({ name, score, image, isLeft }: any) => {
   return (
     <Box
       display="flex"
-      flexDirection="column"
+      flexDirection={isLeft ? "row" : "row-reverse"}
       alignItems="center"
-      borderWidth="2px"
-      borderRadius="20px"
-      p="40px"
-      w="300px"
+      w="50%"
     >
       <Image
         src={image}
         rounded="100%"
-        w="150px"
-        h="150px"
+        w="80px"
+        h="80px"
         objectFit="cover"
-        mb="20px"
-      />
-      <Text fontSize="30px" fontWeight="bold" color="gray.800">
-        {name}
-      </Text>
-      <Text fontSize="30px" fontWeight="bold" color="gray.600">
-        Score: {score}
-      </Text>
+        mr={isLeft ? "20px" : "0"}
+        ml={isLeft ? "0" : "20px"}
+        />
+      
+      <Box mr={isLeft ? "20px" : "0"} ml={isLeft ? "0" : "20px"} display="flex"
+        flexDirection={isLeft ? "row" : "row-reverse"} 
+        flexGrow="1"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Text fontSize="30px" fontWeight="bold" color="gray.800">
+          {name}
+        </Text>
+        <Text fontSize="30px" fontWeight="bold" color="gray.600">
+          {score}
+        </Text>
+      </Box>
     </Box>
   );
 };

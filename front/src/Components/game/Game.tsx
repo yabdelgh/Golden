@@ -165,23 +165,35 @@ const Game = () => {
 
   return (
     <>
-      <Box position={"absolute"} top={"100px"} left={"100px"}>
-        <PlayerScore
-          name={name1}
-          image={avatar1 || "/defaultProfilePic.png"}
-          score={score1}
-        />
-      </Box>
-      <Box position={"absolute"} top={"100px"} right={"40px"}>
-        <PlayerScore
-          name={name2}
-          image={avatar2 || "/defaultProfilePic.png"}
-          score={score2}
-        />
-      </Box>
-      <div className="canvas-container">
-        <div id="render" className="matter-canvas" ref={divRef} />
-      </div>
+    <Box 
+      width="80%"
+      height="100px"
+      display="flex"
+      flexDirection="row"
+      justifyContent="space-between"
+      alignItems="center"
+      position="absolute"
+      top="100px"
+      left="50%"
+      transform="translateX(-50%)"
+    >
+      <PlayerScore
+        name={name1}
+        image={avatar1 || "/defaultProfilePic.png"}
+        score={score1}
+        isLeft={true}
+      />
+      <Box w="1px" h="60px" bgColor="gray.600" m="0 5px"/>
+      <PlayerScore
+        name={name2}
+        image={avatar2 || "/defaultProfilePic.png"}
+        score={score2}
+        isLeft={false}
+      />
+    </Box>
+    <div className="canvas-container">
+      <div id="render" className="matter-canvas" ref={divRef} />
+    </div>
     </>
   );
 };

@@ -44,6 +44,8 @@ export type AppStateType = {
   setIsSmallerThan1800: React.Dispatch<React.SetStateAction<boolean>>;
   blockedUsers: BlockedUser[];
   setBlockedUsers: React.Dispatch<React.SetStateAction<BlockedUser[]>>;
+  openEditProfile: boolean;
+  setOpenEditProfile: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const AppProvider = ({ children }: any) => {
@@ -68,6 +70,7 @@ const AppProvider = ({ children }: any) => {
   const [isSmallerThan1200, setIsSmallerThan1200] = useState(false);
   const [isSmallerThan1800, setIsSmallerThan1800] = useState(false);
   const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
+  const [openEditProfile, setOpenEditProfile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -119,6 +122,8 @@ const AppProvider = ({ children }: any) => {
         setUsersList,
         blockedUsers,
         setBlockedUsers,
+        openEditProfile,
+        setOpenEditProfile,
       }}
     >
       {children}

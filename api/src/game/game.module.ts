@@ -7,6 +7,6 @@ import { GameController } from './game.controller';
   imports: [PrismaModule],
   providers: [GameService],
   exports: [GameService],
-  controllers: [GameController]
+  controllers: [GameController],
 })
 export class GameModule {}

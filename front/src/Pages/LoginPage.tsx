@@ -13,16 +13,17 @@ const LoginPage = () => {
     }
   });
 
-
   return (
     <Box
-      width="100%"
-      height='100%'
+      width="100vw"
+      height="100vh"
       bg="teal"
       display="flex"
       justifyContent="space-around"
       alignItems="center"
-      position='fixed'
+      position="fixed"
+      top="0"
+      left="0"
     >
       <Box
         width="50%"
@@ -51,7 +52,7 @@ const LoginPage = () => {
         >
           FREE, FAN AND READY TO PLAY!
         </Text>
-        <Box width='100%' display='flex' justifyContent='center'>
+        <Box width="100%" display="flex" justifyContent="center">
           <a href={`${process.env.REACT_APP_BACK_HOST}/api/auth/login`}>
             <Button
               bg="#FF5323"

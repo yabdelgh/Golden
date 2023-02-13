@@ -67,7 +67,7 @@ function DrawerExample() {
 
 const ChatHeader = () => {
   const navigate = useNavigate();
-  const { user, setUser, socket } = AppState();
+  const { user, setUser, socket, setOpenEditProfile } = AppState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logoutHandler = () => {
@@ -162,6 +162,17 @@ const ChatHeader = () => {
                 }}
               >
                 Security <HiOutlineLockClosed size="20px" />
+              </Button>
+              <Button
+                display="flex"
+                justifyContent="space-around"
+                variant="unstyled"
+                width="100%"
+                onClick={() => {
+                  setOpenEditProfile(true);
+                }}
+              >
+                edit profile <HiOutlineLockClosed size="20px" />
               </Button>
             </PopoverBody>
           </PopoverContent>

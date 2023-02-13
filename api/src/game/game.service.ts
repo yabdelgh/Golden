@@ -21,7 +21,7 @@ export class GameService {
         OR: [{ redCornerId: userId }, { blueCornerId: userId }],
       },
     });
-    const nbrOfGames:number = games.length;
+    const nbrOfGames: number = games.length;
     const nbrOfWins = games.filter(
       (ele: any) =>
         (userId === ele.redCornerId &&

@@ -17,6 +17,8 @@ import { io } from "socket.io-client";
 import UseHere from "./Pages/UseHere";
 import LoadingPage from "./Pages/LoadingPage";
 import ChatHeader from "./Components/AppHeader";
+import { Modal } from "@chakra-ui/react";
+import EditProfile from "./Components/edit-profile";
 function App() {
   const {
     setUserProfile,
@@ -357,6 +359,19 @@ function App() {
 
   return (
     <Box className="App" padding="4.5rem 0.5rem 0.5rem 5.5rem">
+      <Box
+        position="fixed"
+        zIndex="100"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        fontSize={12}
+        color="#00000039"
+        _hover={{ color: "#000000" }}
+        transition="all 0.5s ease-in-out 0.3s"
+      >
+        {JSON.stringify({ user })}
+      </Box>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/loading" element={<LoadingPage />} />
@@ -371,6 +386,7 @@ function App() {
       </Routes>
       <ChatHeader />
       <NavBar />
+      <EditProfile />
     </Box>
   );
 }

@@ -18,6 +18,7 @@ import { IoGameControllerOutline } from "react-icons/io5";
 import SearchModal from "./SearchModal";
 import { Drawer, DrawerContent } from "@chakra-ui/react";
 import Challenge from "./game/Challenge";
+import { AiOutlineEdit } from "react-icons/ai";
 
 function DrawerExample() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -172,7 +173,7 @@ const ChatHeader = () => {
                   setOpenEditProfile(true);
                 }}
               >
-                edit profile <HiOutlineLockClosed size="20px" />
+                edit profile <AiOutlineEdit size="20px" />
               </Button>
             </PopoverBody>
           </PopoverContent>

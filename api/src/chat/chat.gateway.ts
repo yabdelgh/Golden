@@ -9,7 +9,7 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { ParseBoolPipe, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ChatRooms, RoomAccess, RoomStatus } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { UserDto } from 'src/user/dtos/user.dto';

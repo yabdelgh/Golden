@@ -34,7 +34,7 @@ export class mySocket extends Socket {
 
 @WebSocketGateway({
     cors: {
-        origin: 'http://10.12.13.4:3000',
+        origin: 'http://localhost:3000',
         credentials: true,
     },
     namespace: 'chat',
@@ -458,20 +458,22 @@ export class ChatGateway
     @SubscribeMessage('getGameData')
     async getGameDataById(@ConnectedSocket() socket: mySocket, @MessageBody() gameId: number = null) {
         if (!gameId)
-            gameId = socket.user.gameId
-        const game = this.gameService.getGame(gameId)
-        if (game) {
-            const data = {
-                //get the user data from the socket by the player id
-                playersData: game.players.map(p => { return { id: p.id } }),
-                players: game.players.map(p => p.body),
-                obstacles: game.obstacles,
-                ball: game.ball,
-                gameSize: game.size
-
-            }
-            socket.emit("gameData", safeStringify(data))
+        gameId = socket.user.gameId
+        const game = this.gameService.getGame(gameId);
+        if (!game)
+            return ;
+        const user1 = await this.userService.getUser(game.players[0].id)
+        const user2 = await this.userService.getUser(game.players[1].id)
+        const data = {
+            //get the user data from the socket by the player id
+            playersData : game.players.map(p => {return {id : p.id}}),
+            players: game.players.map(p => p.body),
+            obstacles: game.obstacles,
+            ball: game.ball,
+            gameSize: game.size,
+            usersOfPlayers: [user1, user2]
         }
+        socket.emit("gameData", safeStringify(data))
     }
 
     @SubscribeMessage('cancelQuickPairing')

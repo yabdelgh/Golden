@@ -35,6 +35,7 @@ const EditProfile = () => {
           ...user,
           login: login,
           imageUrl: imageUrl,
+          isFirstLogin: false,
         });
 
         handleClose();
@@ -49,7 +50,11 @@ const EditProfile = () => {
     if (user && user.imageUrl) setImageUrl(user.imageUrl || "");
   }, [user]);
   return (
-    <Modal isCentered isOpen={openEditProfile} onClose={handleClose}>
+    <Modal
+      isCentered
+      isOpen={openEditProfile || user.isFirstLogin}
+      onClose={handleClose}
+    >
       {/* <ModalOverlay /> */}
       <ModalContent
         maxWidth={"30rem"}
@@ -61,7 +66,7 @@ const EditProfile = () => {
         backdropFilter={"blur(10px)"}
       >
         <ModalHeader>Edit Profile</ModalHeader>
-        <ModalCloseButton />
+        {!user?.isFirstLogin && <ModalCloseButton />}
         <Box width={"15rem"} height={"15rem"} position={"relative"}>
           <Avatar
             shadow="xl"
@@ -118,10 +123,12 @@ const EditProfile = () => {
           justifyContent="space-evenly"
           width={"100%"}
         >
-          <Button colorScheme="blue" onClick={handleClose}>
-            <Box mx={2}>Calcel</Box>
-            <IoBackspaceOutline fontSize={"1.5rem"} />
-          </Button>
+          {!user?.isFirstLogin && (
+            <Button colorScheme="blue" onClick={handleClose}>
+              <Box mx={2}>Calcel</Box>
+              <IoBackspaceOutline fontSize={"1.5rem"} />
+            </Button>
+          )}
           <Button colorScheme="teal" variant="solid" onClick={saveProfile}>
             <Box mx={2}>Save</Box>
             <AiOutlineSave fontSize={"1.5rem"} />

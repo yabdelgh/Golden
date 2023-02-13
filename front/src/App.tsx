@@ -356,7 +356,8 @@ function App() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
-
+  if (!user) return <></>;
+  else if (user.isFirstLogin) return <EditProfile />;
   return (
     <Box className="App" padding="4.5rem 0.5rem 0.5rem 5.5rem">
       <Box

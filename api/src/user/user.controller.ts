@@ -10,7 +10,6 @@ import {
   Patch,
   UseInterceptors,
   UploadedFile,
-  Param,
   Body,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -98,7 +97,7 @@ export class UserController {
     return this.userservice.findUser(username);
   }
   
-
+d 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', storage))
   async upload(@UploadedFile() file, @Request() req): Promise<any> {

@@ -27,7 +27,7 @@ export class Passport42Strategy extends PassportStrategy(Strategy, '42') {
     refreshToken: string,
     profile: any,
   ): Promise<any> {
-    const { id, login, email, imageUrl } = profile;
+    const { id, login, email } = profile;
     const user = await this.userService.validateUser({
       id,
       login,

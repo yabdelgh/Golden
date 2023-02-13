@@ -6,12 +6,9 @@ import {
   Res,
   Post,
   Body,
-  Query,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { query } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { Passport42AuthGuard } from './guards/passport42.guard';
@@ -26,7 +23,9 @@ export class AuthController {
 
   @Get('login')
   @UseGuards(Passport42AuthGuard)
-  async login() {}
+  async login() {
+    // login
+  }
 
   @Get('logout')
   @UseGuards(JwtAuthGuard)

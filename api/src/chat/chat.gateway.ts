@@ -9,13 +9,22 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { ParseBoolPipe, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ChatRooms, RoomAccess, RoomStatus } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { UserService } from 'src/user/user.service';
 import { ChatService } from './chat.service';
-import { BlockUserDto, chatMsgDto, searchDto } from './dtos/chatMsg.dto';
+import {
+  BanDto,
+  BlockUserDto,
+  chatMsgDto,
+  JoinRoomDto,
+  LeaveRoomDto,
+  MuteDto,
+  RoleDto,
+  searchDto,
+} from './dtos/chatMsg.dto';
 import { MsgService } from './msg/msg.service';
 import { RoomService } from './room/room.service';
 import { chatRoomDto } from './dtos/chatRoom.dto';
@@ -276,7 +285,7 @@ export class ChatGateway
   @SubscribeMessage('mute')
   async mute(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: { userId: number; roomId: number; value: boolean },
+    @MessageBody() payload: MuteDto,
   ) {
     const ret = await this.roomService.muteUser(
       socket.user.id,
@@ -296,7 +305,7 @@ export class ChatGateway
   @SubscribeMessage('ban')
   async ban(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: { userId: number; roomId: number; value: boolean },
+    @MessageBody() payload: BanDto,
   ) {
     const ret = await this.roomService.banUser(
       socket.user.id,
@@ -325,7 +334,7 @@ export class ChatGateway
   @SubscribeMessage('role')
   async admin(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: { userId: number; roomId: number; role: string },
+    @MessageBody() payload: RoleDto,
   ) {
     const ret = await this.roomService.role(
       socket.user.id,
@@ -390,7 +399,7 @@ export class ChatGateway
   @SubscribeMessage('joinRoom')
   async joinRooom(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: { roomId: number; password?: string },
+    @MessageBody() payload: JoinRoomDto,
   ) {
     const roomUser = await this.roomService.joinRoom(
       socket.user.id,
@@ -409,7 +418,7 @@ export class ChatGateway
   @SubscribeMessage('leaveRoom')
   async leaveRooom(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() payload: { roomId: number },
+    @MessageBody() payload: LeaveRoomDto,
   ) {
     await this.roomService.leaveRoom(socket.user.id, payload.roomId);
     this.server

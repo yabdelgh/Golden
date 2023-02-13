@@ -71,9 +71,11 @@ export class UserController {
     return this.userservice.updateUser(user.id, {
       ...data,
       file: undefined,
-      imageUrl: `${process.env.BACKEND_HOST || 'http:://localhost:3333'}/${
-        imageUrl.filename
-      }`,
+      imageUrl: imageUrl
+        ? `${process.env.BACKEND_HOST || 'http:://localhost:3333'}/${
+            imageUrl.filename
+          }`
+        : undefined,
     });
   }
 

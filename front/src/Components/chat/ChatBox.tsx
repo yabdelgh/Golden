@@ -27,7 +27,7 @@ import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import UserProfile from "../UserProfile";
 import UsersList from "./UsersList";
 import { ImUsers, ImUser } from "react-icons/im";
-
+import { errorToast } from "../../Utils/Toast";
 const ChatBox = () => {
   const {
     user,
@@ -40,11 +40,23 @@ const ChatBox = () => {
     msgs,
     showUP,
     setShowUP,
+    toast,
   } = AppState();
 
   const [msg, setMsg] = useState("");
 
   const sendMessage = () => {
+    const maxMsgSize = 100;
+    const message = msg.trim();
+    if (message === "") return;
+    // check message size
+    if (message.length > maxMsgSize) {
+      errorToast(
+        toast,
+        `message size is too large, max size is ${maxMsgSize} characters `
+      );
+      return;
+    }
     socket.emit("chatMsg", { roomId: selectedRoom.id, msg });
   };
 
@@ -145,10 +157,9 @@ const ChatBox = () => {
               <IconButton
                 variant={"ghost"}
                 aria-label="Member List"
-               className="md-disabled"
-                onClick={() =>
-                  {
-                    selectedRoom.isGroupChat
+                className="md-disabled"
+                onClick={() => {
+                  selectedRoom.isGroupChat
                     ? setUsersList(!usersList) && setShowUP(undefined)
                     : setShowUP((value: any) => {
                         if (value) return undefined;
@@ -160,11 +171,8 @@ const ChatBox = () => {
 
                           return getUserByName(users, selectedRoom.name);
                         }
-                      })
-
-                  }
-                  
-                }
+                      });
+                }}
                 icon={
                   selectedRoom.isGroupChat ? (
                     <ImUsers size="22px" />

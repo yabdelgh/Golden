@@ -66,6 +66,19 @@ export class UserService {
     return user;
   }
 
+  async getUserInfo(id: number) {
+    const user = await this.prisma.user.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        login: true,
+        email: true,
+        imageUrl: true,
+      },
+    });
+    return user;
+  }
+
   async getUserSecret(id: number): Promise<string> {
     const user = await this.prisma.user.findFirst({
       where: { id },

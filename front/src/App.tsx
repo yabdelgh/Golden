@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import "./App.css";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import ChatPage from "./Pages/ChatPage";
 import { AppState } from "./Context/AppProvider";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { errorToast, successToast } from "./Utils/Toast";
 import { Friend, Msg, User, Room, RoomUser, BlockedUser } from "../types";
 import NavBar from "./Components/NavBar/NavBar";
@@ -17,8 +18,8 @@ import { io } from "socket.io-client";
 import UseHere from "./Pages/UseHere";
 import LoadingPage from "./Pages/LoadingPage";
 import ChatHeader from "./Components/AppHeader";
-import { Modal } from "@chakra-ui/react";
 import EditProfile from "./Components/edit-profile";
+
 function App() {
   const {
     setUserProfile,
@@ -371,7 +372,7 @@ function App() {
         _hover={{ color: "#000000" }}
         transition="all 0.5s ease-in-out 0.3s"
       >
-        {JSON.stringify({ user })}
+        {/* {JSON.stringify({ user })} */}
       </Box>
       <Routes>
         <Route path="/" element={<LoginPage />} />

@@ -1,4 +1,4 @@
-import { Avatar, Box, IconButton } from "@chakra-ui/react";
+import { Box, IconButton } from "@chakra-ui/react";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { MdExplore } from "react-icons/md";
 import { useNavigate } from "react-router-dom";

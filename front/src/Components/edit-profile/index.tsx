@@ -12,19 +12,76 @@ import {
 import { useEffect, useState } from "react";
 import { AppState } from "../../Context/AppProvider";
 import { AiOutlineSave } from "react-icons/ai";
-import { MdEdit } from "react-icons/md";
 import { IoBackspaceOutline } from "react-icons/io5";
 import axios from "axios";
+import { z } from "zod";
+import { errorToast } from "../../Utils/Toast";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaFileUpload } from "react-icons/fa";
+import { HiOutlineUserCircle } from "react-icons/hi2";
+import { BsCardImage } from "react-icons/bs";
+
+const updatUserSchema = z.object({
+  login: z.string().min(3).max(20),
+  email: z.string().email(),
+  imageUrl: z.string().url(),
+});
+
 const EditProfile = () => {
-  const { openEditProfile, setOpenEditProfile, user, setUser } = AppState();
+  const { openEditProfile, setOpenEditProfile, user, setUser, toast } =
+    AppState();
   const [file, setFile] = useState<File | null>(null);
   const [login, setLogin] = useState<string>(user.login || "");
+  const [email, setEmail] = useState<string>(user.email || "");
   const [imageUrl, setImageUrl] = useState<string>(user.imageUrl || "");
   const handleClose = () => {
     setOpenEditProfile(false);
   };
 
+  const handlFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (e.target.files) {
+      const file = e.target.files[0];
+      // check file type is image
+      if (!file.type.match("image.*")) {
+        errorToast(toast, "File is not an image");
+        return;
+      }
+
+      // check file size
+      if (file.size > maxSize) {
+        errorToast(
+          toast,
+          `file size is too large, max size is ${maxSize / 1024}kb `
+        );
+        return;
+      }
+
+      setFile(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        if (reader.result) {
+          setImageUrl(reader.result.toString());
+        }
+      };
+    }
+  };
+
   const saveProfile = async () => {
+    try {
+      updatUserSchema.parse({
+        login,
+        email,
+        imageUrl,
+      });
+    } catch (e) {
+      const err = e as z.ZodError;
+      console.log(e);
+      errorToast(toast, err.issues[0].message);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("login", login);
@@ -48,6 +105,7 @@ const EditProfile = () => {
   useEffect(() => {
     if (user && user.login) setLogin(user.login);
     if (user && user.imageUrl) setImageUrl(user.imageUrl || "");
+    if (user && user.email) setEmail(user.email || "");
   }, [user]);
   return (
     <Modal
@@ -55,7 +113,6 @@ const EditProfile = () => {
       isOpen={openEditProfile || user.isFirstLogin}
       onClose={handleClose}
     >
-      {/* <ModalOverlay /> */}
       <ModalContent
         maxWidth={"30rem"}
         display="flex"
@@ -78,24 +135,29 @@ const EditProfile = () => {
             name={user.login}
             src={imageUrl}
           />
-          <Input
-            type="file"
-            id="file"
-            display={"none"}
-            onChange={(e) => {
-              if (e.target.files) {
-                const file = e.target.files[0];
-                setFile(file);
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onloadend = () => {
-                  if (reader.result) {
-                    setImageUrl(reader.result.toString());
-                  }
-                };
-              }
-            }}
-          />
+          <label htmlFor="file">
+            <Box
+              position={"absolute"}
+              top={"0"}
+              width={"100%"}
+              height={"100%"}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              backgroundColor={"#ffffff"}
+              opacity={0}
+              borderRadius={"50%"}
+              cursor={"pointer"}
+              transition={"opacity 0.3s ease"}
+              _hover={{
+                opacity: 0.3,
+              }}
+            >
+              <FaFileUpload fontSize={"4rem"} />
+            </Box>
+          </label>
+
+          <Input type="file" id="file" display={"none"} onChange={handlFile} />
           <label
             htmlFor="file"
             style={{
@@ -106,16 +168,30 @@ const EditProfile = () => {
               borderRadius: "50%",
             }}
           >
-            <MdEdit fontSize={"1.5rem"} />
+            <BsCardImage fontSize={"1.5rem"} />
           </label>
         </Box>
-        <Box>
+        <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
           <Input
             placeholder="login"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
             id="login"
           />
+          <label htmlFor="login">
+            <HiOutlineUserCircle fontSize={"1.5rem"} />
+          </label>
+        </Box>
+        <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
+          <Input
+            placeholder="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            id="email"
+          />
+          <label htmlFor="email">
+            <HiOutlineMail fontSize={"1.5rem"} />
+          </label>
         </Box>
 
         <ModalFooter

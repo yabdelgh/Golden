@@ -32,6 +32,7 @@ import { GameState } from 'src/game/Core/game';
 
 export class mySocket extends Socket {
   user?: UserDto;
+  readyToPlay: boolean = false;
 }
 
 @WebSocketGateway({
@@ -533,12 +534,24 @@ export class ChatGateway
         }
         this.server.in(`Game${game.id}`).emit('gameOver', {login: winner.login, image: winner.imageUrl});
       });
-      setTimeout(() => {
-        game.start();
-      }, 3000);
     }
     //  else
     //  socket.emit('waitAGame');
+  }
+
+  @SubscribeMessage('startGame')
+  async handleStartGame(@ConnectedSocket() socket: mySocket) {
+    socket.readyToPlay = true;
+    const game = await this.gameService.getGame(socket.user.gameId);
+    const gameSocks = this.server.in(`Game${game.id}`);
+    const socks = await gameSocks.fetchSockets();
+    const readyPlayersLength = 
+      socks.filter((sock) => (sock as any as mySocket).readyToPlay).length;
+    if (readyPlayersLength === 2) {
+      game.start();
+      gameSocks.emit('gameStarted', {});
+      return;
+    }
   }
 
   @SubscribeMessage('getGameData')

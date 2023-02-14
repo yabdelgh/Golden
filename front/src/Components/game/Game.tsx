@@ -25,6 +25,8 @@ import { Player } from "../../GameCore/Players/player";
 import PlayerScore from "./PlayerScore";
 import PriorityQueue from "ts-priority-queue";
 import WinnerModal from "./WinnerModal";
+import CountDownModal from "./CountDownModal";
+
 const gameDataqueue = new PriorityQueue<GameState>({
   comparator: function (a, b) {
     return a.id - b.id;
@@ -38,6 +40,7 @@ const Game = () => {
 
   const { user, users } = AppState();
   const [ isWinnerOpen , setisWinnerOpen ] = useState<boolean>(false);
+  const [ isCountDownOpen , setIsCountDownOpen ] = useState<boolean>(true);
   const [ winner , setWinner ] = useState<{login: string, image: string|null}>({login: '', image: null});
   // let engine:Engine
   // let render:Render
@@ -78,6 +81,10 @@ const Game = () => {
     };
   }, [gameState]);
 
+  const countDownCallBack = () => {
+    socket.emit("startGame", {});
+  }
+
   useEffect(() => {
     if (render) {
       socket.on("gameData", (serialized: any) => {
@@ -105,6 +112,9 @@ const Game = () => {
       socket.on("gameOver", (winner: {login: string, image: string | null}) => {
         setWinner(winner);
         setisWinnerOpen(true);
+      });
+      socket.on("gameStarted", () => {
+        setIsCountDownOpen(false);
       });
     } else {
       console.log("game data not received");
@@ -204,6 +214,7 @@ const Game = () => {
     <div className="canvas-container" style={{marginTop: "300px"}}>
       <div id="render" className="matter-canvas" ref={divRef} />
     </div>
+    <CountDownModal isOpen={isCountDownOpen}  callback={countDownCallBack}/>
     <WinnerModal winner={winner} isOpen={isWinnerOpen}/>
     </>
   );

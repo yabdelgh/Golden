@@ -22,6 +22,13 @@ import { chatRoomDto } from './dtos/chatRoom.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameService } from 'src/game/game.service';
 import { MatchMakerQueue } from 'src/utils/MatchMakerQueue';
+import { MoveStat, SocketGamePlayerMoveData } from 'src/utils/GameEnums';
+import { safeStringify } from 'src/utils/serialization';
+import { Player } from 'src/game/Core/Players/player';
+import { APlayer } from 'src/game/Core/Players/APlayer';
+import { ReliableExecution } from 'src/utils/ReliableExecution';
+import { isNumber } from 'class-validator';
+import { GameState } from 'src/game/Core/game';
 
 export class mySocket extends Socket {
   user?: UserDto;
@@ -499,6 +506,7 @@ export class ChatGateway
     this.matchMaker.subscribe(Number(socket.user.id));
     const pairing = this.matchMaker.pairing();
     if (pairing) {
+      console.log(pairing);
       socket.user.inGame = true;
       this.server
         .in([...socket.rooms])
@@ -506,13 +514,69 @@ export class ChatGateway
       const opponent: any = await this.server
         .in(`${pairing[0]}`)
         .fetchSockets();
-      opponent[0].user.inGame = true;
       this.server
         .in([...opponent[0].rooms])
         .emit('inGame', { id: pairing[0], ingame: true });
+      opponent[0].user.inGame = true;
+      const game = await this.gameService.newSimpleGame([socket, opponent[0]]);
+      await opponent[0].join(`Game${game.id}`);
+      await socket.join(`Game${game.id}`);
+      game.subscribeWebClient((data: GameState) => {
+        this.server.in(`Game${game.id}`).emit('gameDataUpdate', data);
+      });
+      setTimeout(() => {
+        game.start();
+      }, 3000);
     }
     //  else
     //  socket.emit('waitAGame');
+  }
+
+  @SubscribeMessage('getGameData')
+  async getGameDataById(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() gameId: number = null,
+  ) {
+    console.log('game id', socket.user.gameId);
+    ReliableExecution(5, 300, async () => {
+      if (!isNumber(gameId)) gameId = socket.user.gameId;
+      const game = this.gameService.getGame(gameId);
+      if (game) {
+        const user1 = await this.userService.getUser(game.players[0].id);
+        const user2 = await this.userService.getUser(game.players[1].id);
+        const data = {
+          //get the user data from the socket by the player id
+          playersData: game.players.map((p) => {
+            return { id: p.id };
+          }),
+          players: game.players.map((p) => p.body),
+          obstacles: game.obstacles,
+          ball: game.ball,
+          gameSize: game.size,
+          usersOfPlayers: [user1, user2],
+        };
+        socket.emit('gameData', safeStringify(data));
+        return true;
+      }
+      console.log('no game', gameId, game);
+      return false;
+    });
+  }
+
+  @SubscribeMessage('gamePlayerMove')
+  async GamePlayerMove(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() move: SocketGamePlayerMoveData,
+  ) {
+    const game = this.gameService.getGame(socket.user.gameId);
+    const player: APlayer = game && game.get_player_by_id(socket.user.id);
+    if (player) {
+      if (move.action === MoveStat.Start) {
+        console.log('player try to move', player.id);
+        (player as Player).start_moving(move.direction);
+      } else if (move.action === MoveStat.Stop)
+        (player as Player).stop_moving();
+    }
   }
 
   @SubscribeMessage('cancelQuickPairing')

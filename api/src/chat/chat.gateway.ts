@@ -531,7 +531,6 @@ export class ChatGateway
         } else {
           winner = await this.userService.getUser(opponent[0].user.id);
         }
-        console.log("Game ended with winner", winner)
         this.server.in(`Game${game.id}`).emit('gameOver', {winner});
       });
       setTimeout(() => {

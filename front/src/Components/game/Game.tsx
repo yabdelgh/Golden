@@ -37,7 +37,7 @@ const Game = () => {
   let divRef: any = React.createRef();
 
   const { user, users } = AppState();
-  const [ isOpen , setIsOpen ] = useState<boolean>(false);
+  const [ isWinnerOpen , setisWinnerOpen ] = useState<boolean>(false);
   const [ winner , setWinner ] = useState<{login: string, image: string|null}>({login: '', image: null});
   // let engine:Engine
   // let render:Render
@@ -103,9 +103,8 @@ const Game = () => {
       });
       socket.emit("getGameData", {});
       socket.on("gameOver", (data: any) => {
-        console.log("game over");
         setWinner(data.winner);
-        setIsOpen(true);
+        setisWinnerOpen(true);
       });
     } else {
       console.log("game data not received");
@@ -205,7 +204,7 @@ const Game = () => {
     <div className="canvas-container" style={{marginTop: "300px"}}>
       <div id="render" className="matter-canvas" ref={divRef} />
     </div>
-    <WinnerModal winner={winner} isOpen={isOpen}/>
+    <WinnerModal winner={winner} isOpen={isWinnerOpen}/>
     </>
   );
 };

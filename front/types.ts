@@ -1,3 +1,7 @@
+import { Body, Vector } from "matter-js";
+import { PlayerMove } from "./src/GameCore/Players/APlayer";
+import { MoveStat } from "./src/Utils/enums";
+
 export type Friend = {
   user1Id: number;
   user2Id: number;
@@ -43,3 +47,32 @@ export type BlockedUser = {
   blockerId: number;
   blockedId: number;
 };
+
+export type GameData = {
+  playersData: {id: number}[]
+  gameSize: Vector
+  players: Object[],
+  obstacles: Object[],
+  ball: Object,
+  usersOfPlayers: any[]
+}
+
+export type SocketGamePlayerMoveData = {
+  direcion: PlayerMove;
+  action: MoveStat;
+}
+
+export type GameState = {
+  id: number
+  ball_velocity: Vector;
+  ball: Vector;
+  players: Vector[];
+  playersState: SocketGamePlayerMoveData;
+  score: number[];
+}
+
+export type GameBodies = {
+  players:Body[];
+  obstacles:Body[];
+  ball:Body;
+}

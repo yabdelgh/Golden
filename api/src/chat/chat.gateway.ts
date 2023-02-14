@@ -32,6 +32,7 @@ import { GameState } from 'src/game/Core/game';
 
 export class mySocket extends Socket {
   user?: UserDto;
+  readyToPlay: boolean = false;
 }
 
 @WebSocketGateway({
@@ -508,12 +509,33 @@ export class ChatGateway
       game.subscribeWebClient((data: GameState) => {
         this.server.in(`Game${game.id}`).emit('gameDataUpdate', data);
       });
-      setTimeout(() => {
-        game.start();
-      }, 3000);
+      game.subscribeGameEnd(async (data: GameState) => {
+        let winner: any;
+        if (data.score[0] < data.score[1]) {
+          winner = await this.userService.getUser(socket.user.id);
+        } else {
+          winner = await this.userService.getUser(opponent[0].user.id);
+        }
+        this.server.in(`Game${game.id}`).emit('gameOver', {login: winner.login, image: winner.imageUrl});
+      });
     }
     //  else
     //  socket.emit('waitAGame');
+  }
+
+  @SubscribeMessage('startGame')
+  async handleStartGame(@ConnectedSocket() socket: mySocket) {
+    socket.readyToPlay = true;
+    const game = await this.gameService.getGame(socket.user.gameId);
+    const gameSocks = this.server.in(`Game${game.id}`);
+    const socks = await gameSocks.fetchSockets();
+    const readyPlayersLength = 
+      socks.filter((sock) => (sock as any as mySocket).readyToPlay).length;
+    if (readyPlayersLength === 2) {
+      game.start();
+      gameSocks.emit('gameStarted', {});
+      return;
+    }
   }
 
   @SubscribeMessage('getGameData')

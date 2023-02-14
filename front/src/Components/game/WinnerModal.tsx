@@ -2,7 +2,6 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    useDisclosure,
     Box,
   } from "@chakra-ui/react";
 import Winner from "./Winner";

@@ -531,7 +531,7 @@ export class ChatGateway
         } else {
           winner = await this.userService.getUser(opponent[0].user.id);
         }
-        this.server.in(`Game${game.id}`).emit('gameOver', {winner});
+        this.server.in(`Game${game.id}`).emit('gameOver', {login: winner.login, image: winner.imageUrl});
       });
       setTimeout(() => {
         game.start();

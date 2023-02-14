@@ -102,8 +102,8 @@ const Game = () => {
         setGameState({ players, obstacles, ball });
       });
       socket.emit("getGameData", {});
-      socket.on("gameOver", (data: any) => {
-        setWinner(data.winner);
+      socket.on("gameOver", (winner: {login: string, image: string | null}) => {
+        setWinner(winner);
         setisWinnerOpen(true);
       });
     } else {

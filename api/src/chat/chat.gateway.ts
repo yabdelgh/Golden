@@ -524,6 +524,16 @@ export class ChatGateway
       game.subscribeWebClient((data: GameState) => {
         this.server.in(`Game${game.id}`).emit('gameDataUpdate', data);
       });
+      game.subscribeGameEnd(async (data: GameState) => {
+        let winner: any;
+        if (data.score[0] < data.score[1]) {
+          winner = await this.userService.getUser(socket.user.id);
+        } else {
+          winner = await this.userService.getUser(opponent[0].user.id);
+        }
+        console.log("Game ended with winner", winner)
+        this.server.in(`Game${game.id}`).emit('gameOver', {winner});
+      });
       setTimeout(() => {
         game.start();
       }, 3000);

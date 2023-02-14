@@ -24,7 +24,7 @@ import { MoveStat, PlayerMove } from "../../Utils/enums";
 import { Player } from "../../GameCore/Players/player";
 import PlayerScore from "./PlayerScore";
 import PriorityQueue from "ts-priority-queue";
-
+import WinnerModal from "./WinnerModal";
 const gameDataqueue = new PriorityQueue<GameState>({
   comparator: function (a, b) {
     return a.id - b.id;
@@ -37,7 +37,8 @@ const Game = () => {
   let divRef: any = React.createRef();
 
   const { user, users } = AppState();
-
+  const [ isOpen , setIsOpen ] = useState<boolean>(false);
+  const [ winner , setWinner ] = useState<{login: string, image: string|null}>({login: '', image: null});
   // let engine:Engine
   // let render:Render
 
@@ -60,6 +61,8 @@ const Game = () => {
         if (gameDataqueue.length > 0 && FrameId == gameDataqueue.peek().id) {
           FrameId++;
           const data = gameDataqueue.dequeue();
+          setScore1(data.score[1]);
+          setScore2(data.score[0]);
           Body.setPosition(gameState.ball, data.ball);
           Body.setPosition(gameState.players[0], data.players[0]);
           Body.setPosition(gameState.players[1], data.players[1]);
@@ -99,6 +102,11 @@ const Game = () => {
         setGameState({ players, obstacles, ball });
       });
       socket.emit("getGameData", {});
+      socket.on("gameOver", (data: any) => {
+        console.log("game over");
+        setWinner(data.winner);
+        setIsOpen(true);
+      });
     } else {
       console.log("game data not received");
     }
@@ -194,9 +202,10 @@ const Game = () => {
         isLeft={false}
       />
     </Box>
-    <div className="canvas-container">
+    <div className="canvas-container" style={{marginTop: "300px"}}>
       <div id="render" className="matter-canvas" ref={divRef} />
     </div>
+    <WinnerModal winner={winner} isOpen={isOpen}/>
     </>
   );
 };

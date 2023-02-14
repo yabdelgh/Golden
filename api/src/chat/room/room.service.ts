@@ -403,6 +403,7 @@ export class RoomService {
         },
         data: {
           ban: value,
+          status: 'ExMember',
         },
       });
     return undefined;

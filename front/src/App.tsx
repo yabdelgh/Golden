@@ -19,6 +19,7 @@ import LoadingPage from "./Pages/LoadingPage";
 import ChatHeader from "./Components/AppHeader";
 function App() {
   const {
+    setRoomProfile,
     setUserProfile,
     setIsOnline,
     setMsgs,
@@ -133,6 +134,7 @@ function App() {
     });
 
     socket.on("addRoom", (payload: Room) => {
+      setSearchs([]);
       setRooms((rooms: Room[]) => {
         const exist = rooms.some((ele: Room) => ele.id === payload.id);
         if (exist) return [...rooms];
@@ -147,7 +149,8 @@ function App() {
         const index = rooms.findIndex((ele: any) => {
           return ele.id === payload.id;
         });
-        rooms.splice(index, 1);
+        if(index !== -1)
+          rooms.splice(index, 1);
         return [...rooms];
       });
       setSelectedRoom((value: any) => {
@@ -157,7 +160,11 @@ function App() {
         }
         return value;
       });
-      successToast(toast, "group chat deleted successfully");
+      setRoomProfile((value: any) => {
+        if (value && value.id === payload.id)
+          return undefined;
+        return value;
+      })
     });
 
     socket.on("joinRoom", (payload: { roomId: number; user: User }) => {
@@ -187,6 +194,7 @@ function App() {
     });
 
     socket.on("leaveRoom", (payload: { roomId: number; userId: number }) => {
+      setSearchs([]);
       setRooms((rooms: Room[]) => {
         const index1 = rooms.findIndex(
           (object) => object.id === payload.roomId
@@ -202,6 +210,7 @@ function App() {
     socket.on(
       "removeFromRoom",
       (payload: { roomId: number; userId: number }) => {
+      setSearchs([]);
         setRooms((rooms: Room[]) => {
           const index1 = rooms.findIndex(
             (object) => object.id === payload.roomId

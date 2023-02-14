@@ -310,28 +310,19 @@ export class ChatGateway
       payload.userId,
       payload.value,
     );
-    if (ret) {
-      this.server.in(`room${payload.roomId}`).emit('ban', {
-        userId: ret.userId,
-        roomId: ret.roomId,
-        val: payload.value,
-      });
-      if (!payload.value && ret.status === 'Member') {
-        this.server
-          .in(`${payload.userId}`)
-          .emit('addRoom', await this.roomService.getRoom(payload.roomId));
-        this.server
-          .in(String(payload.userId))
-          .socketsJoin(`room${payload.roomId}`);
-      } else if (ret.status === 'Member') {
-        this.server
-          .in(`${payload.userId}`)
-          .emit('deleteRoom', { id: payload.roomId });
-        this.server
-          .in(String(payload.userId))
-          .socketsLeave(`room${payload.roomId}`);
-      }
+    if (ret && payload.value) {
+      this.server
+        .in(`${payload.userId}`)
+        .emit('deleteRoom', { id: payload.roomId });
+      this.server
+        .in(String(payload.userId))
+        .socketsLeave(`room${payload.roomId}`);
     }
+    this.server.in(`room${payload.roomId}`).emit('ban', {
+      userId: ret.userId,
+      roomId: ret.roomId,
+      val: payload.value,
+    });
   }
 
   @SubscribeMessage('role')
@@ -492,13 +483,6 @@ export class ChatGateway
     this.server
       .in([...opponent[0].rooms])
       .emit('inGame', { id: challengerId, ingame: true });
-
-    // set in game status to true
-    // join sockets
-    //start a counter 15s
-    //send the game with are you readdy
-    //
-    //    socket.emit('areYouReady', {})
   }
 
   @SubscribeMessage('quickPairing')

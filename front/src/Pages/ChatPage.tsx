@@ -9,7 +9,7 @@ const ChatPage = () => {
       width="100%"
       display="flex"
       m="62px 0px 0px 72px"
-     height="calc(100vh - 62px)"
+      height="calc(100vh - 62px)"
     >
       <ChatList />
       <ChatBox />

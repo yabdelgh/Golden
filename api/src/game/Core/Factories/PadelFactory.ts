@@ -1,9 +1,24 @@
-import { Bodies, Body, Vector } from 'matter-js';
+import { Bodies, Body, Composite, Vector } from 'matter-js';
 import { PadelType } from 'src/utils/GameEnums';
-import { GetBodySize } from '../common/utils/matter-js';
+import { GetBodyCenter, GetBodySize } from '../common/utils/matter-js';
 import { PlayerMove } from '../Players/APlayer';
 
 export type PadelMaker = (size: number) => Body;
+
+function rotate(body: Body, angle: number):Body {
+  let parts : Body[] = [];
+  const center = Vector.create(GetBodySize(body).x / 2, GetBodySize(body).x / 2)
+  body.parts.forEach((part, idx) => {
+    console.log("rotating part " + idx)
+    // if (idx === 0) return
+    const pc = GetBodyCenter(part)
+    Body.setPosition(part, Vector.create(part.position.x + (center.x - pc.x) / 2 , part.position.y - (pc.y - center.y) / 2))
+    Body.setCentre(part, center)
+    Body.rotate(part, angle)
+    parts.push(part)
+  })
+  return Body.create({parts: parts})
+}
 
 function createTriangle(length) {
   const vertices = [
@@ -50,12 +65,14 @@ function makeTriangular(size: number): Body {
 }
 
 function makeHalfCircle(size: number): Body {
+  // return createSemiCircle(size / 5);
   const base = makeSimple(size);
   Body.setPosition(base, Vector.create(0, 0));
-  const semiCircle = createSemiCircle(size / 5);
+  let semiCircle = createSemiCircle(size / 5);
   const baseSize = GetBodySize(base),
-    hcSize = GetBodySize(semiCircle);
-  const pos = Vector.create(baseSize.x / 2 + hcSize.x / 2 - 1, 0);
+  hcSize = GetBodySize(semiCircle);
+  Body.rotate(semiCircle, Math.PI / 2)
+  const pos = Vector.create(baseSize.x / 2 - hcSize.x / 2 + 1, 0);
   Body.setPosition(semiCircle, pos);
   return Body.create({ parts: [base, semiCircle] });
   // return base;
@@ -77,8 +94,16 @@ export class PadelFactory {
 
   public static getPadel(padelType: PadelType, side: PlayerMove): Body {
     if (!this.makers.get(padelType)) throw Error('Padel creator unsupported');
-    const body = this.makers.get(padelType)(this.defaultPadelSize);
-    if (side == PlayerMove.Right) Body.rotate(body, Math.PI);
+    let body = this.makers.get(padelType)(this.defaultPadelSize);
+    if (side == PlayerMove.Right) {
+      // body = rotate(body, Math.PI/2)
+      // const c = Composite.create({bodies :body.parts.splice(0, 1) })
+      // const center = Vector.create(GetBodySize(body).x / 2, GetBodySize(body).x / 2)
+      // Composite.rotate(c,  Math.PI, center)
+      // console.log("--------->", body.parts.length, c.bodies.length)
+      // body = Body.create({parts:c.bodies})
+      // Body.rotate(body, 180 * Math.PI / 180)
+    }
     return body;
   }
 

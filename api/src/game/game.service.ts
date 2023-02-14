@@ -109,7 +109,7 @@ export class GameService {
       },
     });
     players.forEach((p) => (p.user.gameId = dbgame.id));
-    const gamePlayers = this.create_players(players, padelType);
+    const gamePlayers = this.create_players(players, PadelType.HalfCircle);
     const game = new Game({
       id: dbgame.id,
       ball: Bodies.circle(0, 0, 10),

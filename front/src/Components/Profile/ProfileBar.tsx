@@ -24,15 +24,12 @@ const ProfileBar = () => {
 
   return (
     <Box
-      width={{ base: "100%", xl: "49%" }}
       backgroundImage="linear-gradient(teal 50%, white 0%)"
-      h={{ base: "600px", xl: "48%" }}
       display="flex"
       flexDir="column"
       alignItems="center"
       borderRadius="lg"
       justifyContent={"center"}
-      mb="20px"
     >
       {userProfile && (
         <>

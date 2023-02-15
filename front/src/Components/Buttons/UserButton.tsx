@@ -4,7 +4,8 @@ import { AppState } from "../../Context/AppProvider";
 const UserButton = ({ user }: any) => {
   const { setShowUP } = AppState();
 
-  return <Button
+  return (
+    <Button
       display="flex"
       alignItems="center"
       justifyContent="flex-start"
@@ -26,7 +27,8 @@ const UserButton = ({ user }: any) => {
       <Text fontWeight={"bold"} ml="5px" color='gray.500'>
         {user.login}
       </Text>
-    </Button>;
+    </Button>
+  );
 };
 
 export default UserButton;

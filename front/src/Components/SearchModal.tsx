@@ -17,11 +17,11 @@ import TmpButton from "./TmpButton";
 
 const SearchModal = ({ children }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { users, rooms, socket, searchs} = AppState();
+  const { users, rooms, socket, searchs } = AppState();
   const [searchPong, setSearchPong]: any = useState("");
 
   const search = (e: any) => {
-    setSearchPong(e.target.value);
+    setSearchPong(e.target.value.trim());
     !users.some((ele: User) => ele.login.includes(e.target.value)) &&
       !rooms.some((ele: Room) => ele.name.includes(e.target.value)) &&
       !searchs.some((ele: any) => {

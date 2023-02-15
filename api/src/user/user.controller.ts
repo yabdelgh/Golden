@@ -7,13 +7,16 @@ import {
   Post,
   Delete,
   Req,
+  Patch,
+  UseInterceptors,
+  UploadedFile,
+  Body,
 } from '@nestjs/common';
-//import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
-//import { v4 as uuidv4 } from 'uuid';
-//import * as path from 'path';
-//import { diskStorage } from 'multer';
+import { storage } from '../utils';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateUserDto } from './dtos/user.dto';
 
 /*export const storage = {
   storage: diskStorage({
@@ -52,6 +55,30 @@ export class UserController {
   async getBlokedUsers(@Req() { user }) {
     return this.userservice.getBlockedUsers(user.id);
   }
+
+  @Patch('update')
+  @UseInterceptors(
+    FileInterceptor('imageUrl', {
+      storage,
+    }),
+  )
+  update(
+    @UploadedFile() imageUrl: Express.Multer.File,
+    @Body() data: UpdateUserDto,
+    @Req() req,
+  ) {
+    const user = req.user;
+    return this.userservice.updateUser(user.id, {
+      ...data,
+      file: undefined,
+      imageUrl: imageUrl
+        ? `${process.env.BACKEND_HOST || 'http:://localhost:3333'}/${
+            imageUrl.filename
+          }`
+        : undefined,
+    });
+  }
+
   /* @Post()
   async createUser(@Body() user) {
     return this.userservice.createUser(user);
@@ -72,7 +99,7 @@ export class UserController {
     return this.userservice.findUser(username);
   }
   
-
+d 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', storage))
   async upload(@UploadedFile() file, @Request() req): Promise<any> {

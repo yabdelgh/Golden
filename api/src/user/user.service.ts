@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RoomStatus } from '@prisma/client';
+import { UpdateUserDto } from './dtos/user.dto';
 
 @Injectable()
 export class UserService {
@@ -29,19 +30,23 @@ export class UserService {
     });
   }
 
-  async updateUser(id: number, data: any) {
-    const user = await this.prisma.user.update({
+  async updateUser(id: number, data: UpdateUserDto) {
+    console.log('data', data);
+
+    return await this.prisma.user.update({
       where: {
         id,
       },
-      data,
+      data: {
+        ...data,
+        isFirstLogin: false,
+      },
       select: {
         id: true,
         login: true,
         email: true,
       },
     });
-    return user;
   }
 
   async getUser(id: number) {
@@ -53,10 +58,24 @@ export class UserService {
         email: true,
         imageUrl: true,
         isTwoFactorAuthenticationEnabled: true,
+        isFirstLogin: true,
       },
     });
     /* if (user === null)
       throw new BadRequestException('user not found');*/
+    return user;
+  }
+
+  async getUserInfo(id: number) {
+    const user = await this.prisma.user.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        login: true,
+        email: true,
+        imageUrl: true,
+      },
+    });
     return user;
   }
 

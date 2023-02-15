@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import "./App.css";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
@@ -17,7 +18,9 @@ import { io } from "socket.io-client";
 import UseHere from "./Pages/UseHere";
 import LoadingPage from "./Pages/LoadingPage";
 import ChatHeader from "./Components/AppHeader";
+import EditProfile from "./Components/edit-profile";
 import LiveGamePage from "./Pages/LiveGamePage";
+
 function App() {
   const {
     setRoomProfile,
@@ -150,8 +153,7 @@ function App() {
         const index = rooms.findIndex((ele: any) => {
           return ele.id === payload.id;
         });
-        if(index !== -1)
-          rooms.splice(index, 1);
+        if (index !== -1) rooms.splice(index, 1);
         return [...rooms];
       });
       setSelectedRoom((value: any) => {
@@ -162,10 +164,9 @@ function App() {
         return value;
       });
       setRoomProfile((value: any) => {
-        if (value && value.id === payload.id)
-          return undefined;
+        if (value && value.id === payload.id) return undefined;
         return value;
-      })
+      });
     });
 
     socket.on("joinRoom", (payload: { roomId: number; user: User }) => {
@@ -211,7 +212,7 @@ function App() {
     socket.on(
       "removeFromRoom",
       (payload: { roomId: number; userId: number }) => {
-      setSearchs([]);
+        setSearchs([]);
         setRooms((rooms: Room[]) => {
           const index1 = rooms.findIndex(
             (object) => object.id === payload.roomId
@@ -383,9 +384,23 @@ function App() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
-
+  if (!user) return <></>;
+  else if (user.isFirstLogin) return <EditProfile />;
   return (
-    <Box className="App">
+    <Box className="App" padding="60px 0 0 70px">
+      <Box
+        position="fixed"
+        zIndex="100"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        fontSize={12}
+        color="#00000039"
+        _hover={{ color: "#000000" }}
+        transition="all 0.5s ease-in-out 0.3s"
+      >
+        {/* {JSON.stringify({ user })} */}
+      </Box>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/loading" element={<LoadingPage />} />
@@ -401,6 +416,7 @@ function App() {
       </Routes>
       <ChatHeader />
       <NavBar />
+      <EditProfile />
     </Box>
   );
 }

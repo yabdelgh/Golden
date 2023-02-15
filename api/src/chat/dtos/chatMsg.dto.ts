@@ -29,3 +29,61 @@ export class searchDto {
   @MaxLength(100)
   search: string;
 }
+
+export class MuteDto {
+  @IsNumber()
+  userId: number;
+  @IsNumber()
+  roomId: number;
+  @IsNumber()
+  value: boolean;
+}
+
+export class BanDto {
+  @IsNumber()
+  userId: number;
+  @IsNumber()
+  roomId: number;
+  @IsNumber()
+  value: boolean;
+}
+
+export class RoleDto {
+  @IsNumber()
+  userId: number;
+  @IsNumber()
+  roomId: number;
+  @IsString()
+  role: string;
+}
+
+export class JoinRoomDto {
+  @IsNumber()
+  roomId: number;
+  @IsString()
+  password?: string;
+}
+
+export class LeaveRoomDto {
+  @IsNumber()
+  roomId: number;
+}
+
+type RoomStatus = 'Opened' | 'Closed' | 'Deleted';
+type RoomAccess = 'Private' | 'Protected' | 'Public' | 'DirectMessage';
+
+export class ChatRooms {
+  @IsNumber()
+  id: number;
+  @IsString()
+  name: string;
+  @IsString()
+  status: RoomStatus;
+  @IsString()
+  access: RoomAccess;
+  @IsString()
+  @IsOptional()
+  password: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}

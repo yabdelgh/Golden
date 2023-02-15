@@ -11,59 +11,64 @@ datasource db {
 }
 
 model User {
-  id              Int  @id
-  login           String @unique
-  email           String @unique
-  imageUrl        String?
-  firstTime       Boolean @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  twoFactorAuthenticationCode String?
-  isTwoFactorAuthenticationEnabled Boolean @default(false)
-  FriendTo    Friend[] @relation("fk_user1")
-  FriendWith  Friend[] @relation("fk_user2")
-  Blocked     BlockedUser[] @relation("fk_blocker")
-  BlockedBy   BlockedUser[] @relation("fk_blocked")
-  challenger Challenges[] @relation("fk_challenger")
-  challenged Challenges[] @relation("fk_challenged")
-  redCorner games[] @relation("fk_redCorner")
-  blueCorner games[] @relation("fk_blueCorner")
-  UserRooms   RoomUser[] @relation()
+  id                               Int           @id
+  login                            String        @unique
+  email                            String        @unique
+  imageUrl                         String?
+  firstTime                        Boolean       @default(true)
+  createdAt                        DateTime      @default(now())
+  updatedAt                        DateTime      @updatedAt
+  twoFactorAuthenticationCode      String?
+  isTwoFactorAuthenticationEnabled Boolean       @default(false)
+  FriendTo                         Friend[]      @relation("fk_user1")
+  FriendWith                       Friend[]      @relation("fk_user2")
+  Blocked                          BlockedUser[] @relation("fk_blocker")
+  BlockedBy                        BlockedUser[] @relation("fk_blocked")
+  challenger                       Challenges[]  @relation("fk_challenger")
+  challenged                       Challenges[]  @relation("fk_challenged")
+  redCorner                        games[]       @relation("fk_redCorner")
+  blueCorner                       games[]       @relation("fk_blueCorner")
+  UserRooms                        RoomUser[]    @relation()
+  isFirstLogin                     Boolean       @default(true)
+
   @@map("users")
 }
 
 model Friend {
-  user1Id Int
-  user1 User @relation(name:"fk_user1", fields: [user1Id], references: [id])
-  user2Id Int
-  user2 User @relation(name:"fk_user2", fields: [user2Id], references: [id])
-  status Boolean @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  user1Id   Int
+  user1     User     @relation(name: "fk_user1", fields: [user1Id], references: [id])
+  user2Id   Int
+  user2     User     @relation(name: "fk_user2", fields: [user2Id], references: [id])
+  status    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@id([user1Id, user2Id])
   @@map("friendships")
 }
 
 model BlockedUser {
   blockerId Int
-  blocker User @relation(name:"fk_blocker", fields: [blockerId], references: [id])
+  blocker   User     @relation(name: "fk_blocker", fields: [blockerId], references: [id])
   blockedId Int
-  blocked User @relation(name:"fk_blocked", fields: [blockedId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  blocked   User     @relation(name: "fk_blocked", fields: [blockedId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@id([blockerId, blockedId])
   @@map("blocked_users")
 }
 
 model ChatRooms {
-	id Int @id @default(autoincrement())
-	name String @default("")
-	status RoomStatus @default(Opened)
-	access RoomAccess  @default(Public)
-	password String?
-	createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int        @id @default(autoincrement())
+  name      String     @default("")
+  status    RoomStatus @default(Opened)
+  access    RoomAccess @default(Public)
+  password  String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   RoomUsers RoomUser[] @relation()
+
   @@map("chat_rooms")
 }
 
@@ -81,37 +86,39 @@ model games {
 
 model Challenges {
   challengerId Int
-  challenger User @relation(name:"fk_challenger", fields: [challengerId], references: [id])
+  challenger   User   @relation(name: "fk_challenger", fields: [challengerId], references: [id])
   challengedId Int
-  challenged User @relation(name:"fk_challenged", fields: [challengedId], references: [id])
-  map String @default("default")
+  challenged   User   @relation(name: "fk_challenged", fields: [challengedId], references: [id])
+  map          String @default("default")
+
   @@id([challengerId, challengedId])
 }
 
 model RoomUser {
-	roomId Int
-	userId Int
-	role RoomUserRole @default(User)
-	ban Boolean @default(false)
-	mute Boolean @default(false)
-  status RoomUserStatus @default(Member)
-	room ChatRooms @relation(fields: [roomId], references: [id])
-	user User @relation(fields: [userId], references: [id])
-	@@id([roomId, userId])
-	createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  msgs RoomUserMsg[] @relation()
+  roomId    Int
+  userId    Int
+  role      RoomUserRole   @default(User)
+  ban       Boolean        @default(false)
+  mute      Boolean        @default(false)
+  status    RoomUserStatus @default(Member)
+  room      ChatRooms      @relation(fields: [roomId], references: [id])
+  user      User           @relation(fields: [userId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  msgs      RoomUserMsg[]  @relation()
+
+  @@id([roomId, userId])
   @@map("rooms_users")
 }
 
 model RoomUserMsg {
-	id Int @id @default(autoincrement())
-	roomId Int
-	userId Int
-  roomUser RoomUser @relation(fields: [roomId, userId], references: [roomId, userId])
-	msg String
-	createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  roomId    Int
+  userId    Int
+  roomUser  RoomUser @relation(fields: [roomId, userId], references: [roomId, userId])
+  msg       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum RoomAccess {

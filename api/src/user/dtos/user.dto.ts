@@ -47,3 +47,31 @@ export class UserDto {
   @IsNotEmpty()
   twoFactorAuthenticationCode?: string;
 }
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  login?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isFirstLogin?: boolean;
+
+  @IsOptional()
+  @IsString()
+  twoFactorAuthenticationCode?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isTwoFactorAuthenticationEnabled?: boolean;
+
+  @IsOptional()
+  @IsString()
+  file?: string;
+}

@@ -1,8 +1,9 @@
-import { Avatar, Box, IconButton } from "@chakra-ui/react";
+import { Box, IconButton } from "@chakra-ui/react";
 import { IoChatbubblesOutline } from "react-icons/io5";
 import { MdExplore } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
+import { CgProfile } from "react-icons/cg";
 
 const NavBar = () => {
   const { user, setUserProfile } = AppState();
@@ -23,15 +24,14 @@ const NavBar = () => {
       alignItems="center"
       userSelect="none"
     >
-      <Avatar
-        color="white"
-        mt="10px"
+      <IconButton
+        mt="20px"
+        colorScheme="gray"
         width="50px"
         height="50px"
         borderRadius="20px"
-        cursor="pointer"
-        name={user.login}
-        src={user.imageUrl || "/defaultProfilePic.png"}
+        aria-label="Search database"
+        icon={<CgProfile strokeWidth={0.1} size="30px" />}
         onClick={() => {
           setUserProfile(user);
           navigate("/profile");

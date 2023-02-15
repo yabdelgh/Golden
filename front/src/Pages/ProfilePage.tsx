@@ -13,6 +13,7 @@ const ProfilePage = () => {
       alignItems="stretch"
       gridAutoRows="minmax(400px, auto)"
       gap="0.5rem"
+      p="8px"
     >
       <ProfileBar />
       <ProfileHistory />

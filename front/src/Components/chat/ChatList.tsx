@@ -50,38 +50,39 @@ const ChatList = () => {
       height="100%"
       w={{ base: "290px", md: "360px" }}
       mr="2px"
+      borderRadius="8px 0 0 0"
     >
-        <FormControl height="30px" width="96%"m='2%' mb="10px">
-          <InputGroup>
-            <Input
-              placeholder="Search"
+      <FormControl height="30px" width="96%" m="2%" mb="10px">
+        <InputGroup>
+          <Input placeholder="Search" />
+          <InputRightElement>
+            <IconButton
+              variant={"unstyled"}
+              aria-label="Search User"
+              icon={<BsSearch />}
             />
-            <InputRightElement>
-              <IconButton
-                variant={"unstyled"}
-                aria-label="Search User"
-                icon={<BsSearch />}
-              />
-            </InputRightElement>
-          </InputGroup>
-        </FormControl>
-        <CreateGroupModal>
-          <Button m='2%'mb='10px' leftIcon={<AiOutlineUsergroupAdd size="25px" />} width='96%'>
-            <Text display='flex' width='fit-content'>create new group</Text>
-          </Button>
-        </CreateGroupModal>
-      {rooms ? (
-        <Stack
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
+      <CreateGroupModal>
+        <Button
+          m="2%"
+          mb="10px"
+          leftIcon={<AiOutlineUsergroupAdd size="25px" />}
           width="96%"
-          m='2%'
-          overflowY="auto"
-          spacing={0}
         >
+          <Text display="flex" width="fit-content">
+            create new group
+          </Text>
+        </Button>
+      </CreateGroupModal>
+      {rooms ? (
+        <Stack width="96%" m="2%" overflowY="auto" spacing={0}>
           {rooms.map((room: any) => (
             <Box
               cursor={"pointer"}
               height="55px"
-              mb='2px'
+              mb="2px"
               display="flex"
               alignItems={"center"}
               bg={selectedRoom === room ? "#EEEEEE" : "white"}
@@ -97,7 +98,11 @@ const ChatList = () => {
                 bg="teal"
                 ml="10px"
                 size={"md"}
-                border={selectedRoom === room ? "5px solid #EEEEEE" : "5px solid white"}
+                border={
+                  selectedRoom === room
+                    ? "5px solid #EEEEEE"
+                    : "5px solid white"
+                }
                 name={room.name}
                 src={
                   room.isGroupChat
@@ -113,7 +118,9 @@ const ChatList = () => {
                 )}
               </Avatar>
               <Box ml="20px" display="flex" flexDirection="column">
-                <Text p="4px 0px" color='gray.500'>{room.name}</Text>
+                <Text p="4px 0px" color="gray.500">
+                  {room.name}
+                </Text>
                 <Text fontSize="14px" fontFamily={"work sans"} color="gray.400">
                   {room.lastMsg && room.lastMsg.slice(0, 20)}
                   {room.lastMsg && room.lastMsg.length > 20 ? " ..." : ""}

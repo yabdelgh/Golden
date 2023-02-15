@@ -152,8 +152,7 @@ function App() {
         const index = rooms.findIndex((ele: any) => {
           return ele.id === payload.id;
         });
-        if(index !== -1)
-          rooms.splice(index, 1);
+        if (index !== -1) rooms.splice(index, 1);
         return [...rooms];
       });
       setSelectedRoom((value: any) => {
@@ -164,10 +163,9 @@ function App() {
         return value;
       });
       setRoomProfile((value: any) => {
-        if (value && value.id === payload.id)
-          return undefined;
+        if (value && value.id === payload.id) return undefined;
         return value;
-      })
+      });
     });
 
     socket.on("joinRoom", (payload: { roomId: number; user: User }) => {
@@ -213,7 +211,7 @@ function App() {
     socket.on(
       "removeFromRoom",
       (payload: { roomId: number; userId: number }) => {
-      setSearchs([]);
+        setSearchs([]);
         setRooms((rooms: Room[]) => {
           const index1 = rooms.findIndex(
             (object) => object.id === payload.roomId
@@ -388,7 +386,7 @@ function App() {
   if (!user) return <></>;
   else if (user.isFirstLogin) return <EditProfile />;
   return (
-    <Box className="App" padding="4.5rem 0.5rem 0.5rem 5.5rem">
+    <Box className="App" padding="60px 0 0 70px">
       <Box
         position="fixed"
         zIndex="100"

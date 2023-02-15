@@ -583,6 +583,7 @@ export class ChatGateway
       if (!isNumber(gameId)) gameId = socket.user.gameId;
       const game = this.gameService.getGame(gameId);
       if (game) {
+        socket.join(`Game${game.id}`);
         const user1 = await this.userService.getUser(game.players[0].id);
         const user2 = await this.userService.getUser(game.players[1].id);
         const data = {

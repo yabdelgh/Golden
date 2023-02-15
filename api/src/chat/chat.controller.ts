@@ -13,14 +13,12 @@ export class ChatController {
   ) {}
 
   @Post('createRoom')
-  async createRoom(@Req() { user }, @Body() payload) {
+  async createRoom(@Req() { user }, @Body() payload: chatRoomDto) {
     const room: chatRoomDto = await this.roomService.createRoom(
       payload,
       user.id,
     );
-
     this.chatGateway.server.in(`${user.id}`).socketsJoin(`room${room.id}`);
-    room.isGroupChat = true;
-    return room;
+    return { ...room, isGroupChat: true };
   }
 }

@@ -32,7 +32,7 @@ import { GameState } from 'src/game/Core/game';
 
 export class mySocket extends Socket {
   user?: UserDto;
-  readyToPlay: boolean = false;
+  readyToPlay = false;
 }
 
 @WebSocketGateway({
@@ -216,7 +216,9 @@ export class ChatGateway
   ) {
     try {
       const room = await this.roomService.updateRoom(payload, socket.user.id);
-      this.server.in(`room${room.id}`).emit('updateRoom', room);
+      this.server
+        .in(`room${room.id}`)
+        .emit('updateRoom', { ...room, isGroupChat: true });
     } catch (error) {
       socket.emit('error', error.message);
     }
@@ -412,6 +414,36 @@ export class ChatGateway
       .emit('joinRoom', { roomId: roomUser.roomId, user });
   }
 
+  @SubscribeMessage('addUserToRoom')
+  async addUserToRoom(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody()
+    payload: { roomId: number; userId: number; password?: string },
+  ) {
+    console.log(payload);
+    const blocked = await this.prismaService.blockedUser.findFirst({
+      where: {
+        blockedId: socket.user.id,
+        blockerId: payload.userId,
+      },
+    });
+    if (!blocked) {
+      const roomUser = await this.roomService.joinRoom(
+        payload.userId,
+        payload.roomId,
+        payload.password,
+      );
+      const user = await this.userService.getUser(roomUser.userId);
+      this.server.in(`${user.id}`).socketsJoin(`room${roomUser.roomId}`);
+      this.server
+        .in(`${user.id}`)
+        .emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
+      this.server
+        .in(`room${roomUser.roomId}`)
+        .emit('joinRoom', { roomId: roomUser.roomId, user });
+    }
+  }
+
   @SubscribeMessage('leaveRoom')
   async leaveRooom(
     @ConnectedSocket() socket: mySocket,
@@ -516,7 +548,9 @@ export class ChatGateway
         } else {
           winner = await this.userService.getUser(opponent[0].user.id);
         }
-        this.server.in(`Game${game.id}`).emit('gameOver', {login: winner.login, image: winner.imageUrl});
+        this.server
+          .in(`Game${game.id}`)
+          .emit('gameOver', { login: winner.login, image: winner.imageUrl });
       });
     }
     //  else
@@ -529,8 +563,9 @@ export class ChatGateway
     const game = await this.gameService.getGame(socket.user.gameId);
     const gameSocks = this.server.in(`Game${game.id}`);
     const socks = await gameSocks.fetchSockets();
-    const readyPlayersLength = 
-      socks.filter((sock) => (sock as any as mySocket).readyToPlay).length;
+    const readyPlayersLength = socks.filter(
+      (sock) => (sock as any as mySocket).readyToPlay,
+    ).length;
     if (readyPlayersLength === 2) {
       game.start();
       gameSocks.emit('gameStarted', {});

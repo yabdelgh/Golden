@@ -10,8 +10,6 @@ import {
   Input,
   InputRightElement,
   IconButton,
-  RadioGroup,
-  HStack,
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
 import CreateGroupModal from "./CreateGroupModal";
@@ -19,9 +17,6 @@ import { AppState } from "../../Context/AppProvider";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
 import { BsSearch } from "react-icons/bs";
-import RadioEx from "../RadioEx";
-import { FcKey, FcLock } from "react-icons/fc";
-import { GiWorld } from "react-icons/gi";
 
 const ChatList = () => {
   const {
@@ -51,7 +46,6 @@ const ChatList = () => {
     <Box
       display="flex"
       flexDir="column"
-      // borderRadius="lg"
       bg="white"
       height="100%"
       w={{ base: "290px", md: "360px" }}
@@ -61,8 +55,6 @@ const ChatList = () => {
           <InputGroup>
             <Input
               placeholder="Search"
-              // value={searchKey}
-              // onChange={(e) => setSearchKey(e.target.value)}
             />
             <InputRightElement>
               <IconButton
@@ -78,25 +70,12 @@ const ChatList = () => {
             <Text display='flex' width='fit-content'>create new group</Text>
           </Button>
         </CreateGroupModal>
-      {/* <Box display="flex" justifyContent="space-between" className="debug" >
-        <Text fontSize="25px" fontFamily="Work sans" height="50px" m="5px">
-          Contacts
-        </Text>
-        <CreateGroupModal>
-          <Button ml="10px" leftIcon={<AiOutlineUsergroupAdd size="25px" />}>
-            <Text display={{ base: "none", xl: "flex" }} width='fit-content'>create new group</Text>
-          </Button>
-        </CreateGroupModal>
-      </Box> */}
       {rooms ? (
         <Stack
           width="96%"
           m='2%'
           overflowY="auto"
           spacing={0}
-          // divider={<StackDivider borderColor="gray.200" />}
-          // borderBottom="1px #EEEEEE solid"
-          // borderTop="1px #EEEEEE solid"
         >
           {rooms.map((room: any) => (
             <Box
@@ -106,7 +85,7 @@ const ChatList = () => {
               display="flex"
               alignItems={"center"}
               bg={selectedRoom === room ? "#EEEEEE" : "white"}
-              borderRadius="10px"
+              borderRadius="5px"
               fontFamily="Inter"
               fontWeight="bold"
               fontSize="17px"
@@ -118,7 +97,7 @@ const ChatList = () => {
                 bg="teal"
                 ml="10px"
                 size={"md"}
-                border={selectedRoom === room ? "3px solid #EEEEEE" : "5px solid white"}
+                border={selectedRoom === room ? "5px solid #EEEEEE" : "5px solid white"}
                 name={room.name}
                 src={
                   room.isGroupChat

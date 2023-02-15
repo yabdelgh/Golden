@@ -442,7 +442,7 @@ export class RoomService {
       where: {
         id: roomId,
         status: RoomStatus.Opened,
-        NOT: { access: RoomAccess.Private },
+        // NOT: { access: RoomAccess.Private },
         RoomUsers: { none: { userId, ban: true } },
       },
     });

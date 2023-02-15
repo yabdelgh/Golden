@@ -18,7 +18,7 @@ const UsersList = () => {
   const [offlineCounter, setOfflineCounter] = useState(0);
 
   const getUsers = (status: boolean): User[] => {
-    if (!selectedRoom && !selectedRoom.RoomUsers) return [];
+    if (!selectedRoom || !selectedRoom.RoomUsers) return [];
     return selectedRoom.RoomUsers.map((roomUser: RoomUser) => {
       if (roomUser.status === "Member")
         return users.find(

@@ -6,10 +6,11 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { chatRoomDto } from '../dtos/chatRoom.dto';
 import { WsException } from '@nestjs/websockets';
+import { MsgService } from '../msg/msg.service';
 
 @Injectable()
 export class RoomService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private msgService: MsgService) {}
 
   async hash(password: any) {
     if (password === undefined) return '';
@@ -25,6 +26,7 @@ export class RoomService {
           some: {
             userId,
             NOT: { ban: true },
+            status: RoomUserStatus.Member,
           },
         },
       },
@@ -401,6 +403,7 @@ export class RoomService {
         },
         data: {
           ban: value,
+          status: 'ExMember',
         },
       });
     return undefined;
@@ -439,7 +442,8 @@ export class RoomService {
       where: {
         id: roomId,
         status: RoomStatus.Opened,
-        NOT: { access: RoomAccess.Private },
+        // NOT: { access: RoomAccess.Private },
+        RoomUsers: { none: { userId, ban: true } },
       },
     });
     if (room) {
@@ -488,16 +492,27 @@ export class RoomService {
     else throw new ForbiddenException('Ambiguous credentials');
   }
 
-  async leaveRoom(userId: number, roomId: number) {
+  async leaveRoom(userId: number, roomId: number): Promise<string> {
     try {
-      await this.prisma.roomUser.update({
-        where: {
-          roomId_userId: { roomId, userId },
-        },
-        data: {
-          status: RoomUserStatus.ExMember,
-        },
-      });
+      const msg = await this.msgService.getFirstMsg(userId, roomId);
+      if (msg) {
+        await this.prisma.roomUser.update({
+          where: {
+            roomId_userId: { roomId, userId },
+          },
+          data: {
+            status: RoomUserStatus.ExMember,
+          },
+        });
+        return 'leaveRoom';
+      } else {
+        await this.prisma.roomUser.delete({
+          where: {
+            roomId_userId: { roomId, userId },
+          },
+        });
+        return 'removeFromRoom';
+      }
     } catch (err) {
       throw new WsException('Ambiguous credentials');
     }

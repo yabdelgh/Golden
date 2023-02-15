@@ -42,4 +42,13 @@ export class MsgService {
       return message;
     } else throw new WsException('Unauthorized');
   }
+
+  async getFirstMsg(userId: number, roomId: number) {
+    return await this.prisma.roomUserMsg.findFirst({
+      where: {
+        roomId: roomId,
+        userId: userId,
+      },
+    });
+  }
 }

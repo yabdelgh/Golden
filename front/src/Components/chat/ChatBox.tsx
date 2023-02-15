@@ -60,12 +60,23 @@ const ChatBox = () => {
     socket.emit("chatMsg", { roomId: selectedRoom.id, msg });
   };
 
+  const isMuted = () => {
+    return selectedRoom.RoomUsers?.some(
+      (ele: RoomUser) => ele.userId === user.id && ele.mute
+    );
+  };
+
   const getUserName = (id: number) => {
     const ret = users.find((user: any) => {
       return user.id === id;
     });
     if (!ret) return user.login;
     return ret.login;
+  };
+
+  const closeList = () => {
+    setUsersList(!usersList);
+    setShowUP(undefined);
   };
 
   const isMember = (userId: number): boolean => {
@@ -82,7 +93,7 @@ const ChatBox = () => {
       width="100%"
       bg="white"
       height="100%"
-      borderRadius="lg"
+      // borderRadius="lg"
       border="3px white solid"
     >
       {selectedRoom ? (
@@ -160,17 +171,10 @@ const ChatBox = () => {
                 className="md-disabled"
                 onClick={() => {
                   selectedRoom.isGroupChat
-                    ? setUsersList(!usersList) && setShowUP(undefined)
+                    ? closeList()
                     : setShowUP((value: any) => {
                         if (value) return undefined;
-                        else {
-                          console.log(
-                            "selectedRoom.name: ",
-                            getUserByName(users, selectedRoom.name)
-                          );
-
-                          return getUserByName(users, selectedRoom.name);
-                        }
+                        else return getUserByName(users, selectedRoom.name);
                       });
                 }}
                 icon={
@@ -203,13 +207,8 @@ const ChatBox = () => {
               bgColor="#BAD1C2"
               border="3px solid white"
             >
-              <Box
-                width="100%"
-                height="calc(100% - 70px)"
-                overflow={"scroll"}
-                overflowX="hidden"
-              >
-                {msgs.length !== 0 ? (
+              <Box width="100%" height="calc(100% - 70px)" overflow={"hidden"}>
+                {msgs.length !== 0 &&
                   msgs.map((msg: any) => {
                     if (msg.roomId === selectedRoom.id)
                       return (
@@ -238,10 +237,7 @@ const ChatBox = () => {
                         </Box>
                       );
                     else return undefined;
-                  })
-                ) : (
-                  <></>
-                )}
+                  })}
               </Box>
               <InputGroup
                 display="flex"
@@ -255,6 +251,7 @@ const ChatBox = () => {
                   fontWeight="bolder"
                   width="99%"
                   bg="white"
+                  isDisabled={isMuted()}
                   height="40px"
                   minHeight="50px"
                   m="10px"
@@ -271,6 +268,7 @@ const ChatBox = () => {
                 />
                 <InputLeftElement ml={"25px"} height="100%">
                   <IconButton
+                    isDisabled={isMuted()}
                     variant={"unstyled"}
                     aria-label="emoji"
                     icon={<TfiFaceSmile size="30px" color="gray" />}
@@ -278,6 +276,7 @@ const ChatBox = () => {
                 </InputLeftElement>
                 <InputRightElement mr={"20px"} height="100%">
                   <IconButton
+                    isDisabled={isMuted()}
                     variant={"unstyled"}
                     aria-label="mic"
                     icon={<BsFillMicFill size="25px" color="gray" />}

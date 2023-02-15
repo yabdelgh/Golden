@@ -8,7 +8,7 @@ function RadioEx( props : any) {
   const checkbox = getCheckboxProps();
   
   return (
-    <Box as="label">
+    <Box as="label" width={props.width} m={props.m}>
       <input {...input} />
       <Box
         {...checkbox}

@@ -5,12 +5,18 @@ import {
   Button,
   Avatar,
   AvatarBadge,
+  FormControl,
+  InputGroup,
+  Input,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
 import CreateGroupModal from "./CreateGroupModal";
 import { AppState } from "../../Context/AppProvider";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
+import { BsSearch } from "react-icons/bs";
 
 const ChatList = () => {
   const {
@@ -40,41 +46,46 @@ const ChatList = () => {
     <Box
       display="flex"
       flexDir="column"
-      borderRadius="lg"
       bg="white"
-      p="3"
       height="100%"
       w={{ base: "290px", md: "360px" }}
-      mr="5px"
+      mr="2px"
     >
-      <Box display="flex" justifyContent="space-between">
-        <Text fontSize="25px" fontFamily="Work sans" height="50px" m="5px">
-          Contacts
-        </Text>
+        <FormControl height="30px" width="96%"m='2%' mb="10px">
+          <InputGroup>
+            <Input
+              placeholder="Search"
+            />
+            <InputRightElement>
+              <IconButton
+                variant={"unstyled"}
+                aria-label="Search User"
+                icon={<BsSearch />}
+              />
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
         <CreateGroupModal>
-          <Button ml="10px" leftIcon={<AiOutlineUsergroupAdd size="25px" />}>
-            <Text display={{ base: "none", xl: "flex" }}>create new group</Text>
+          <Button m='2%'mb='10px' leftIcon={<AiOutlineUsergroupAdd size="25px" />} width='96%'>
+            <Text display='flex' width='fit-content'>create new group</Text>
           </Button>
         </CreateGroupModal>
-      </Box>
       {rooms ? (
         <Stack
-          width="100%"
+          width="96%"
+          m='2%'
           overflowY="auto"
           spacing={0}
-          // divider={<StackDivider borderColor="gray.200" />}
-          // borderBottom="1px #EEEEEE solid"
-          // borderTop="1px #EEEEEE solid"
         >
           {rooms.map((room: any) => (
             <Box
               cursor={"pointer"}
-              height="65px"
+              height="55px"
+              mb='2px'
               display="flex"
               alignItems={"center"}
               bg={selectedRoom === room ? "#EEEEEE" : "white"}
-              borderRadius="15px"
-              p="5px"
+              borderRadius="5px"
               fontFamily="Inter"
               fontWeight="bold"
               fontSize="17px"
@@ -86,7 +97,7 @@ const ChatList = () => {
                 bg="teal"
                 ml="10px"
                 size={"md"}
-                border="3px solid white"
+                border={selectedRoom === room ? "5px solid #EEEEEE" : "5px solid white"}
                 name={room.name}
                 src={
                   room.isGroupChat
@@ -102,7 +113,7 @@ const ChatList = () => {
                 )}
               </Avatar>
               <Box ml="20px" display="flex" flexDirection="column">
-                <Text p="4px 0px">{room.name}</Text>
+                <Text p="4px 0px" color='gray.500'>{room.name}</Text>
                 <Text fontSize="14px" fontFamily={"work sans"} color="gray.400">
                   {room.lastMsg && room.lastMsg.slice(0, 20)}
                   {room.lastMsg && room.lastMsg.length > 20 ? " ..." : ""}

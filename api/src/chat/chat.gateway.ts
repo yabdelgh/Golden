@@ -31,9 +31,17 @@ import { chatRoomDto } from './dtos/chatRoom.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameService } from 'src/game/game.service';
 import { MatchMakerQueue } from 'src/utils/MatchMakerQueue';
+import { MoveStat, SocketGamePlayerMoveData } from 'src/utils/GameEnums';
+import { safeStringify } from 'src/utils/serialization';
+import { Player } from 'src/game/Core/Players/player';
+import { APlayer } from 'src/game/Core/Players/APlayer';
+import { ReliableExecution } from 'src/utils/ReliableExecution';
+import { isNumber } from 'class-validator';
+import { GameState } from 'src/game/Core/game';
 
 export class mySocket extends Socket {
   user?: UserDto;
+  readyToPlay = false;
 }
 
 @WebSocketGateway({
@@ -96,7 +104,6 @@ export class ChatGateway
       this.chatService.status_broadcast(socket);
     } catch (err) {
       socket.disconnect(true);
-      console.log(err);
     }
     // get users with the status
   }
@@ -218,7 +225,9 @@ export class ChatGateway
   ) {
     try {
       const room = await this.roomService.updateRoom(payload, socket.user.id);
-      this.server.in(`room${room.id}`).emit('updateRoom', room);
+      this.server
+        .in(`room${room.id}`)
+        .emit('updateRoom', { ...room, isGroupChat: true });
     } catch (error) {
       socket.emit('error', error.message);
     }
@@ -313,22 +322,19 @@ export class ChatGateway
       payload.userId,
       payload.value,
     );
-    if (ret) {
-      if (!payload.value)
-        this.server
-          .in(String(payload.userId))
-          .socketsJoin(`room${payload.roomId}`);
-      else
-        this.server
-          .in(String(payload.userId))
-          .socketsLeave(`room${payload.roomId}`);
-
-      this.server.in(`room${payload.roomId}`).emit('ban', {
-        userId: ret.userId,
-        roomId: ret.roomId,
-        val: payload.value,
-      });
+    if (ret && payload.value) {
+      this.server
+        .in(`${payload.userId}`)
+        .emit('deleteRoom', { id: payload.roomId });
+      this.server
+        .in(String(payload.userId))
+        .socketsLeave(`room${payload.roomId}`);
     }
+    this.server.in(`room${payload.roomId}`).emit('ban', {
+      userId: ret.userId,
+      roomId: ret.roomId,
+      val: payload.value,
+    });
   }
 
   @SubscribeMessage('role')
@@ -357,7 +363,7 @@ export class ChatGateway
 
     const user = await this.prismaService.user.findFirst({
       where: {
-        BlockedBy: {
+        Blocked: {
           none: {
             blockedId: socket.user.id,
           },
@@ -378,6 +384,9 @@ export class ChatGateway
         where: {
           name: {
             startsWith: search,
+          },
+          RoomUsers: {
+            none: { userId: socket.user.id, ban: true },
           },
           NOT: {
             OR: [
@@ -408,11 +417,40 @@ export class ChatGateway
     );
     const user = await this.userService.getUser(roomUser.userId);
     socket.join(`room${roomUser.roomId}`);
-
     socket.emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
     this.server
       .in(`room${roomUser.roomId}`)
       .emit('joinRoom', { roomId: roomUser.roomId, user });
+  }
+
+  @SubscribeMessage('addUserToRoom')
+  async addUserToRoom(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody()
+    payload: { roomId: number; userId: number; password?: string },
+  ) {
+    console.log(payload);
+    const blocked = await this.prismaService.blockedUser.findFirst({
+      where: {
+        blockedId: socket.user.id,
+        blockerId: payload.userId,
+      },
+    });
+    if (!blocked) {
+      const roomUser = await this.roomService.joinRoom(
+        payload.userId,
+        payload.roomId,
+        payload.password,
+      );
+      const user = await this.userService.getUser(roomUser.userId);
+      this.server.in(`${user.id}`).socketsJoin(`room${roomUser.roomId}`);
+      this.server
+        .in(`${user.id}`)
+        .emit('addRoom', await this.roomService.getRoom(roomUser.roomId));
+      this.server
+        .in(`room${roomUser.roomId}`)
+        .emit('joinRoom', { roomId: roomUser.roomId, user });
+    }
   }
 
   @SubscribeMessage('leaveRoom')
@@ -420,10 +458,14 @@ export class ChatGateway
     @ConnectedSocket() socket: mySocket,
     @MessageBody() payload: LeaveRoomDto,
   ) {
-    await this.roomService.leaveRoom(socket.user.id, payload.roomId);
-    this.server
-      .in(`room${payload.roomId}`)
-      .emit('leaveRoom', { roomId: payload.roomId, userId: socket.user.id });
+    const action: string = await this.roomService.leaveRoom(
+      socket.user.id,
+      payload.roomId,
+    );
+    socket.broadcast
+      .to(`room${payload.roomId}`)
+      .emit(action, { roomId: payload.roomId, userId: socket.user.id });
+    socket.emit('deleteRoom', { id: payload.roomId });
     socket.leave(`room${payload.roomId}`);
   }
 
@@ -483,13 +525,6 @@ export class ChatGateway
     this.server
       .in([...opponent[0].rooms])
       .emit('inGame', { id: challengerId, ingame: true });
-
-    // set in game status to true
-    // join sockets
-    //start a counter 15s
-    //send the game with are you readdy
-    //
-    //    socket.emit('areYouReady', {})
   }
 
   @SubscribeMessage('quickPairing')
@@ -497,6 +532,7 @@ export class ChatGateway
     this.matchMaker.subscribe(Number(socket.user.id));
     const pairing = this.matchMaker.pairing();
     if (pairing) {
+      console.log(pairing);
       socket.user.inGame = true;
       this.server
         .in([...socket.rooms])
@@ -504,13 +540,93 @@ export class ChatGateway
       const opponent: any = await this.server
         .in(`${pairing[0]}`)
         .fetchSockets();
-      opponent[0].user.inGame = true;
       this.server
         .in([...opponent[0].rooms])
         .emit('inGame', { id: pairing[0], ingame: true });
+      opponent[0].user.inGame = true;
+      const game = await this.gameService.newSimpleGame([socket, opponent[0]]);
+      await opponent[0].join(`Game${game.id}`);
+      await socket.join(`Game${game.id}`);
+      game.subscribeWebClient((data: GameState) => {
+        this.server.in(`Game${game.id}`).emit('gameDataUpdate', data);
+      });
+      game.subscribeGameEnd(async (data: GameState) => {
+        let winner: any;
+        if (data.score[0] < data.score[1]) {
+          winner = await this.userService.getUser(socket.user.id);
+        } else {
+          winner = await this.userService.getUser(opponent[0].user.id);
+        }
+        this.server
+          .in(`Game${game.id}`)
+          .emit('gameOver', { login: winner.login, image: winner.imageUrl });
+      });
     }
     //  else
     //  socket.emit('waitAGame');
+  }
+
+  @SubscribeMessage('startGame')
+  async handleStartGame(@ConnectedSocket() socket: mySocket) {
+    socket.readyToPlay = true;
+    const game = await this.gameService.getGame(socket.user.gameId);
+    const gameSocks = this.server.in(`Game${game.id}`);
+    const socks = await gameSocks.fetchSockets();
+    const readyPlayersLength = socks.filter(
+      (sock) => (sock as any as mySocket).readyToPlay,
+    ).length;
+    if (readyPlayersLength === 2) {
+      game.start();
+      gameSocks.emit('gameStarted', {});
+      return;
+    }
+  }
+
+  @SubscribeMessage('getGameData')
+  async getGameDataById(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() gameId: number = null,
+  ) {
+    console.log('game id', socket.user.gameId);
+    ReliableExecution(5, 300, async () => {
+      if (!isNumber(gameId)) gameId = socket.user.gameId;
+      const game = this.gameService.getGame(gameId);
+      if (game) {
+        const user1 = await this.userService.getUser(game.players[0].id);
+        const user2 = await this.userService.getUser(game.players[1].id);
+        const data = {
+          //get the user data from the socket by the player id
+          playersData: game.players.map((p) => {
+            return { id: p.id };
+          }),
+          players: game.players.map((p) => p.body),
+          obstacles: game.obstacles,
+          ball: game.ball,
+          gameSize: game.size,
+          usersOfPlayers: [user1, user2],
+        };
+        socket.emit('gameData', safeStringify(data));
+        return true;
+      }
+      console.log('no game', gameId, game);
+      return false;
+    });
+  }
+
+  @SubscribeMessage('gamePlayerMove')
+  async GamePlayerMove(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody() move: SocketGamePlayerMoveData,
+  ) {
+    const game = this.gameService.getGame(socket.user.gameId);
+    const player: APlayer = game && game.get_player_by_id(socket.user.id);
+    if (player) {
+      if (move.action === MoveStat.Start) {
+        console.log('player try to move', player.id);
+        (player as Player).start_moving(move.direction);
+      } else if (move.action === MoveStat.Stop)
+        (player as Player).stop_moving();
+    }
   }
 
   @SubscribeMessage('cancelQuickPairing')

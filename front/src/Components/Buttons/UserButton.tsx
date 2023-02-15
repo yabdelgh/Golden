@@ -20,11 +20,11 @@ const UserButton = ({ user }: any) => {
         color="white"
         bg="teal"
         borderRadius="lg"
-        border="2px solid white"
+        border="5px solid white"
         size="md"
         name={user ? user.login : ""}
       />
-      <Text fontWeight={"bold"} ml="10px">
+      <Text fontWeight={"bold"} ml="5px" color='gray.500'>
         {user.login}
       </Text>
     </Button>

@@ -22,8 +22,8 @@ import EditProfile from "./Components/edit-profile";
 
 function App() {
   const {
+    setRoomProfile,
     setUserProfile,
-    user,
     setIsOnline,
     setMsgs,
     setUser,
@@ -38,6 +38,7 @@ function App() {
     setSearchs,
     setChallenges,
     setBlockedUsers,
+    user,
   } = AppState();
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,6 +58,7 @@ function App() {
       location.pathname !== "/twoFA"
     )
       navigate("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -105,6 +107,9 @@ function App() {
       setBlockedUsers(payload);
     });
     socket.on("blockUser", (payload: BlockedUser) => {
+      setSearchs((value) =>
+        value.filter((ele) => ele.id !== payload.blockerId)
+      );
       setBlockedUsers((value) => [...value, payload]);
     });
     socket.on("unblockUser", (payload: BlockedUser) => {
@@ -132,6 +137,7 @@ function App() {
     });
 
     socket.on("addRoom", (payload: Room) => {
+      setSearchs([]);
       setRooms((rooms: Room[]) => {
         const exist = rooms.some((ele: Room) => ele.id === payload.id);
         if (exist) return [...rooms];
@@ -146,7 +152,8 @@ function App() {
         const index = rooms.findIndex((ele: any) => {
           return ele.id === payload.id;
         });
-        rooms.splice(index, 1);
+        if(index !== -1)
+          rooms.splice(index, 1);
         return [...rooms];
       });
       setSelectedRoom((value: any) => {
@@ -156,7 +163,11 @@ function App() {
         }
         return value;
       });
-      successToast(toast, "group chat deleted successfully");
+      setRoomProfile((value: any) => {
+        if (value && value.id === payload.id)
+          return undefined;
+        return value;
+      })
     });
 
     socket.on("joinRoom", (payload: { roomId: number; user: User }) => {
@@ -186,6 +197,7 @@ function App() {
     });
 
     socket.on("leaveRoom", (payload: { roomId: number; userId: number }) => {
+      setSearchs([]);
       setRooms((rooms: Room[]) => {
         const index1 = rooms.findIndex(
           (object) => object.id === payload.roomId
@@ -197,6 +209,23 @@ function App() {
         return [...rooms];
       });
     });
+
+    socket.on(
+      "removeFromRoom",
+      (payload: { roomId: number; userId: number }) => {
+      setSearchs([]);
+        setRooms((rooms: Room[]) => {
+          const index1 = rooms.findIndex(
+            (object) => object.id === payload.roomId
+          );
+          const index2 = rooms[index1].RoomUsers.findIndex(
+            (object) => object.userId === payload.userId
+          );
+          rooms[index1].RoomUsers.splice(index2, 1);
+          return [...rooms];
+        });
+      }
+    );
 
     socket.on("updateRoom", (payload: Room) => {
       setRooms((rooms: Room[]) => {
@@ -227,7 +256,6 @@ function App() {
     });
 
     socket.on("friends", (payload: Friend[]) => {
-      console.log(payload);
       setFriends(payload);
     });
 

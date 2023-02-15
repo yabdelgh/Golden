@@ -11,7 +11,7 @@ const WaitAGame = () => {
      autoplay: true,
      animationData: animationData,
      rendererSettings: {
-       preserveAspectRatio: "xMidYMid slice",
+      preserveAspectRatio: "xMidYMid slice",
      },
    };
 
@@ -27,10 +27,10 @@ const WaitAGame = () => {
       mt="70px"
       ml="72px"
     >
-      <Box width="50%" height="50%">
+      <Box width="50%" minW='600px'>
         <Lottie options={defaultOptions} />
       </Box>
-      <Text fontSize={"40px"} m="30px">
+      <Text fontSize={"40px"} mb="30px">
         waiting for opponent
       </Text>
       <Button

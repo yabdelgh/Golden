@@ -43,7 +43,6 @@ const CreateGroupModal = ({ children }: any) => {
       warningToast(toast, "Please enter a strong password");
     else
     {
-      console.log({password,access});
       axios.post('/api/chat/createRoom', {id: 0, name, access, password})
       .then((payload) => {
         onClose();

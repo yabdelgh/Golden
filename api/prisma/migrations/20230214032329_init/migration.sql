@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "RoomAccess" AS ENUM ('Private', 'Protected', 'Public');
+CREATE TYPE "RoomAccess" AS ENUM ('Private', 'Protected', 'Public', 'DirectMessage');
 
 -- CreateEnum
 CREATE TYPE "RoomStatus" AS ENUM ('Opened', 'Closed', 'Deleted');
@@ -49,7 +49,7 @@ CREATE TABLE "blocked_users" (
 -- CreateTable
 CREATE TABLE "chat_rooms" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
     "status" "RoomStatus" NOT NULL DEFAULT 'Opened',
     "access" "RoomAccess" NOT NULL DEFAULT 'Public',
     "password" TEXT,
@@ -63,7 +63,10 @@ CREATE TABLE "chat_rooms" (
 CREATE TABLE "games" (
     "id" SERIAL NOT NULL,
     "redCornerId" INTEGER NOT NULL,
+    "redCornerScore" INTEGER NOT NULL DEFAULT 0,
     "blueCornerId" INTEGER NOT NULL,
+    "blueCornerScore" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "map" TEXT NOT NULL DEFAULT 'default',
 
     CONSTRAINT "games_pkey" PRIMARY KEY ("id")

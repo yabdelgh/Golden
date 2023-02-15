@@ -119,6 +119,7 @@ const ChatHeader = () => {
               bg="teal"
               color="white"
               size="md"
+              border='3px solid white'
               cursor="pointer"
               name={user.login}
               src={user.imageUrl || "/defaultProfilePic.png"}

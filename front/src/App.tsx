@@ -19,6 +19,7 @@ import UseHere from "./Pages/UseHere";
 import LoadingPage from "./Pages/LoadingPage";
 import ChatHeader from "./Components/AppHeader";
 import EditProfile from "./Components/edit-profile";
+import LiveGamePage from "./Pages/LiveGamePage";
 
 function App() {
   const {
@@ -407,6 +408,7 @@ function App() {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/game" element={<GamePage />} />
+        <Route path="/live-game/:gameId" element={<LiveGamePage />} />
         <Route path="/world" element={<WorldPage />} />
         <Route path="/twoFA" element={<TwoFAPage />} />
         <Route path="/security" element={<SecurityPage />} />

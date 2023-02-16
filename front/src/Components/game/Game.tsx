@@ -88,8 +88,8 @@ const Game = () => {
         if (gameDataqueue.length > 0 && FrameId == gameDataqueue.peek().id) {
           FrameId++;
           const data = gameDataqueue.dequeue();
-          setScore1(data.score[1]);
-          setScore2(data.score[0]);
+          setScore1(data.score[0]);
+          setScore2(data.score[1]);
           Body.setPosition(gameState.ball, data.ball);
           Body.setPosition(gameState.players[0], data.players[0]);
           Body.setPosition(gameState.players[1], data.players[1]);

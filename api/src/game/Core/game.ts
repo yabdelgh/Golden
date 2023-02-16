@@ -172,11 +172,11 @@ export class Game {
     const b2 = this._players[1].goal;
 
     if (pair.some((p) => p.bodyA === b1 || p.bodyB === b1)) {
-      this._score[0] += 1;
+      this._score[1] += 1;
       this.set_ball_at_start(PlayerMove.Left);
       this.rounds--;
     } else if (pair.some((p) => p.bodyA === b2 || p.bodyB === b2)) {
-      this._score[1] += 1;
+      this._score[0] += 1;
       this.set_ball_at_start(PlayerMove.Right);
       this.rounds--;
     }

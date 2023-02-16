@@ -44,7 +44,7 @@ const Game = () => {
   const [ winner , setWinner ] = useState<{login: string, image: string|null}>({login: '', image: null});
   // let engine:Engine
   // let render:Render
-
+  
   const { socket } = AppState();
   const [engine, setEngine]: any = useState();
   const [render, setRender]: any = useState();
@@ -55,6 +55,28 @@ const Game = () => {
   const [ name2, setName2 ] = useState<string|null>(null);
   const [ score1, setScore1 ] = useState<number>(0);
   const [ score2, setScore2 ] = useState<number>(0);
+  const [ width, setWidth ] = useState<number>(window.innerWidth);
+  const [ height, setHeight ] = useState<number>(window.innerHeight);
+  
+  useEffect(() => {
+    const updateWindowDimensions = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", updateWindowDimensions);
+    return () => window.removeEventListener("resize", updateWindowDimensions);
+  }, []);
+
+
+  useEffect(() => {
+    if (render && engine) {
+      let scaleFactor = window.innerHeight * 0.6/500;
+      if (window.innerWidth < 2 * window.innerHeight) {
+        scaleFactor = window.innerWidth * 0.7/1000;
+      }
+      render.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
+    }
+  }, [width, height]);
 
   useEffect(() => {
     if (gameState) {

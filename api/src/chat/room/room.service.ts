@@ -512,7 +512,7 @@ export class RoomService {
             roomId_userId: { roomId, userId },
           },
         });
-        return 'removeFromRoom';
+        return '';
       }
     } catch (err) {
       throw new WsException('Ambiguous credentials');

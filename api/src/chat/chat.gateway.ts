@@ -330,10 +330,15 @@ export class ChatGateway
         .in(String(payload.userId))
         .socketsLeave(`room${payload.roomId}`);
     }
+
     this.server.in(`room${payload.roomId}`).emit('ban', {
       userId: ret.userId,
       roomId: ret.roomId,
       val: payload.value,
+    });
+    this.server.in(`room${payload.roomId}`).emit('removeFromRoom', {
+      roomId: payload.roomId,
+      userId: payload.userId,
     });
   }
 

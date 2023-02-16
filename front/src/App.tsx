@@ -313,6 +313,7 @@ function App() {
     socket.on(
       "ban",
       (payload: { userId: number; roomId: number; val: boolean }) => {
+        console.log("ban", payload);
         setRooms((value: Room[]) => {
           const ret = value.findIndex((ele: Room) => ele.id === payload.roomId);
           const ret2 = value[ret].RoomUsers.findIndex(

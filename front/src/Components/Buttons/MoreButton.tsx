@@ -12,7 +12,7 @@ import {
 import { FaCog } from "react-icons/fa";
 
 const MoreButton = ({ target }: any) => {
-  const { selectedRoom, socket, user } = AppState();
+  const { selectedRoom, socket, user, setShowUP, setSelectedRoom } = AppState();
 
   const isOwner = (user: User): boolean =>
     selectedRoom.RoomUsers.some(
@@ -67,13 +67,15 @@ const MoreButton = ({ target }: any) => {
             borderRadius="0px"
             borderTopRadius="lg"
             pt="2px"
-            onClick={() =>
+            onClick={() => {
               socket.emit("ban", {
                 userId: target.id,
                 roomId: selectedRoom.id,
                 value: !isBanned(),
-              })
-            }
+              });
+              setShowUP(undefined);
+              setSelectedRoom(undefined);
+            }}
           >
             {isBanned() ? "Unban" : "Ban"}
           </Button>
@@ -81,13 +83,14 @@ const MoreButton = ({ target }: any) => {
             width="100%"
             borderRadius="0px"
             bg="white"
-            onClick={() =>
+            onClick={() => {
               socket.emit("mute", {
                 userId: target.id,
                 roomId: selectedRoom.id,
                 value: !isMuted(),
-              })
-            }
+              });
+              setShowUP(undefined);
+            }}
           >
             {isMuted() ? "UnMute" : "Mute"}
           </Button>
@@ -95,12 +98,14 @@ const MoreButton = ({ target }: any) => {
             width="100%"
             borderRadius="0px"
             bg="white"
-            onClick={() =>
+            onClick={() => {
               socket.emit("kick", {
                 userId: target.id,
                 roomId: selectedRoom.id,
-              })
-            }
+              });
+              setShowUP(undefined);
+              setSelectedRoom(undefined);
+            }}
           >
             kick
           </Button>

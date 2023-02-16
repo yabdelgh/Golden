@@ -86,7 +86,9 @@ const EditProfile = () => {
       const formData = new FormData();
       formData.append("login", login);
       if (file) formData.append("imageUrl", file);
-      const res = await axios.patch("/api/user/update", formData);
+      const res = await axios.patch("http://localhost:3333" + "/api/user/update", formData, {
+        withCredentials: true,
+      });
       if (res.status === 200) {
         setUser({
           ...user,

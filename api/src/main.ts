@@ -12,6 +12,12 @@ async function bootstrap() {
   // validation
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  // enable cors
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
+
   // swagger
   const config = new DocumentBuilder()
     .setTitle('npp API')

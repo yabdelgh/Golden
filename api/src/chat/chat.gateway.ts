@@ -469,7 +469,7 @@ export class ChatGateway
     socket.leave(`room${payload.roomId}`);
   }
 
-  @SubscribeMessage('kik')
+  @SubscribeMessage('kick')
   async kikUser(
     @ConnectedSocket() socket: mySocket,
     @MessageBody()

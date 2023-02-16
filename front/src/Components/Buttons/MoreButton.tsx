@@ -96,13 +96,13 @@ const MoreButton = ({ target }: any) => {
             borderRadius="0px"
             bg="white"
             onClick={() =>
-              socket.emit("kik", {
+              socket.emit("kick", {
                 userId: target.id,
                 roomId: selectedRoom.id,
               })
             }
           >
-            kik
+            kick
           </Button>
           <Button
             width="100%"

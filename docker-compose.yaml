@@ -10,8 +10,6 @@ services:
       - POSTGRES_DB=nest
     ports:
       - "5432:5432"
-    volumes:
-      - postgres:/var/lib/postgresql/data
 
   api:
     container_name: api
@@ -33,12 +31,6 @@ services:
       - api
 
 volumes:
-  postgres:
-    driver: local
-    driver_opts:
-      device: ${HOME}/postgres
-      o: bind
-      type: none
   uploads:
     driver: local
     driver_opts:

@@ -60,7 +60,7 @@ const ChatBox = () => {
     if (selectedRoom.isGroupChat === false) {
       const chatUser: any = getUserByName(users, selectedRoom.name);
 
-      if (!chatUser) return true;
+      if (!chatUser) return false;
       if (
         blockedUsers.some(
           (u) => u.blockedId === chatUser.id || u.blockerId === chatUser.id

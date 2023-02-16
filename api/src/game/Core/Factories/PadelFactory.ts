@@ -63,16 +63,22 @@ function makeHalfCircle(size: number): Body {
 
 function makeKhobza(size: number, side:PlayerMove): Body {
   const base = makeSimple(size);
-  const partOfCircle = createPartOfCircle(size / 1.3, -40, 40);
+  let partOfCircle;
+  if (side == PlayerMove.Right)
+    partOfCircle = createPartOfCircle(size / 1.3, -220, -140);
+  else
+    partOfCircle = createPartOfCircle(size / 1.3, -40, 40);
   const baseSize = GetBodySize(base),
     hcSize = GetBodySize(partOfCircle);
   const pos = Vector.create(baseSize.x / 2 + hcSize.x / 2 - 1, 0);
   if (side == PlayerMove.Right) {
-    rotateBody(partOfCircle, Math.PI / 2)
+  //   rotateBody(partOfCircle, Math.PI / 2)
     Body.setPosition(partOfCircle, Vector.create(-pos.x, pos.y));
   }
   else
     Body.setPosition(partOfCircle, pos);
+    base.render.fillStyle = "white";
+    partOfCircle.render.fillStyle = "white";
   return Body.create({ parts: [base, partOfCircle] });
 }
 

@@ -24,7 +24,7 @@ import { BsCardImage } from "react-icons/bs";
 const updatUserSchema = z.object({
   login: z.string().min(3).max(20),
   email: z.string().email(),
-  imageUrl: z.string().url(),
+  imageUrl: z.string().url().optional(),
 });
 
 const EditProfile = () => {

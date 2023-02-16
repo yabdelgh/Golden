@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Bodies, Vector } from 'matter-js';
 import { mySocket } from 'src/chat/chat.gateway';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PadelType } from 'src/utils/GameEnums';
+import { ArenaType, PadelType } from 'src/utils/GameEnums';
 import { ArenaFactory } from './Core/Factories/ArenaFactory';
 import { PadelFactory } from './Core/Factories/PadelFactory';
 import { Game, GameState } from './Core/game';
@@ -93,14 +93,14 @@ export class GameService {
     });
   }
 
-  newSimpleGame(players: mySocket[]): Promise<Game> {
-    return this.newGame(players, PadelType.Simple);
+  newSimpleGame(players: mySocket[], arenaType : ArenaType): Promise<Game> {
+    return this.newGame(players, PadelType.Simple, arenaType);
   }
 
   async newGame(
     players: mySocket[],
     padelType: PadelType,
-    // arenaType: ArenaType,
+    arenaType: ArenaType,
   ): Promise<Game> {
     const dbgame = await this.prisma.games.create({
       data: {
@@ -117,7 +117,7 @@ export class GameService {
       ball: Bodies.circle(0, 0, 10),
       players: gamePlayers,
       size: Vector.create(1000, 500),
-      obstacles: ArenaFactory.getArena(),
+      obstacles: ArenaFactory.getArena(arenaType),
       scale: 1,
     });
     this.games.set(game.id, game);

@@ -41,7 +41,7 @@ export class Game {
   private _size: Vector;
   private _score: number[];
   private status: GameStatus = GameStatus.Initiating;
-  private rounds = 60000;
+  private rounds = 5;
   private _padel_gap = 10;
   private remaining_rounds = 0;
   private _engine: Engine;
@@ -61,9 +61,9 @@ export class Game {
     this._engine = Engine.create({
       enableSleeping: false,
       gravity: Vector.create(0, 0),
-      // constraintIterations:20,
-      // velocityIterations: 20,
-      // positionIterations: 20,
+      constraintIterations:20,
+      velocityIterations: 20,
+      positionIterations: 20,
     });
     this.engine.gravity.scale = 0;
     this.runner = Runner.create();
@@ -149,8 +149,8 @@ export class Game {
     Composite.add(this.world, this._ball);
     Events.on(this.engine, 'collisionEnd', (event) => {
       this.update_game_score(event.pairs);
-      const x = this._ball.velocity.x * 1.05;
-      const y = this._ball.velocity.y * 1.05;
+      const x = this._ball.velocity.x * 1.03;
+      const y = this._ball.velocity.y * 1.03;
       Body.setVelocity(this._ball, Vector.create(x, y));
     });
   }

@@ -1,10 +1,19 @@
 import { Body, Vector } from "matter-js";
+import { ArenaType } from "src/utils/GameEnums";
 import { ShapeFactory, ShapeType } from "./ShapeFactory";
 
 export class ArenaFactory {
     private static _gameSize:Vector
-    public static getArena():Body[] {
-        const bodies: Body[] = this.Arena2();
+    public static getArena(arenaType: ArenaType):Body[] {
+        let bodies: Body[] = []
+        switch(arenaType) {
+            case ArenaType.Simple:
+                return [];
+            case ArenaType.Crazy:
+                bodies = this.Arena2();
+            case ArenaType.Unpredictable:
+                bodies = this.Arena1();
+        }
         bodies[0].parts.forEach( p => {p.render.fillStyle = "white"});
         return bodies
     }

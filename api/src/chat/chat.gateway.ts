@@ -532,59 +532,57 @@ export class ChatGateway
     this.server.in(`${challengerId}`).emit('declineChallenge', challenge);
   }
 
+  private async setInGame(socket: mySocket, oppId: number) {
+    socket.user.inGame = true;
+    this.server
+      .in([...socket.rooms])
+      .emit('inGame', { id: socket.user.id, inGame: true });
+    const opponent: any = await this.server.in(`${oppId}`).fetchSockets();
+    opponent[0].user.inGame = true;
+    this.server
+      .in([...opponent[0].rooms])
+      .emit('inGame', { id: oppId, ingame: true });
+    return [socket, opponent[0]];
+  }
+
+  private async createGame(socket: mySocket, oppSock: mySocket) {
+    const game = await this.gameService.newSimpleGame([socket, oppSock]);
+    await oppSock.join(`Game${game.id}`);
+    await socket.join(`Game${game.id}`);
+    game.subscribeWebClient((data: GameState) => {
+      this.server.in(`Game${game.id}`).emit('gameDataUpdate', data);
+    });
+    game.subscribeGameEnd(async (data: GameState) => {
+      let winner: any;
+      if (data.score[0] < data.score[1]) {
+        winner = await this.userService.getUser(socket.user.id);
+      } else {
+        winner = await this.userService.getUser(oppSock.user.id);
+      }
+      this.server
+        .in(`Game${game.id}`)
+        .emit('gameOver', { login: winner.login, image: winner.imageUrl });
+    });
+  }
+
   @SubscribeMessage('acceptChallenge')
   async handleAcceptChallenge(
     @ConnectedSocket() socket: mySocket,
     @MessageBody() challengerId: number,
   ) {
-    // if all user are online  create a game
-    socket.user.inGame = true;
-    this.server
-      .in([...socket.rooms])
-      .emit('inGame', { id: socket.user.id, inGame: true });
-    const opponent: any = await this.server
-      .in(`${challengerId}`)
-      .fetchSockets();
-    opponent[0].user.inGame = true;
-    this.server
-      .in([...opponent[0].rooms])
-      .emit('inGame', { id: challengerId, ingame: true });
+    const [sock1, sock2] = await this.setInGame(socket, challengerId);
+    await this.createGame(sock1, sock2);
   }
+
+
 
   @SubscribeMessage('quickPairing')
   async handleQuickPairing(@ConnectedSocket() socket: mySocket) {
     this.matchMaker.subscribe(Number(socket.user.id));
     const pairing = this.matchMaker.pairing();
     if (pairing) {
-      console.log(pairing);
-      socket.user.inGame = true;
-      this.server
-        .in([...socket.rooms])
-        .emit('inGame', { id: socket.user.id, inGame: true });
-      const opponent: any = await this.server
-        .in(`${pairing[0]}`)
-        .fetchSockets();
-      this.server
-        .in([...opponent[0].rooms])
-        .emit('inGame', { id: pairing[0], ingame: true });
-      opponent[0].user.inGame = true;
-      const game = await this.gameService.newSimpleGame([socket, opponent[0]]);
-      await opponent[0].join(`Game${game.id}`);
-      await socket.join(`Game${game.id}`);
-      game.subscribeWebClient((data: GameState) => {
-        this.server.in(`Game${game.id}`).emit('gameDataUpdate', data);
-      });
-      game.subscribeGameEnd(async (data: GameState) => {
-        let winner: any;
-        if (data.score[0] < data.score[1]) {
-          winner = await this.userService.getUser(socket.user.id);
-        } else {
-          winner = await this.userService.getUser(opponent[0].user.id);
-        }
-        this.server
-          .in(`Game${game.id}`)
-          .emit('gameOver', { login: winner.login, image: winner.imageUrl });
-      });
+      const [sock1, sock2] = await this.setInGame(socket, pairing[0]);
+      await this.createGame(sock1, sock2);
     }
     //  else
     //  socket.emit('waitAGame');

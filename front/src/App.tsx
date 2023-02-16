@@ -112,9 +112,6 @@ function App() {
     });
     socket.on("blockUser", (payload: BlockedUser) => {
       setSearchs([]);
-      setSearchs((value) =>
-        value.filter((ele) => ele.id !== payload.blockerId)
-      );
       setBlockedUsers((value) => [...value, payload]);
     });
     socket.on("unblockUser", (payload: BlockedUser) => {

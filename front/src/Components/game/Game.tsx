@@ -141,12 +141,18 @@ const Game = () => {
         element: divRef.current,
         engine: constEngine as Engine,
         options: {
-          width: 500,
+          width: 1000,
           height: 500,
           background: "black",
           wireframes: false,
         },
       });
+      let scaleFactor = window.innerHeight * 0.6/500;
+      if (window.innerWidth < 2 * window.innerHeight) {
+        scaleFactor = window.innerWidth * 0.7/1000;
+      }
+      constRender.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
+      constRender.canvas.style.transformOrigin = "top center";
       setRender(constRender);
       Render.run(constRender);
     }
@@ -184,18 +190,20 @@ const Game = () => {
   }, []);
 
   return (
-    <>
-    <Box 
+    <Box
       width="80%"
+      m="100px auto 0 auto"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+    <Box 
+      width="85%"
       height="100px"
       display="flex"
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
-      position="absolute"
-      top="100px"
-      left="50%"
-      transform="translateX(-50%)"
     >
       <PlayerScore
         name={name1}
@@ -211,12 +219,10 @@ const Game = () => {
         isLeft={false}
       />
     </Box>
-    <div className="canvas-container" style={{marginTop: "300px"}}>
-      <div id="render" className="matter-canvas" ref={divRef} />
-    </div>
+    <div id="render" ref={divRef} style={{marginTop: "50px"}} />
     <CountDownModal isOpen={isCountDownOpen}  callback={countDownCallBack}/>
     <WinnerModal winner={winner} isOpen={isWinnerOpen}/>
-    </>
+    </Box>
   );
 };
 

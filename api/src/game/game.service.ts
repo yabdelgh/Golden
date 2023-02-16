@@ -115,7 +115,7 @@ export class GameService {
       ball: Bodies.circle(0, 0, 10),
       players: gamePlayers,
       obstacles: [],
-      size: Vector.create(500, 500),
+      size: Vector.create(1000, 500),
       scale: 1,
     });
     this.games.set(game.id, game);

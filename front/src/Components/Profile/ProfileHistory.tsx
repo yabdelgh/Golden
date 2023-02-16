@@ -14,10 +14,10 @@ const ProfileHistory = () => {
         : match.redCornerId;
     let opponent = users.find((user: any) => user.id === id);
     if (!opponent)
-      opponent = searchs.find((user: any) => user.id === id && user.login);
+      opponent = searchs.find((user: any) => user.login && user.id === id);
     if (!opponent) {
       const ret = await axios.get(`/api/user?id=${id}`).then((payload: any) => {
-        setSearchs((value: any) => [payload.data, ...value]);
+        // setSearchs((value: any) => [payload.data, ...value]);
         return payload.data;
       });
       return ret;

@@ -1,9 +1,9 @@
 import { Bodies, Body, Vector } from 'matter-js';
 import { PadelType } from 'src/utils/GameEnums';
-import { GetBodySize } from '../common/utils/matter-js';
+import { GetBodySize, rotateBody } from '../common/utils/matter-js';
 import { PlayerMove } from '../Players/APlayer';
 
-export type PadelMaker = (size: number) => Body;
+export type PadelMaker = (size: number, side : PlayerMove) => Body;
 
 function createTriangle(length) {
   const vertices = [
@@ -61,13 +61,18 @@ function makeHalfCircle(size: number): Body {
   // return base;
 }
 
-function makeKhobza(size: number): Body {
+function makeKhobza(size: number, side:PlayerMove): Body {
   const base = makeSimple(size);
   const partOfCircle = createPartOfCircle(size / 1.3, -40, 40);
   const baseSize = GetBodySize(base),
     hcSize = GetBodySize(partOfCircle);
   const pos = Vector.create(baseSize.x / 2 + hcSize.x / 2 - 1, 0);
-  Body.setPosition(partOfCircle, pos);
+  if (side == PlayerMove.Right) {
+    rotateBody(partOfCircle, Math.PI / 2)
+    Body.setPosition(partOfCircle, Vector.create(-pos.x, pos.y));
+  }
+  else
+    Body.setPosition(partOfCircle, pos);
   return Body.create({ parts: [base, partOfCircle] });
 }
 
@@ -77,8 +82,7 @@ export class PadelFactory {
 
   public static getPadel(padelType: PadelType, side: PlayerMove): Body {
     if (!this.makers.get(padelType)) throw Error('Padel creator unsupported');
-    const body = this.makers.get(padelType)(this.defaultPadelSize);
-    if (side == PlayerMove.Right) Body.rotate(body, Math.PI);
+    const body = this.makers.get(padelType)(this.defaultPadelSize, side);
     return body;
   }
 

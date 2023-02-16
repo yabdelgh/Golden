@@ -36,7 +36,6 @@ import { safeStringify } from 'src/utils/serialization';
 import { Player } from 'src/game/Core/Players/player';
 import { APlayer } from 'src/game/Core/Players/APlayer';
 import { ReliableExecution } from 'src/utils/ReliableExecution';
-import { isNumber } from 'class-validator';
 import { GameState } from 'src/game/Core/game';
 
 export class mySocket extends Socket {
@@ -613,18 +612,17 @@ export class ChatGateway
   @SubscribeMessage('getGameData')
   async getGameDataById(
     @ConnectedSocket() socket: mySocket,
-    @MessageBody() gameId: number = null,
+    @MessageBody() gameId?: number,
   ) {
-    console.log('game id', socket.user.gameId);
     ReliableExecution(5, 300, async () => {
-      if (!isNumber(gameId)) gameId = socket.user.gameId;
+      if (isNaN(gameId)) gameId = socket.user.gameId;
+      else gameId = parseInt(gameId + '')
       const game = this.gameService.getGame(gameId);
       if (game) {
         socket.join(`Game${game.id}`);
         const user1 = await this.userService.getUser(game.players[0].id);
         const user2 = await this.userService.getUser(game.players[1].id);
         const data = {
-          //get the user data from the socket by the player id
           playersData: game.players.map((p) => {
             return { id: p.id };
           }),

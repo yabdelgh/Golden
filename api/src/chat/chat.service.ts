@@ -51,6 +51,7 @@ export class ChatService {
       if (connectedUser !== undefined) {
         ele1.isOnline = connectedUser.isOnline;
         ele1.inGame = connectedUser.inGame;
+        ele1.gameId = connectedUser.gameId;
       } else {
         ele1.isOnline = false;
         ele1.inGame = false;

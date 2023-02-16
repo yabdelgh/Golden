@@ -101,6 +101,7 @@ const Game = () => {
     }
     return () => {
       socket.removeAllListeners("gameDataUpdate");
+      FrameId = 0;
     };
   }, [gameState]);
 
@@ -139,9 +140,6 @@ const Game = () => {
         (winner: { login: string; image: string | null }) => {
           setWinner(winner);
           setisWinnerOpen(true);
-          setUser((user: User) => {
-            return { ...user, inGame: false };
-          });
         }
       );
       socket.on("gameStarted", () => {
@@ -216,6 +214,10 @@ const Game = () => {
     return () => {
       if (render) {
         Render.stop(render)
+        Engine.clear(engine)
+        setRender(undefined);
+        setEngine(undefined);
+        console.log("render stopped")
       }
     };
   }, [render]);

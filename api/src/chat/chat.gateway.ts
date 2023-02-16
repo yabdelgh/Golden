@@ -564,6 +564,8 @@ export class ChatGateway
         .emit('gameOver', { login: winner.login, image: winner.imageUrl });
       socket.user.inGame = false;
       oppSock.user.inGame = false;
+      socket.readyToPlay = false;
+      oppSock.readyToPlay = false;
     });
   }
 

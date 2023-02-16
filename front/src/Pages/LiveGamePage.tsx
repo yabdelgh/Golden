@@ -53,6 +53,7 @@ const LiveGamePage = () => {
         }
       });
       socket.on("gameDataUpdate", (data: GameState) => {
+        console.log("got new data")
         if (FrameId <= data.id)
           gameDataqueue.queue(data);
       });
@@ -65,6 +66,7 @@ const LiveGamePage = () => {
   useEffect(() => {
     if (render) {
       socket.on("gameData", (serialized: any) => {
+        console.log("game Data received: ");
         const data: GameData = JSON.parse(serialized);
         const user1 = data.usersOfPlayers[0];
         const user2 = data.usersOfPlayers[1];
@@ -85,6 +87,7 @@ const LiveGamePage = () => {
         engine && Composite.add(engine.world, [...players, ...obstacles, ball]);
         setGameState({ players, obstacles, ball });
       });
+      console.log("gameId---->", gameId)
       socket.emit("getGameData", gameId);
       socket.on("gameOver", (winner: {login: string, image: string | null}) => {
         setWinner(winner);
@@ -115,7 +118,7 @@ const LiveGamePage = () => {
         element: divRef.current,
         engine: constEngine as Engine,
         options: {
-          width: 500,
+          width: 1000,
           height: 500,
           background: "black",
           wireframes: false,

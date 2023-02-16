@@ -1,5 +1,6 @@
 import { Box, Avatar, Text, Button } from "@chakra-ui/react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
@@ -9,9 +10,8 @@ type BlockUserDto = {
 };
 
 const ProfileBar = () => {
-  const { userProfile, user, blockedUsers, socket, setUserProfile } =
-    AppState();
-
+  const { userProfile, user, blockedUsers, socket, setUserProfile } = AppState();
+  const navigate = useNavigate();
   const BlockUser = async () => {
     socket.emit("blockUser", {
       blockedId: userProfile.id,
@@ -91,6 +91,9 @@ const ProfileBar = () => {
                   ? "Unblock"
                   : "Block"}
               </Button>
+              {userProfile && userProfile.inGame && <Button height="35px" onClick={() => navigate(`/live-game/${userProfile?.gameId}`)}>
+                {"Watch Game"}
+              </Button> }
             </Box>
           )}
           {/* <Box display='flex' width='40%' justifyContent={'space-around'}>

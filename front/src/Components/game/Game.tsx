@@ -107,8 +107,8 @@ const Game = () => {
   }, [gameState]);
 
   const countDownCallBack = () => {
-    socket.emit("startGame", {});
-  };
+    socket.emit("startGame");
+  }
 
   useEffect(() => {
     if (render) {
@@ -139,14 +139,11 @@ const Game = () => {
         engine && Composite.add(engine.world, [...players, ...obstacles, ball]);
         setGameState({ players, obstacles, ball });
       });
-      socket.emit("getGameData", {});
-      socket.on(
-        "gameOver",
-        (winner: { login: string; image: string | null }) => {
-          setWinner(winner);
-          setisWinnerOpen(true);
-        }
-      );
+      socket.emit("getGameData");
+      socket.on("gameOver", (winner: {login: string, image: string | null}) => {
+        setWinner(winner);
+        setisWinnerOpen(true);
+      });
       socket.on("gameStarted", () => {
         setIsCountDownOpen(false);
       });

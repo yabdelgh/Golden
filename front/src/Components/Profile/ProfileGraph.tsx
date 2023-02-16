@@ -53,7 +53,6 @@ export default function ProfileGraph({ wins, games }: any) {
       display="flex"
       flexDir="column"
       alignItems="center"
-      borderRadius="lg"
       justifyContent={"center"}
       bg="white"
     >

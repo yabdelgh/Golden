@@ -9,11 +9,12 @@ const ProfilePage = () => {
     <Box
       width={"100%"}
       display="grid"
+      // classNamdde="debug"
       gridTemplateColumns={{ base: "1fr", xl: "1fr 1fr" }}
       alignItems="stretch"
       gridAutoRows="minmax(400px, auto)"
-      gap="0.5rem"
-      p="8px"
+      gap="2px"
+      p="2px"
     >
       <ProfileBar />
       <ProfileHistory />

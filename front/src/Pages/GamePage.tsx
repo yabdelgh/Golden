@@ -15,7 +15,6 @@ const GamePage = () => {
   const [opponentType, setOpponentType] = useState("quick pairing");
 
   const send = () => {
-
     if (opponentType === 'Friend')
       socket.emit("challenge", {
         challengedId: opponent.id,

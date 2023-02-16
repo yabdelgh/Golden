@@ -39,7 +39,6 @@ const ProfileBar = () => {
       display="flex"
       flexDir="column"
       alignItems="center"
-      borderRadius="lg"
       justifyContent={"center"}
     >
       {userProfile && (

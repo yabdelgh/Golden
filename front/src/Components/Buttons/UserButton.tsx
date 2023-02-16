@@ -24,7 +24,7 @@ const UserButton = ({ user }: any) => {
         size="md"
         name={user ? user.login : ""}
       />
-      <Text fontWeight={"bold"} ml="5px" color='gray.500'>
+      <Text fontWeight={"bold"} ml="5px" color="gray.500">
         {user.login}
       </Text>
     </Button>

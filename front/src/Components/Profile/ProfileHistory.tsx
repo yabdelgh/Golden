@@ -51,12 +51,10 @@ const ProfileHistory = () => {
 
   return (
     <Box
-      borderRadius={"lg"}
       bg="white"
       display="flex"
       flexDir="column"
       alignItems="center"
-      maxHeight={"800px"}
       overflow="auto"
     >
       <Text

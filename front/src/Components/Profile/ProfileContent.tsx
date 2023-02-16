@@ -26,6 +26,7 @@ const ProfileContent = () => {
       flexWrap={"wrap"}
       justifyContent="space-between"
       height='100%'
+      className="debug"
     >
       <ProfilecontentBox>
         <ProfileGraph wins={overview?.Wins} games={overview?.Games} />

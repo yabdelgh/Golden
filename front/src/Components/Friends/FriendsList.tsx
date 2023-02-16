@@ -21,9 +21,9 @@ const FriendsList = () => {
       flexDir="column"
       // alignItems="center"
       gap="1rem"
-      borderRadius="lg"
       bg="white"
       p="1rem"
+      height={"100%"}
     >
       <Text
         // alignSelf={"flex-start"}

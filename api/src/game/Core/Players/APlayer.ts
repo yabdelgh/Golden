@@ -116,7 +116,7 @@ export abstract class APlayer {
 
     const buddelSizeY = GetBodySize(this.body).y;
     const gameSizeY = this.game_size.y;
-    const toDisplay = 4*buddelSizeY/10;
+    const toDisplay = (4 * buddelSizeY) / 10;
     if (y < -toDisplay) y = -toDisplay;
     if (y > gameSizeY + toDisplay) y = gameSizeY + toDisplay;
 

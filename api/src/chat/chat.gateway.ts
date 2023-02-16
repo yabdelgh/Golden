@@ -478,19 +478,18 @@ export class ChatGateway
       roomId: number;
     },
   ) {
-    console.log('kik', payload);
-
     const action: string = await this.roomService.leaveRoom(
       payload.userId,
       payload.roomId,
     );
-    socket.broadcast
-      .to(`room${payload.roomId}`)
-      .emit(action, { roomId: payload.roomId, userId: socket.user.id });
+    console.log(action);
     this.server
       .in(`${payload.userId}`)
       .emit('deleteRoom', { id: payload.roomId });
     this.server.in(`${payload.userId}`).socketsLeave(`room${payload.roomId}`);
+    this.server
+      .in(`room${payload.roomId}`)
+      .emit(action, { roomId: payload.roomId, userId: payload.userId });
   }
 
   @SubscribeMessage('challenge')
@@ -573,8 +572,6 @@ export class ChatGateway
     const [sock1, sock2] = await this.setInGame(socket, challengerId);
     await this.createGame(sock1, sock2);
   }
-
-
 
   @SubscribeMessage('quickPairing')
   async handleQuickPairing(@ConnectedSocket() socket: mySocket) {

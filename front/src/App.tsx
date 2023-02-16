@@ -39,6 +39,7 @@ function App() {
     setSearchs,
     setChallenges,
     setBlockedUsers,
+    selectedRoom,
     blockedUsers,
     user,
   } = AppState();
@@ -223,7 +224,14 @@ function App() {
           const index2 = rooms[index1].RoomUsers.findIndex(
             (object) => object.userId === payload.userId
           );
+          console.log(rooms[index1]);
           rooms[index1].RoomUsers.splice(index2, 1);
+          // setSelectedRoom((value: any) => {
+          //   console.log("removeremove");
+          //   if (value.id === rooms[index1].id) return { ...rooms[index1] };
+          //   return { ...value };
+          // });
+          // console.log(rooms[index1]);
           return [...rooms];
         });
       }
@@ -245,10 +253,9 @@ function App() {
     });
 
     socket.on("chatMsg", (payload: Msg) => {
-
-        setMsgs((value: Msg[]) => {
-          return [...value, payload];
-        });
+      setMsgs((value: Msg[]) => {
+        return [...value, payload];
+      });
       setRooms((value: Room[]) => {
         const ret = value.findIndex((ele: Room) => {
           return ele.id === payload.roomId;
@@ -391,7 +398,7 @@ function App() {
   if (!user) return <></>;
   else if (user.isFirstLogin) return <EditProfile />;
   return (
-    <Box className="App" padding="60px 0 0 70px">
+    <Box className="App" padding="60px 0 0 70px" minW={"700px"}>
       <Box
         position="fixed"
         zIndex="100"

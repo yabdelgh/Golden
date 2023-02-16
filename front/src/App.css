@@ -8,7 +8,7 @@
   background-color: 	#E9EBEE;
   font-family: 'work sans';
   user-select: none;
-  overflow: hidden;
+  overflow: auto;
 }
 *{
   -webkit-user-drag: none;
@@ -22,6 +22,7 @@
 /* width */
 ::-webkit-scrollbar {
   width: 0px;
+  display: none;
 }
 
 /* Track */

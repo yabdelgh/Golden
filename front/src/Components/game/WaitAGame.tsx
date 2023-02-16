@@ -24,8 +24,8 @@ const WaitAGame = () => {
       width="100%"
       height="100vh"
       bg="white"
-      mt="70px"
-      ml="72px"
+      mt="2px"
+      ml="2px"
     >
       <Box width="50%" minW='600px'>
         <Lottie options={defaultOptions} />

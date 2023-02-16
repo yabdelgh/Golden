@@ -36,17 +36,22 @@ const UsersList = () => {
         const ret = users.filter(
           (user: User) =>
             user.isOnline &&
-            selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id && ele.status !== 'ExMember')
+            selectedRoom.RoomUsers.some(
+              (ele: any) => ele.userId === user.id && ele.status !== "ExMember"
+            )
         );
         return ret.length;
       });
-      setOfflineCounter(() => {
-        const ret = users.filter(
-          (user: User) =>
-            !user.isOnline &&
-            selectedRoom.RoomUsers.some((ele: any) => ele.userId === user.id && ele.status !== 'ExMember')
-        );
-        return ret.length;})
+    setOfflineCounter(() => {
+      const ret = users.filter(
+        (user: User) =>
+          !user.isOnline &&
+          selectedRoom.RoomUsers.some(
+            (ele: any) => ele.userId === user.id && ele.status !== "ExMember"
+          )
+      );
+      return ret.length;
+    });
   }, [users, selectedRoom, rooms]);
 
   return (

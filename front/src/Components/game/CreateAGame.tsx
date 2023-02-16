@@ -11,8 +11,8 @@ const CreateAGame = ({opponentType, setOpenentType, setMap, setInvit, send }: an
     <Box
       height="100vh"
       width="100%"
-      mt='70px'
-      ml='73px'
+      mt='2px'
+      ml='2px'
       bg="white"
       display="flex"
       flexDir="column"

@@ -15,6 +15,7 @@ import {
   GameState,
   GameBodies,
   SocketGamePlayerMoveData,
+  User,
 } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import _ from "lodash";
@@ -37,7 +38,7 @@ const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let divRef: any = React.createRef();
 
-  const { user, users } = AppState();
+  const { user, users, setUser } = AppState();
   const [isWinnerOpen, setisWinnerOpen] = useState<boolean>(false);
   const [isCountDownOpen, setIsCountDownOpen] = useState<boolean>(true);
   const [winner, setWinner] = useState<{ login: string; image: string | null }>(
@@ -138,6 +139,9 @@ const Game = () => {
         (winner: { login: string; image: string | null }) => {
           setWinner(winner);
           setisWinnerOpen(true);
+          setUser((user: User) => {
+            return { ...user, inGame: false };
+          });
         }
       );
       socket.on("gameStarted", () => {

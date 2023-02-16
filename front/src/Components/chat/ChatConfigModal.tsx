@@ -35,11 +35,18 @@ const ChatConfigModal = ({ children }: any) => {
   const deleteRoom = () => {
     socket.emit("deleteRoom", selectedRoom);
   };
-  const updateRoom = () => {
+  const updateRoomName = () => {
     socket.emit("updateRoom", { id: selectedRoom.id, name: groupName });
   };
-  const leaveRoom = () => {
-    socket.emit("leaveRoom", { roomId: selectedRoom.id });
+  const updateRoomPassword = () => {
+    const access =
+      selectedRoom.access === "Public"
+        ? (selectedRoom.access = "Protected")
+        : selectedRoom.access;
+    socket.emit("updateRoom", { id: selectedRoom.id, password, access });
+  };
+  const removePassword = () => {
+    socket.emit("updateRoom", { id: selectedRoom.id, access: "Public" });
   };
 
   const closeModal = () => {
@@ -49,7 +56,7 @@ const ChatConfigModal = ({ children }: any) => {
   };
 
   const addFriendToGroup = () => {
-    console.log(password)
+    console.log(password);
     socket.emit("addUserToRoom", {
       roomId: selectedRoom.id,
       userId: friend.id,
@@ -73,7 +80,7 @@ const ChatConfigModal = ({ children }: any) => {
           <ModalBody>
             {selectedRoom.access === "Protected" && (
               <FormControl id="Password" isRequired mb={"20px"}>
-                <Box display='flex' mb='3px'>
+                <Box display="flex" mb="3px">
                   <FcIdea />
                   <Text>Please enter the password to make changes</Text>
                 </Box>
@@ -149,30 +156,41 @@ const ChatConfigModal = ({ children }: any) => {
                     fontSize="14px"
                     color="gray.500"
                     bg="#BAD1C2"
-                    onClick={(e) => updateRoom()}
+                    isDisabled={groupName.length < 4}
+                    onClick={(e) => updateRoomName()}
                   >
                     update
                   </Button>
                 </InputRightElement>
               </InputGroup>
             </FormControl>
-            <Button width="100%" mb="5px">
-              Make this group public
-            </Button>
-            <Button width="100%" mb="5px">
-              Make this group private
-            </Button>
-            <Button width="100%" mb="5px">
-              Make this group protected
-            </Button>
-            <Button
-              width="100%"
-              mb="5px"
-              bg="gray.300"
-              onClick={() => leaveRoom()}
-            >
-              leave the group
-            </Button>
+            <FormControl mb="5px">
+              <InputGroup mb="5px">
+                <Input
+                  placeholder="New Password"
+                  focusBorderColor="gray.200"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <InputRightElement width="5rem">
+                  <Button
+                    m="10px"
+                    height="75%"
+                    fontSize="14px"
+                    color="gray.500"
+                    bg="#BAD1C2"
+                    isDisabled={password.length < 4}
+                    onClick={(e) => updateRoomPassword()}
+                  >
+                    {selectedRoom.access === "Protected" ? "update" : "add"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            {selectedRoom.access === "Protected" && (
+              <Button width="100%" mb="5px" onClick={removePassword}>
+                Remove password
+              </Button>
+            )}
             <Button
               width="100%"
               mb="5px"

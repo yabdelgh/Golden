@@ -3,9 +3,14 @@ import { GiPingPongBat } from "react-icons/gi";
 import { AppState } from "../../Context/AppProvider";
 
 const ChallengeButton = ({ target, icon }: any) => {
-  const { user } = AppState();
+  const { user, socket } = AppState();
 
-  const challenge = () => {};
+  const challenge = () => {
+    socket.emit("challenge", {
+      challengedId: target.id,
+      map: 'default',
+    });
+  };
 
   const button = icon ? (
     <Button

@@ -93,6 +93,19 @@ const MoreButton = ({ target }: any) => {
           </Button>
           <Button
             width="100%"
+            borderRadius="0px"
+            bg="white"
+            onClick={() =>
+              socket.emit("kik", {
+                userId: target.id,
+                roomId: selectedRoom.id,
+              })
+            }
+          >
+            kik
+          </Button>
+          <Button
+            width="100%"
             bg="white"
             borderRadius="0px"
             borderBottomRadius="lg"

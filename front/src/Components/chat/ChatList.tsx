@@ -50,7 +50,6 @@ const ChatList = () => {
       height="100%"
       w={{ base: "290px", md: "360px" }}
       mr="2px"
-      borderRadius="8px 0 0 0"
     >
       <FormControl height="30px" width="96%" m="2%" mb="10px">
         <InputGroup>

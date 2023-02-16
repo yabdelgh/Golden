@@ -18,7 +18,7 @@ import { IoGameControllerOutline } from "react-icons/io5";
 import SearchModal from "./SearchModal";
 import { Drawer, DrawerContent } from "@chakra-ui/react";
 import Challenge from "./game/Challenge";
-import { AiOutlineEdit } from "react-icons/ai";
+import { RiUserSettingsLine } from "react-icons/ri";
 
 function DrawerExample() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -85,7 +85,8 @@ const ChatHeader = () => {
       height="60px"
       width="100%"
       display={user.login ? "flex" : "none"}
-      justifyContent="space-around"
+      justifyContent="space-between"
+      px={"2rem"}
       alignItems="center"
       position="fixed"
       minWidth={"700px"}
@@ -119,7 +120,7 @@ const ChatHeader = () => {
               bg="teal"
               color="white"
               size="md"
-              border='3px solid white'
+              border="3px solid white"
               cursor="pointer"
               name={user.login}
               src={user.imageUrl || "/defaultProfilePic.png"}
@@ -174,7 +175,8 @@ const ChatHeader = () => {
                   setOpenEditProfile(true);
                 }}
               >
-                edit profile <AiOutlineEdit size="20px" />
+                Settings
+                <RiUserSettingsLine size="20px" />
               </Button>
             </PopoverBody>
           </PopoverContent>

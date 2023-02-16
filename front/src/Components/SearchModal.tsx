@@ -52,6 +52,7 @@ const SearchModal = ({ children }: any) => {
           <FormControl height="30px" width="95%" margin="30px">
             <InputGroup>
               <Input
+                autoCorrect="off"
                 pl="60px"
                 focusBorderColor="gray"
                 height={"50px"}

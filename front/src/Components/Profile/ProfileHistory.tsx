@@ -56,6 +56,8 @@ const ProfileHistory = () => {
       display="flex"
       flexDir="column"
       alignItems="center"
+      maxHeight={"800px"}
+      overflow="auto"
     >
       <Text
         p="10px 0 30px 20px"

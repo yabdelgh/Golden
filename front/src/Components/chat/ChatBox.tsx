@@ -2,49 +2,45 @@ import {
   Avatar,
   AvatarBadge,
   Box,
-  Button,
   IconButton,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  PopoverArrow,
   Text,
 } from "@chakra-ui/react";
 import { AppState } from "../../Context/AppProvider";
 import { useState } from "react";
-import ChatConfigModal from "./ChatConfigModal";
 import { TfiFaceSmile } from "react-icons/tfi";
 import { BsFillMicFill } from "react-icons/bs";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { RoomUser } from "../../../types";
 import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import UserProfile from "../UserProfile";
 import UsersList from "./UsersList";
-import { ImUsers, ImUser } from "react-icons/im";
 import { errorToast } from "../../Utils/Toast";
+import ChatSettings from "./chatSettings";
+
 const ChatBox = () => {
   const {
     user,
     socket,
     users,
     selectedRoom,
-    setSelectedRoom,
     usersList,
-    setUsersList,
     msgs,
     showUP,
-    setShowUP,
     toast,
+    blockedUsers,
   } = AppState();
 
   const [msg, setMsg] = useState("");
-
+  const isBlocked = (userId: number): boolean => {
+    if (userId === user.id) return false;
+    return blockedUsers.some(
+      (u) => u.blockedId === userId || u.blockerId === userId
+    );
+  };
   const sendMessage = () => {
     const maxMsgSize = 100;
     const message = msg.trim();
@@ -61,6 +57,17 @@ const ChatBox = () => {
   };
 
   const isMuted = () => {
+    if (selectedRoom.isGroupChat === false) {
+      const chatUser: any = getUserByName(users, selectedRoom.name);
+
+      if (!chatUser) return true;
+      if (
+        blockedUsers.some(
+          (u) => u.blockedId === chatUser.id || u.blockerId === chatUser.id
+        )
+      )
+        return true;
+    }
     return selectedRoom.RoomUsers?.some(
       (ele: RoomUser) => ele.userId === user.id && ele.mute
     );
@@ -72,11 +79,6 @@ const ChatBox = () => {
     });
     if (!ret) return user.login;
     return ret.login;
-  };
-
-  const closeList = () => {
-    setUsersList(!usersList);
-    setShowUP(undefined);
   };
 
   const isMember = (userId: number): boolean => {
@@ -130,62 +132,7 @@ const ChatBox = () => {
               </Avatar>
               <Text ml="10px">{selectedRoom.name}</Text>
             </Box>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              width="90px"
-              mr="15px"
-              p="5px"
-            >
-              <Popover placement="left-start">
-                <PopoverTrigger>
-                  <Button variant={"unstyled"}>
-                    <BsThreeDotsVertical size="25px" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent width="160px">
-                  <PopoverArrow />
-                  <PopoverBody>
-                    <ChatConfigModal>
-                      <Button variant="unstyled" width="100%">
-                        settings
-                      </Button>
-                    </ChatConfigModal>
-                    <Button
-                      onClick={() => {
-                        setShowUP(undefined);
-                        setSelectedRoom(undefined);
-                      }}
-                      variant={"unstyled"}
-                      width="100%"
-                    >
-                      close this chat
-                    </Button>
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
-              <IconButton
-                variant={"ghost"}
-                aria-label="Member List"
-                className="md-disabled"
-                onClick={() => {
-                  selectedRoom.isGroupChat
-                    ? closeList()
-                    : setShowUP((value: any) => {
-                        if (value) return undefined;
-                        else return getUserByName(users, selectedRoom.name);
-                      });
-                }}
-                icon={
-                  selectedRoom.isGroupChat ? (
-                    <ImUsers size="22px" />
-                  ) : (
-                    <ImUser size="22px" />
-                  )
-                }
-              />
-            </Box>
+            <ChatSettings />
           </Box>
           <Box
             width="100%"
@@ -209,35 +156,37 @@ const ChatBox = () => {
             >
               <Box width="100%" height="calc(100% - 70px)" overflow={"hidden"}>
                 {msgs.length !== 0 &&
-                  msgs.map((msg: any) => {
-                    if (msg.roomId === selectedRoom.id)
-                      return (
-                        <Box
-                          key={msg.id}
-                          pl="30px"
-                          color="gray"
-                          fontWeight="bold"
-                          pt="20px"
-                          pr="30px"
-                        >
-                          <Box display="flex" alignItems="center">
-                            <Text
-                              fontSize="15px"
-                              fontWeight="bolder"
-                              color="black"
-                            >
-                              {getUserName(msg.userId)}
-                            </Text>
-                            <Text fontSize="12px" color="gray.400" ml="3px">
-                              {isMember(msg.userId) ? "" : "(ExMember)"}
-                            </Text>
-                            <Text pl="7px">{msg.createdAt}</Text>
+                  msgs
+                    .filter((msg) => !isBlocked(msg.userId))
+                    .map((msg: any) => {
+                      if (msg.roomId === selectedRoom.id)
+                        return (
+                          <Box
+                            key={msg.id}
+                            pl="30px"
+                            color="gray"
+                            fontWeight="bold"
+                            pt="20px"
+                            pr="30px"
+                          >
+                            <Box display="flex" alignItems="center">
+                              <Text
+                                fontSize="15px"
+                                fontWeight="bolder"
+                                color="black"
+                              >
+                                {getUserName(msg.userId)}
+                              </Text>
+                              <Text fontSize="12px" color="gray.400" ml="3px">
+                                {isMember(msg.userId) ? "" : "(ExMember)"}
+                              </Text>
+                              <Text pl="7px">{msg.createdAt}</Text>
+                            </Box>
+                            {msg.msg}
                           </Box>
-                          {msg.msg}
-                        </Box>
-                      );
-                    else return undefined;
-                  })}
+                        );
+                      else return undefined;
+                    })}
               </Box>
               <InputGroup
                 display="flex"

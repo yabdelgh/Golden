@@ -39,6 +39,7 @@ function App() {
     setSearchs,
     setChallenges,
     setBlockedUsers,
+    blockedUsers,
     user,
   } = AppState();
   const navigate = useNavigate();
@@ -105,9 +106,11 @@ function App() {
       setUsers(payload);
     });
     socket.on("blockedUsers", (payload: any[]) => {
+      console.log("bb", payload);
       setBlockedUsers(payload);
     });
     socket.on("blockUser", (payload: BlockedUser) => {
+      setSearchs([]);
       setSearchs((value) =>
         value.filter((ele) => ele.id !== payload.blockerId)
       );
@@ -242,9 +245,10 @@ function App() {
     });
 
     socket.on("chatMsg", (payload: Msg) => {
-      setMsgs((value: Msg[]) => {
-        return [...value, payload];
-      });
+
+        setMsgs((value: Msg[]) => {
+          return [...value, payload];
+        });
       setRooms((value: Room[]) => {
         const ret = value.findIndex((ele: Room) => {
           return ele.id === payload.roomId;

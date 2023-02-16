@@ -1,4 +1,5 @@
 import { Box, Avatar, Text, Button } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { AppState } from "../../Context/AppProvider";
 import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
@@ -8,7 +9,8 @@ type BlockUserDto = {
 };
 
 const ProfileBar = () => {
-  const { userProfile, user, blockedUsers, socket } = AppState();
+  const { userProfile, user, blockedUsers, socket, setUserProfile } =
+    AppState();
 
   const BlockUser = async () => {
     socket.emit("blockUser", {
@@ -21,6 +23,15 @@ const ProfileBar = () => {
       blockedId: userProfile.id,
     } as BlockUserDto);
   };
+
+  const isBlocked = (): boolean =>
+    blockedUsers.some(
+      (u) => u.blockedId === user.id || u.blockerId === user.id
+    );
+
+  useEffect(() => {
+    if (userProfile.id === user.id) setUserProfile(user);
+  }, [user]);
 
   return (
     <Box
@@ -41,13 +52,6 @@ const ProfileBar = () => {
             borderRadius="lg"
             justifyContent="center"
           >
-            {/* <Image
-            borderRadius="100%"
-            width="180px"
-            height="190px"
-            m="10px"
-            src={userProfile.imageUrl || "/defaultProfilePic.png"}
-          /> */}
             <Box width="13rem" height="13rem">
               <Avatar
                 shadow="xl"
@@ -56,8 +60,8 @@ const ProfileBar = () => {
                 color="white"
                 size="full"
                 cursor="pointer"
-                name={user.login}
-                src={user.imageUrl || "/defaultProfilePic.png"}
+                name={userProfile.login}
+                src={userProfile.imageUrl || "/defaultProfilePic.png"}
               />
             </Box>
             <Text fontSize="30px" color="gray.600">
@@ -66,8 +70,12 @@ const ProfileBar = () => {
           </Box>
           {userProfile.id !== user.id && (
             <Box display="flex" alignItems="center" gap="1rem">
-              <MessageButton target={userProfile} icon={false} />
-              <FriendButton target={userProfile} icon={false} />
+              {!isBlocked() && (
+                <>
+                  <MessageButton target={userProfile} icon={false} />
+                  <FriendButton target={userProfile} icon={false} />
+                </>
+              )}
               <Button
                 height="35px"
                 onClick={

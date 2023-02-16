@@ -1,4 +1,4 @@
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Box, Text, Avatar } from "@chakra-ui/react";
 import { AppState } from "../Context/AppProvider";
 import { Room, RoomUser } from "../../types";
 import ProfileButton from "./Buttons/ProfileButton";
@@ -23,21 +23,23 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
       alignItems="center"
       height="100%"
       width="100%"
-      minWidth='20rem'
+      minWidth="20rem"
       min-width="25rem"
       minHeight="400px"
       mt="10px"
     >
-      <Image
-        borderRadius="100%"
-        width="180px"
-        height="190px"
-        minHeight="190px"
-        bg="black"
-        m="10px"
-        mt="50px"
-        src={showUP?.imageUrl || "/defaultProfilePic.png"}
-      />
+      <Box width="13rem" height="13rem">
+        <Avatar
+          shadow="xl"
+          fontSize="9xl"
+          bg="chakra-placeholder-color"
+          color="white"
+          size="full"
+          cursor="pointer"
+          name={showUP.login}
+          src={showUP?.imageUrl || "/defaultProfilePic.png"}
+        />
+      </Box>
       <Text fontSize="30px" color="gray.600">
         {showUP.login}
       </Text>

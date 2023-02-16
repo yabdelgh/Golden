@@ -94,7 +94,6 @@ const EditProfile = () => {
           imageUrl: imageUrl,
           isFirstLogin: false,
         });
-
         handleClose();
       }
     } catch (error) {

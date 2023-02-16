@@ -4,9 +4,13 @@ import * as cookieParser from 'cookie-parser';
 import { AuthenticatedSocketIoAdapter } from './AuthenticatedSocketIoAdapter';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const configService = app.get(ConfigService);
+
   app.setGlobalPrefix('api');
 
   // validation
@@ -14,7 +18,7 @@ async function bootstrap() {
 
   // enable cors
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: configService.get("FRONT_HOST"),
     credentials: true,
   });
 

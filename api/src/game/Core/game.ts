@@ -149,8 +149,8 @@ export class Game {
     Composite.add(this.world, this._ball);
     Events.on(this.engine, 'collisionEnd', (event) => {
       this.update_game_score(event.pairs);
-      const x = this._ball.velocity.x * 1.02;
-      const y = this._ball.velocity.y * 1.02;
+      const x = this._ball.velocity.x * 1.05;
+      const y = this._ball.velocity.y * 1.05;
       Body.setVelocity(this._ball, Vector.create(x, y));
     });
   }
@@ -158,7 +158,8 @@ export class Game {
   private set_game_event() {
     Events.on(this.engine, 'afterUpdate', (event) => {
       this.emit_game_state(event, this.emiter);
-
+        if (this.ball.position.x > this.size.x || this.ball.position.x < 0 || this.ball.position.y > this.size.y || this.ball.position.y < 0)
+            this.set_ball_at_start(random.bool() ? PlayerMove.Left : PlayerMove.Right)
       // a bad solution to fix data race by reducing the fps
       if (this.frames % 10) {
         this.emit_game_state(event, this.webClientEvent);
@@ -192,9 +193,9 @@ export class Game {
       Vector.create(this._size.x / 2, random.real(50, this._size.y - 50)),
     );
     if (direction === PlayerMove.Left)
-      Body.setVelocity(this._ball, Vector.create(5, random.real(-5, 5)));
+      Body.setVelocity(this._ball, Vector.create(6, random.real(-5, 5)));
     else if (direction === PlayerMove.Right)
-      Body.setVelocity(this._ball, Vector.create(-5, random.real(-5, 5)));
+      Body.setVelocity(this._ball, Vector.create(-6, random.real(-5, 5)));
     this.emit_game_state({}, this.webClientEvent);
   }
 

@@ -111,7 +111,7 @@ export class GameService {
     });
     players.forEach((p) => (p.user.gameId = dbgame.id));
     const gamePlayers = this.create_players(players, padelType);
-    ArenaFactory.gameSize = Vector.create(500, 500)
+    ArenaFactory.gameSize = Vector.create(1000, 500)
     const game = new Game({
       id: dbgame.id,
       ball: Bodies.circle(0, 0, 10),

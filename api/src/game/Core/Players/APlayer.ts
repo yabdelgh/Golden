@@ -114,11 +114,12 @@ export abstract class APlayer {
         break;
     }
 
-    if (x < 50) x = 50;
-    if (x > 450) x = 450;
-    if (y < 0) y = 0;
-    if (y > 450) y = 450;
-    // console.log(x, y)
+    const buddelSizeY = GetBodySize(this.body).y;
+    const gameSizeY = this.game_size.y;
+    const toDisplay = 4*buddelSizeY/10;
+    if (y < -toDisplay) y = -toDisplay;
+    if (y > gameSizeY + toDisplay) y = gameSizeY + toDisplay;
+
     this.pos.y = y;
     this.pos.x = x;
     Body.setPosition(this.body, this.pos);

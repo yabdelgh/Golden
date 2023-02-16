@@ -46,17 +46,39 @@ const Game = () => {
   );
   // let engine:Engine
   // let render:Render
-
+  
   const { socket } = AppState();
   const [engine, setEngine]: any = useState();
   const [render, setRender]: any = useState();
   const [gameState, setGameState] = useState<GameBodies>();
-  const [avatar1, setAvatar1] = useState<string | null>(null);
-  const [avatar2, setAvatar2] = useState<string | null>(null);
-  const [name1, setName1] = useState<string | null>(null);
-  const [name2, setName2] = useState<string | null>(null);
-  const [score1, setScore1] = useState<number>(0);
-  const [score2, setScore2] = useState<number>(0);
+  const [ avatar1, setAvatar1 ] = useState<string|null>(null);
+  const [ avatar2, setAvatar2 ] = useState<string|null>(null);
+  const [ name1, setName1 ] = useState<string|null>(null);
+  const [ name2, setName2 ] = useState<string|null>(null);
+  const [ score1, setScore1 ] = useState<number>(0);
+  const [ score2, setScore2 ] = useState<number>(0);
+  const [ width, setWidth ] = useState<number>(window.innerWidth);
+  const [ height, setHeight ] = useState<number>(window.innerHeight);
+  
+  useEffect(() => {
+    const updateWindowDimensions = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", updateWindowDimensions);
+    return () => window.removeEventListener("resize", updateWindowDimensions);
+  }, []);
+
+
+  useEffect(() => {
+    if (render && engine) {
+      let scaleFactor = window.innerHeight * 0.6/500;
+      if (window.innerWidth < 2 * window.innerHeight) {
+        scaleFactor = window.innerWidth * 0.7/1000;
+      }
+      render.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
+    }
+  }, [width, height]);
 
   useEffect(() => {
     if (gameState) {
@@ -147,12 +169,18 @@ const Game = () => {
         element: divRef.current,
         engine: constEngine as Engine,
         options: {
-          width: 500,
+          width: 1000,
           height: 500,
           background: "black",
           wireframes: false,
         },
       });
+      let scaleFactor = window.innerHeight * 0.6/500;
+      if (window.innerWidth < 2 * window.innerHeight) {
+        scaleFactor = window.innerWidth * 0.7/1000;
+      }
+      constRender.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
+      constRender.canvas.style.transformOrigin = "top center";
       setRender(constRender);
       Render.run(constRender);
     
@@ -190,39 +218,39 @@ const Game = () => {
   }, [render]);
 
   return (
-    <>
-      <Box
-        width="80%"
-        height="100px"
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-        position="absolute"
-        top="100px"
-        left="50%"
-        transform="translateX(-50%)"
-      >
-        <PlayerScore
-          name={name1}
-          image={avatar1 || "/defaultProfilePic.png"}
-          score={score1}
-          isLeft={true}
-        />
-        <Box w="1px" h="60px" bgColor="gray.600" m="0 5px" />
-        <PlayerScore
-          name={name2}
-          image={avatar2 || "/defaultProfilePic.png"}
-          score={score2}
-          isLeft={false}
-        />
-      </Box>
-      <div className="canvas-container" style={{ marginTop: "300px" }}>
-        <div id="render" className="matter-canvas" ref={divRef} />
-      </div>
-      <CountDownModal isOpen={isCountDownOpen} callback={countDownCallBack} />
-      <WinnerModal winner={winner} isOpen={isWinnerOpen} />
-    </>
+    <Box
+      width="80%"
+      m="100px auto 0 auto"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+    <Box 
+      width="85%"
+      height="100px"
+      display="flex"
+      flexDirection="row"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <PlayerScore
+        name={name1}
+        image={avatar1 || "/defaultProfilePic.png"}
+        score={score1}
+        isLeft={true}
+      />
+      <Box w="1px" h="60px" bgColor="gray.600" m="0 5px"/>
+      <PlayerScore
+        name={name2}
+        image={avatar2 || "/defaultProfilePic.png"}
+        score={score2}
+        isLeft={false}
+      />
+    </Box>
+    <div id="render" ref={divRef} style={{marginTop: "50px"}} />
+    <CountDownModal isOpen={isCountDownOpen}  callback={countDownCallBack}/>
+    <WinnerModal winner={winner} isOpen={isWinnerOpen}/>
+    </Box>
   );
 };
 

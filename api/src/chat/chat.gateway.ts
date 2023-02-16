@@ -564,6 +564,7 @@ export class ChatGateway
     } else {
       arenaType = oppSock.arenaType ?? socket.arenaType ?? ArenaType.Simple;
     }
+    console.log("arenaType", arenaType)
     const game = await this.gameService.newSimpleGame([socket, oppSock], arenaType);
     await oppSock.join(`Game${game.id}`);
     await socket.join(`Game${game.id}`);
@@ -572,7 +573,7 @@ export class ChatGateway
     });
     game.subscribeGameEnd(async (data: GameState) => {
       let winner: any;
-      if (data.score[0] < data.score[1]) {
+      if (data.score[0] > data.score[1]) {
         winner = await this.userService.getUser(socket.user.id);
       } else {
         winner = await this.userService.getUser(oppSock.user.id);

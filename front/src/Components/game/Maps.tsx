@@ -21,19 +21,19 @@ const Maps = ({ setMap }: any) => {
     >
       <RadioEx {...getRadioProps({ value: "Simple" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
-          <Image src="defaultMap.png" width="130px" draggable={false} />
+          <Image src="simple.png" width="130px" draggable={false} />
           <Text>Simple</Text>
         </Box>
       </RadioEx>
       <RadioEx {...getRadioProps({ value: "Crazy" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
-          <Image src="defaultMap.png" width="130px" draggable={false} />
+          <Image src="crazy.png" width="130px" draggable={false} />
           <Text>Crazy</Text>
         </Box>
       </RadioEx>
       <RadioEx {...getRadioProps({ value: "Unpredictable" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
-          <Image src="defaultMap.png" width="130px" draggable={false} />
+          <Image src="unpredictable.png" width="130px" draggable={false} />
           <Text>Unpredictable</Text>
         </Box>
       </RadioEx>

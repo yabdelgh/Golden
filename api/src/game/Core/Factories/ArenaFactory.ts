@@ -8,13 +8,15 @@ export class ArenaFactory {
         let bodies: Body[] = []
         switch(arenaType) {
             case ArenaType.Simple:
-                return [];
+                break;
             case ArenaType.Crazy:
-                bodies = this.Arena2();
-            case ArenaType.Unpredictable:
                 bodies = this.Arena1();
+                break;
+            case ArenaType.Unpredictable:
+                bodies = this.Arena2();
+                break
         }
-        bodies[0].parts.forEach( p => {p.render.fillStyle = "white"});
+        bodies.forEach( b => b.parts.forEach( p => {p.render.fillStyle = "white"}));
         return bodies
     }
 

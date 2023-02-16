@@ -113,7 +113,6 @@ export class ChatGateway
     @ConnectedSocket() client: mySocket,
     @MessageBody() payload: chatMsgDto,
   ) {
-    // payload.roomId === user2id 'this is a tmp solution until creating a new chatmsgDto'
     const exist = await this.prismaService.chatRooms.findFirst({
       where: {
         name: '',
@@ -316,6 +315,7 @@ export class ChatGateway
     @ConnectedSocket() socket: mySocket,
     @MessageBody() payload: BanDto,
   ) {
+    console.log(payload);
     const ret = await this.roomService.banUser(
       socket.user.id,
       payload.roomId,
@@ -467,6 +467,30 @@ export class ChatGateway
       .emit(action, { roomId: payload.roomId, userId: socket.user.id });
     socket.emit('deleteRoom', { id: payload.roomId });
     socket.leave(`room${payload.roomId}`);
+  }
+
+  @SubscribeMessage('kik')
+  async kikUser(
+    @ConnectedSocket() socket: mySocket,
+    @MessageBody()
+    payload: {
+      userId: number;
+      roomId: number;
+    },
+  ) {
+    console.log('kik', payload);
+
+    const action: string = await this.roomService.leaveRoom(
+      payload.userId,
+      payload.roomId,
+    );
+    socket.broadcast
+      .to(`room${payload.roomId}`)
+      .emit(action, { roomId: payload.roomId, userId: socket.user.id });
+    this.server
+      .in(`${payload.userId}`)
+      .emit('deleteRoom', { id: payload.roomId });
+    this.server.in(`${payload.userId}`).socketsLeave(`room${payload.roomId}`);
   }
 
   @SubscribeMessage('challenge')

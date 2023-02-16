@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -35,7 +36,7 @@ export class MuteDto {
   userId: number;
   @IsNumber()
   roomId: number;
-  @IsNumber()
+  @IsBoolean()
   value: boolean;
 }
 
@@ -44,7 +45,7 @@ export class BanDto {
   userId: number;
   @IsNumber()
   roomId: number;
-  @IsNumber()
+  @IsBoolean()
   value: boolean;
 }
 

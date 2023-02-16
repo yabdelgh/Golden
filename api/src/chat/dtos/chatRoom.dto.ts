@@ -4,8 +4,9 @@ export class chatRoomDto {
   @IsNumber()
   id: number;
 
+  @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsOptional()
   @IsString()

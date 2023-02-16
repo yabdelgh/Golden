@@ -186,7 +186,14 @@ export class UserService {
   async getBlockedUsers(blockerId: number) {
     const users = await this.prisma.blockedUser.findMany({
       where: {
-        blockerId,
+        OR: [
+          {
+            blockerId,
+          },
+          {
+            blockedId: blockerId,
+          },
+        ],
       },
       select: {
         blockerId: true,

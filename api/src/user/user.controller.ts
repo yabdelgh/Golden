@@ -72,7 +72,7 @@ export class UserController {
       ...data,
       file: undefined,
       imageUrl: imageUrl
-        ? `${process.env.BACKEND_HOST || 'http:://localhost:3333'}/${
+        ? `${process.env.BACK_HOST || 'http://localhost:3333'}/${
             imageUrl.filename
           }`
         : undefined,

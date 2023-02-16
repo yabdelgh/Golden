@@ -561,6 +561,10 @@ export class ChatGateway
       this.server
         .in(`Game${game.id}`)
         .emit('gameOver', { login: winner.login, image: winner.imageUrl });
+      socket.user.inGame = false;
+      oppSock.user.inGame = false;
+      socket.readyToPlay = false;
+      oppSock.readyToPlay = false;
     });
   }
 

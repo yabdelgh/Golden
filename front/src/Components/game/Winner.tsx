@@ -1,7 +1,9 @@
 import { Box, Button, Image, Text } from "@chakra-ui/react";
 import { AiOutlineHome } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { AppState } from "../../Context/AppProvider";
 import React from "react";
+import { User } from "../../../types";
 
 interface WinnerProps {
   login: string;
@@ -10,6 +12,14 @@ interface WinnerProps {
 
 const Winner = ({login, image} : WinnerProps) => {
   const navigate = useNavigate();
+  const {setUser} = AppState();
+  
+  const myNavigate = (path: string) => {
+    setUser((user: User) => {
+      return { ...user, WaitingAGame: false, inGame: false };
+    });
+    navigate(path);
+  };
 
   return (
     <Box
@@ -39,12 +49,12 @@ const Winner = ({login, image} : WinnerProps) => {
       <Text fontSize='20pt' p='.5rem'>{login}</Text>
       <Box w='30%' display='flex' justifyContent='space-between' m='2rem'>
         <Button width='85%' color='#ffffff' bgColor='#a9c45b'
-          onClick={() => navigate('/game')}
+          onClick={() => myNavigate('/game')}
         >
           Play Again
         </Button>
         <Button width='10%' color='#ffffff' bgColor='#a9c45b' ml='0.3rem' p='0.5rem'
-          onClick={() => navigate('/profile')}
+          onClick={() => myNavigate('/profile')}
         >
           <AiOutlineHome size={100}/>
         </Button>

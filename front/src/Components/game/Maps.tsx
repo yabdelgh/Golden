@@ -4,7 +4,7 @@ import RadioEx from "../RadioEx";
 const Maps = ({ setMap }: any) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "Maps",
-    defaultValue: "default",
+    defaultValue: "Simple",
     onChange: setMap,
   });
 
@@ -19,22 +19,22 @@ const Maps = ({ setMap }: any) => {
       borderRadius="lg"
       justifyContent="space-around"
     >
-      <RadioEx {...getRadioProps({ value: "default" })}>
+      <RadioEx {...getRadioProps({ value: "Simple" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
-          <Image src="defaultMap.png" width="130px" draggable={false} />
-          <Text>default</Text>
+          <Image src="simple.png" width="130px" draggable={false} />
+          <Text>Simple</Text>
         </Box>
       </RadioEx>
-      <RadioEx {...getRadioProps({ value: "pyramids" })}>
+      <RadioEx {...getRadioProps({ value: "Crazy" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
-          <Image src="defaultMap.png" width="130px" draggable={false} />
-          <Text>Pyramids</Text>
+          <Image src="crazy.png" width="130px" draggable={false} />
+          <Text>Crazy</Text>
         </Box>
       </RadioEx>
-      <RadioEx {...getRadioProps({ value: "squares" })}>
+      <RadioEx {...getRadioProps({ value: "Unpredictable" })}>
         <Box display={"flex"} flexDir="column" alignItems={"center"}>
-          <Image src="defaultMap.png" width="130px" draggable={false} />
-          <Text>Squares</Text>
+          <Image src="unpredictable.png" width="130px" draggable={false} />
+          <Text>Unpredictable</Text>
         </Box>
       </RadioEx>
     </HStack>

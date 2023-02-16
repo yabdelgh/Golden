@@ -15,6 +15,7 @@ import {
   GameState,
   GameBodies,
   SocketGamePlayerMoveData,
+  User,
 } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import _ from "lodash";
@@ -33,12 +34,11 @@ const gameDataqueue = new PriorityQueue<GameState>({
   },
 });
 let FrameId = 0;
-let show = true;
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let divRef: any = React.createRef();
 
-  const { user, users } = AppState();
+  const { user, users, setUser } = AppState();
   const [isWinnerOpen, setisWinnerOpen] = useState<boolean>(false);
   const [isCountDownOpen, setIsCountDownOpen] = useState<boolean>(true);
   const [winner, setWinner] = useState<{ login: string; image: string | null }>(
@@ -101,6 +101,8 @@ const Game = () => {
     }
     return () => {
       socket.removeAllListeners("gameDataUpdate");
+      gameDataqueue.clear();
+      FrameId = 0;
     };
   }, [gameState]);
 
@@ -213,6 +215,10 @@ const Game = () => {
     return () => {
       if (render) {
         Render.stop(render)
+        Engine.clear(engine)
+        setRender(undefined);
+        setEngine(undefined);
+        console.log("render stopped")
       }
     };
   }, [render]);

@@ -24,7 +24,7 @@ import { BsCardImage } from "react-icons/bs";
 const updatUserSchema = z.object({
   login: z.string().min(3).max(20),
   email: z.string().email(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.string().url().default("/defaultProfilePic.png"),
 });
 
 const EditProfile = () => {
@@ -86,7 +86,7 @@ const EditProfile = () => {
       const formData = new FormData();
       formData.append("login", login);
       if (file) formData.append("imageUrl", file);
-      const res = await axios.patch("http://localhost:3333" + "/api/user/update", formData, {
+      const res = await axios.patch(process.env.REACT_APP_BACK_HOST + "/api/user/update", formData, {
         withCredentials: true,
       });
       if (res.status === 200) {

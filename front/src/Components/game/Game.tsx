@@ -228,8 +228,9 @@ const Game = () => {
 
   return (
     <Box
-      width="80%"
-      m="100px auto 0 auto"
+      width="100%"
+      bg='white'
+      m="2px 0 0 2px"
       display="flex"
       flexDirection="column"
       alignItems="center"

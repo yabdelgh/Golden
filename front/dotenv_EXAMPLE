@@ -1,2 +1,2 @@
-REACT_APP_BACK_HOST="http://localhost:3333"
-REACT_APP_FRONT_HOST="http://localhost:3000"
+REACT_APP_BACK_HOST="http://10.11.12.4:3333"
+REACT_APP_FRONT_HOST="http://10.11.12.4:3000"

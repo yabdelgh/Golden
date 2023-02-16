@@ -64,7 +64,7 @@ export class ShapeFactory {
         options.startAngle = -90
         options.endAngle = 90
         const b = this.makePartOfCircle(options)
-        options.rotation && Body.rotate(b, options.rotation)
+        options.rotation && rotateBody(b, options.rotation)
         return b
     }
 

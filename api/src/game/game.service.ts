@@ -81,7 +81,7 @@ export class GameService {
     // should create a padel factory and use it like that: PadelFactory.create(padelType): body
     return players.map((player, idx) => {
       const padel = PadelFactory.getPadel(
-        padelType,
+        PadelType.Khobza,
         idx == 0 ? PlayerMove.Left : PlayerMove.Right,
       );
       console.log('player-socket', player.user);

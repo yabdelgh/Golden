@@ -6,9 +6,11 @@ import {
   Res,
   Post,
   Body,
+  UseFilters,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { AuthFilter } from './auth.filter';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { Passport42AuthGuard } from './guards/passport42.guard';
@@ -35,6 +37,7 @@ export class AuthController {
 
   @Get('42/callback')
   @UseGuards(Passport42AuthGuard)
+  @UseFilters(AuthFilter)
   async callback(@Req() req, @Res() res) {
     return this.authService.callback(req.user, res);
   }

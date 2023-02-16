@@ -33,7 +33,6 @@ const gameDataqueue = new PriorityQueue<GameState>({
   },
 });
 let FrameId = 0;
-let show = true;
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let divRef: any = React.createRef();

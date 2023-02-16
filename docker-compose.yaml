@@ -21,6 +21,8 @@ services:
       - "5555:5555"
     depends_on:
       - db
+    volumes:
+      - uploads:/app/uploads
   
   front:
     container_name: front
@@ -35,5 +37,11 @@ volumes:
     driver: local
     driver_opts:
       device: ${HOME}/postgres
+      o: bind
+      type: none
+  uploads:
+    driver: local
+    driver_opts:
+      device: ${HOME}/uploads
       o: bind
       type: none

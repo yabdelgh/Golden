@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # run migrations
-yarn prisma migrate dev --name init
+yarn prisma migrate dev --name init --force
 
 # generate prisma client
 yarn prisma generate

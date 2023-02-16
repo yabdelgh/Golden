@@ -3,6 +3,7 @@ import { Bodies, Vector } from 'matter-js';
 import { mySocket } from 'src/chat/chat.gateway';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PadelType } from 'src/utils/GameEnums';
+import { ArenaFactory } from './Core/Factories/ArenaFactory';
 import { PadelFactory } from './Core/Factories/PadelFactory';
 import { Game, GameState } from './Core/game';
 import { APlayer, PlayerMove } from './Core/Players/APlayer';
@@ -110,12 +111,13 @@ export class GameService {
     });
     players.forEach((p) => (p.user.gameId = dbgame.id));
     const gamePlayers = this.create_players(players, padelType);
+    ArenaFactory.gameSize = Vector.create(500, 500)
     const game = new Game({
       id: dbgame.id,
       ball: Bodies.circle(0, 0, 10),
       players: gamePlayers,
-      obstacles: [],
       size: Vector.create(1000, 500),
+      obstacles: ArenaFactory.getArena(),
       scale: 1,
     });
     this.games.set(game.id, game);

@@ -41,7 +41,7 @@ export class Game {
   private _size: Vector;
   private _score: number[];
   private status: GameStatus = GameStatus.Initiating;
-  private rounds = 5;
+  private rounds = 60000;
   private _padel_gap = 10;
   private remaining_rounds = 0;
   private _engine: Engine;

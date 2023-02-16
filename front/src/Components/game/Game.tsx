@@ -114,6 +114,7 @@ const Game = () => {
     if (render) {
       socket.on("gameData", (serialized: any) => {
         const data: GameData = JSON.parse(serialized);
+        console.log(data);
         const user1 = data.usersOfPlayers[0];
         const user2 = data.usersOfPlayers[1];
         setName1(user1.login);
@@ -123,13 +124,16 @@ const Game = () => {
         const players = data.players.map((p) => {
           const clearP = removeNulls(p);
           if (clearP.parts.length > 0)
-            clearP.parts = (clearP.parts as Body[]).map((part) =>
-              Body.create(part)
-            );
-          return Body.create(clearP);
-        });
-        const obstacles = data.obstacles.map((o) =>
-          Body.create(removeNulls(o))
+            clearP.parts =  (clearP.parts as Body[]).map(part => Body.create(part))
+          return Body.create(clearP)
+      });
+        const obstacles = data.obstacles.map((o) => {
+          const clearP = removeNulls(o)
+          if (clearP.parts.length > 0)
+            clearP.parts =  (clearP.parts as Body[]).map(part => Body.create(part))
+          return Body.create(clearP)
+        }
+          // Body.create(removeNulls(o))
         );
         const ball = Body.create(removeNulls(data.ball));
         engine && Composite.add(engine.world, [...players, ...obstacles, ball]);
@@ -175,6 +179,8 @@ const Game = () => {
           height: 500,
           background: "black",
           wireframes: false,
+          // showDebug:true,
+          // showAxes:true,
         },
       });
       let scaleFactor = window.innerHeight * 0.6/500;

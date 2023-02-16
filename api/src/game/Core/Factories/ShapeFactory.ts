@@ -72,8 +72,9 @@ export class ShapeFactory {
         options.raduis = options.height / 2
         options.width -= options.height
         const hcr = this.makeHalfCircle(options)
-        const hcl = this.makeHalfCircle(options)
-        Body.rotate(hcl, Math.PI / 2);
+        options.startAngle = -270
+        options.endAngle = -90
+        const hcl = this.makePartOfCircle(options)
         const rec = this.makeRectangle(options)
         const recSize = GetBodySize(rec)
         const hclSize = GetBodySize(hcl)

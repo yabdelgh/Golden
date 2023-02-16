@@ -81,7 +81,7 @@ export class GameService {
     // should create a padel factory and use it like that: PadelFactory.create(padelType): body
     return players.map((player, idx) => {
       const padel = PadelFactory.getPadel(
-        PadelType.Simple, // zobad
+        padelType,
         idx == 0 ? PlayerMove.Left : PlayerMove.Right,
       );
       console.log('player-socket', player.user);
@@ -94,7 +94,7 @@ export class GameService {
   }
 
   newSimpleGame(players: mySocket[], arenaType : ArenaType): Promise<Game> {
-    return this.newGame(players, PadelType.Simple, arenaType);
+    return this.newGame(players, PadelType.Khobza, arenaType);
   }
 
   async newGame(

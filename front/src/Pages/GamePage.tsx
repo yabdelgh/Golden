@@ -9,7 +9,7 @@ import { User } from "../../types";
 
 const GamePage = () => {
   const { user, setUser, socket} = AppState();
-  const [map, setMap] = useState("default");
+  const [map, setMap] = useState("Simple");
   const [invit, setInvit] = useState(false);
   const [opponent, setOpponent]: any = useState({});
   const [opponentType, setOpponentType] = useState("quick pairing");
@@ -22,7 +22,7 @@ const GamePage = () => {
       });
     else { 
       setUser((value: User) => ({...value, WaitingAGame: true}));
-      socket.emit('quickPairing');
+      socket.emit('quickPairing', {map: map});
     }
   };
 

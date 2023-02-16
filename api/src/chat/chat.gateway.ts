@@ -31,16 +31,18 @@ import { chatRoomDto } from './dtos/chatRoom.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameService } from 'src/game/game.service';
 import { MatchMakerQueue } from 'src/utils/MatchMakerQueue';
-import { MoveStat, SocketGamePlayerMoveData } from 'src/utils/GameEnums';
+import { ArenaType, MoveStat, SocketGamePlayerMoveData } from 'src/utils/GameEnums';
 import { safeStringify } from 'src/utils/serialization';
 import { Player } from 'src/game/Core/Players/player';
 import { APlayer } from 'src/game/Core/Players/APlayer';
 import { ReliableExecution } from 'src/utils/ReliableExecution';
 import { GameState } from 'src/game/Core/game';
+import { Random } from 'random-js';
 
 export class mySocket extends Socket {
   user?: UserDto;
   readyToPlay = false;
+  arenaType = ArenaType.Simple;
 }
 
 @WebSocketGateway({
@@ -503,6 +505,12 @@ export class ChatGateway
   ) {
     const challenge = await this.gameService.challenge(socket.user.id, payload);
     if (!challenge) return new WsException('Ambiguous credentials');
+    if (payload.map === 'Crazy')
+      socket.arenaType = ArenaType.Crazy;
+    else if (payload.map === 'Unpredictable')
+      socket.arenaType = ArenaType.Unpredictable;
+    else
+      socket.arenaType = ArenaType.Simple;
     socket.emit('challenge', challenge);
     this.server.in(`${payload.challengedId}`).emit('challenge', challenge);
   }
@@ -549,7 +557,14 @@ export class ChatGateway
   }
 
   private async createGame(socket: mySocket, oppSock: mySocket) {
-    const game = await this.gameService.newSimpleGame([socket, oppSock]);
+    let arenaType: ArenaType = ArenaType.Simple;
+    const random = new Random();
+    if (random.bool()) {
+      arenaType = socket.arenaType ?? oppSock.arenaType ?? ArenaType.Simple;
+    } else {
+      arenaType = oppSock.arenaType ?? socket.arenaType ?? ArenaType.Simple;
+    }
+    const game = await this.gameService.newSimpleGame([socket, oppSock], arenaType);
     await oppSock.join(`Game${game.id}`);
     await socket.join(`Game${game.id}`);
     game.subscribeWebClient((data: GameState) => {
@@ -582,7 +597,13 @@ export class ChatGateway
   }
 
   @SubscribeMessage('quickPairing')
-  async handleQuickPairing(@ConnectedSocket() socket: mySocket) {
+  async handleQuickPairing(@ConnectedSocket() socket: mySocket, @MessageBody('map') map?: string) {
+    if (map === 'Crazy')
+      socket.arenaType = ArenaType.Crazy;
+    else if (map === 'Unpredictable')
+      socket.arenaType = ArenaType.Unpredictable;
+    else
+      socket.arenaType = ArenaType.Simple;
     this.matchMaker.subscribe(Number(socket.user.id));
     const pairing = this.matchMaker.pairing();
     if (pairing) {

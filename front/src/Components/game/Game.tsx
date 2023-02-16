@@ -101,6 +101,7 @@ const Game = () => {
     }
     return () => {
       socket.removeAllListeners("gameDataUpdate");
+      gameDataqueue.clear();
       FrameId = 0;
     };
   }, [gameState]);

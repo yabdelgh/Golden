@@ -28,11 +28,11 @@ const ProfileButton = ({ target, icon }: any) => {
     </Button>
   ) : (
     <Button
-      bg="teal"
-      height="35px"
+      bg="gray.100"
+      height="40px"
       onClick={() => profile()}
     >
-      profile
+      profile 
     </Button>
   );
   return button;

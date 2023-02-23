@@ -79,7 +79,6 @@ export abstract class APlayer {
 
     public get goal(): Body {
         if (!this._goal) {
-            console.log("left side", PlayerMove.Left, this._player_side)
             if (this._player_side == PlayerMove.Left)
                 this._goal = Bodies.rectangle(0, this._game_size.y / 2, 1, this._game_size.y)
             else
@@ -117,7 +116,6 @@ export abstract class APlayer {
             y = 0
         if (y > 450)
             y = 450
-        // console.log(x, y)
         this.pos.y = y
         this.pos.x = x
         Body.setPosition(this.body, this.pos)

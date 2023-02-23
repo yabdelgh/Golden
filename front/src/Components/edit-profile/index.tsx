@@ -77,7 +77,6 @@ const EditProfile = () => {
       });
     } catch (e) {
       const err = e as z.ZodError;
-      console.log(e);
       errorToast(toast, err.issues[0].message);
       return;
     }
@@ -99,7 +98,6 @@ const EditProfile = () => {
         handleClose();
       }
     } catch (error) {
-      console.log(error);
     }
   };
 

@@ -28,8 +28,8 @@ const ChallengeButton = ({ target, icon }: any) => {
     </Button>
   ) : (
     <Button
-      bg="teal"
-      height="35px"
+      bg="gray.100"
+      height="40px"
       display={user.id === target.id ? "none" : "flex"}
       onClick={() => challenge()}
     >

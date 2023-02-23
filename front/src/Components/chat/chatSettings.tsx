@@ -45,10 +45,6 @@ const ChatSettings = () => {
     );
   };
 
-  useEffect(() => {
-    console.log("selectedRoom", selectedRoom);
-  }, [selectedRoom]);
-
   return (
     <Box
       display="flex"

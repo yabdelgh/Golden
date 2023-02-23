@@ -114,7 +114,6 @@ const Game = () => {
     if (render) {
       socket.on("gameData", (serialized: any) => {
         const data: GameData = JSON.parse(serialized);
-        console.log(data);
         const user1 = data.usersOfPlayers[0];
         const user2 = data.usersOfPlayers[1];
         setName1(user1.login);
@@ -148,7 +147,7 @@ const Game = () => {
         setIsCountDownOpen(false);
       });
     } else {
-      console.log("game data not received");
+      //console.log("game data not received");
     }
 
     return () => {
@@ -165,7 +164,6 @@ const Game = () => {
         gravity: Vector.create(0, 0),
       });
       setEngine(constEngine);
-      console.log("engine ", constEngine);
     }
     if (!render) {
       constRender = Render.create({
@@ -221,7 +219,6 @@ const Game = () => {
         Engine.clear(engine)
         setRender(undefined);
         setEngine(undefined);
-        console.log("render stopped")
       }
     };
   }, [render]);

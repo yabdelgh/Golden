@@ -56,7 +56,6 @@ const ChatConfigModal = ({ children }: any) => {
   };
 
   const addFriendToGroup = () => {
-    console.log(password);
     socket.emit("addUserToRoom", {
       roomId: selectedRoom.id,
       userId: friend.id,

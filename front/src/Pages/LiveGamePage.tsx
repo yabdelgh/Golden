@@ -53,7 +53,6 @@
 //         }
 //       });
 //       socket.on("gameDataUpdate", (data: GameState) => {
-//         console.log("got new data")
 //         if (FrameId <= data.id)
 //           gameDataqueue.queue(data);
 //       });
@@ -66,7 +65,6 @@
 //   useEffect(() => {
 //     if (render) {
 //       socket.on("gameData", (serialized: any) => {
-//         console.log("game Data received: ");
 //         const data: GameData = JSON.parse(serialized);
 //         const user1 = data.usersOfPlayers[0];
 //         const user2 = data.usersOfPlayers[1];
@@ -87,14 +85,12 @@
 //         engine && Composite.add(engine.world, [...players, ...obstacles, ball]);
 //         setGameState({ players, obstacles, ball });
 //       });
-//       console.log("gameId---->", gameId)
 //       socket.emit("getGameData", gameId);
 //       socket.on("gameOver", (winner: {login: string, image: string | null}) => {
 //         setWinner(winner);
 //         setisWinnerOpen(true);
 //       });
 //     } else {
-//       console.log("game data not received");
 //     }
 
 //     return () => {
@@ -111,7 +107,6 @@
 //         gravity: Vector.create(0, 0),
 //       });
 //       setEngine(constEngine);
-//       console.log("engine ", constEngine);
 //     }
 //     if (!render) {
 //       constRender = Render.create({
@@ -288,7 +283,6 @@ const LiveGamePage = () => {
     if (render) {
       socket.on("gameData", (serialized: any) => {
         const data: GameData = JSON.parse(serialized);
-        console.log(data);
         const user1 = data.usersOfPlayers[0];
         const user2 = data.usersOfPlayers[1];
         setName1(user1.login);
@@ -318,7 +312,6 @@ const LiveGamePage = () => {
         setisWinnerOpen(true);
       });
     } else {
-      console.log("game data not received");
     }
 
     return () => {
@@ -336,7 +329,6 @@ const LiveGamePage = () => {
         gravity: Vector.create(0, 0),
       });
       setEngine(constEngine);
-      console.log("engine ", constEngine);
     }
     if (!render) {
       constRender = Render.create({

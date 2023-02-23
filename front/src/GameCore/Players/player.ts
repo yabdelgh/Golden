@@ -23,7 +23,6 @@ export class Player extends APlayer {
     }
     
     public update_game_state(state: GameState): void {
-        // console.log("game state changed");
         // call the callback that will send the new state to the client
         this.follow_ball(state.ball);
     }

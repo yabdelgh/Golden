@@ -150,7 +150,7 @@ const ChatBox = () => {
               flexGrow={1}
               wordBreak="break-word"
               height="100%"
-              borderRadius="10px"
+              borderRadius="5px"
               bgColor="#BAD1C2"
               border="3px solid white"
             >

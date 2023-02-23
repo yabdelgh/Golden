@@ -17,24 +17,27 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
 
   return (
     <Box
+      pl='10px'
       display="flex"
       flexDir="column"
-      justifyContent="center"
-      alignItems="center"
+      // justifyContent="center"
+      // alignItems="center"
       height="100%"
       width="100%"
       minWidth="20rem"
       min-width="25rem"
       minHeight="400px"
       mt="10px"
+      // className="debug"
     >
-      <Box width="13rem" height="13rem">
+      <Box width="13rem" height="fit-content">
         <Avatar
           shadow="xl"
           fontSize="9xl"
           bg="chakra-placeholder-color"
           color="white"
-          size="full"
+          borderRadius='5px'
+          size="2xl"
           cursor="pointer"
           name={showUP.login}
           src={showUP?.imageUrl || "/defaultProfilePic.png"}
@@ -46,14 +49,16 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
       <Text fontSize="15px">{getRole(selectedRoom, showUP?.id)}</Text>
       <Box
         display="flex"
-        justifyContent="center"
-        m="30px"
-        width="350px"
+        // className="debug"
+        flexDir='column'
+        height={'85px'}
+        justifyContent="space-around"
+        width="90%"
         mt="50px"
       >
-        <ChallengeButton target={showUP} icon={true} />
-        <ProfileButton target={showUP} icon={true} />
-        {selectedRoom.isGroupChat && <MoreButton target={showUP} />}
+        <ChallengeButton target={showUP} icon={false} color={"gray"} />
+        <ProfileButton target={showUP} icon={false} />
+        {selectedRoom.isGroupChat && <MoreButton target={showUP} icon={ false } />}
       </Box>
     </Box>
   );

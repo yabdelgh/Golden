@@ -62,10 +62,11 @@ const UsersList = () => {
         justifyContent="space-between"
         width={"100%"}
       >
-        <FormControl height="30px" width="100%" margin="5px" mb="20px">
-          <InputGroup>
+      <FormControl height="50px" width="98%" m="1px 1% 10px 1%">
+        <InputGroup borderColor="#2E3035" bg="#2E3035" height="50px" borderRadius="5px">
             <Input
               placeholder="Search"
+              height="100%"
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
             />
@@ -73,7 +74,9 @@ const UsersList = () => {
               <IconButton
                 variant={"unstyled"}
                 aria-label="Search User"
-                icon={<BsSearch />}
+                color="gray.400"
+                pt='10px'
+                icon={<BsSearch/>}
               />
             </InputRightElement>
           </InputGroup>

@@ -34,7 +34,7 @@ const SearchModal = ({ children }: any) => {
   };
 
   return (
-    <Box width="50%">
+    <Box width="60%">
       {children ? <span onClick={onOpen}>{children}</span> : <></>}
       <Modal size="full" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

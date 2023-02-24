@@ -46,35 +46,40 @@ const ChatList = () => {
     <Box
       display="flex"
       flexDir="column"
-      bg="white"
+      bg="#2B2D31"
       height="100%"
-      w={{ base: "290px", md: "360px" }}
-      mr="2px"
+      minW="300px"
+      color='gray.400'
     >
-      <FormControl height="30px" width="96%" m="2%" mb="10px">
-        <InputGroup>
-          <Input placeholder="Search" />
-          <InputRightElement>
-            <IconButton
-              variant={"unstyled"}
-              aria-label="Search User"
-              icon={<BsSearch />}
-            />
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
       <CreateGroupModal>
         <Button
           m="2%"
-          mb="10px"
+          mt='5px'
+          mb="3px"
           leftIcon={<AiOutlineUsergroupAdd size="25px" />}
           width="96%"
+          height="50px"
+          bg="#2E3035"
+          borderRadius="5px"
         >
           <Text display="flex" width="fit-content">
             create new group
           </Text>
         </Button>
       </CreateGroupModal>
+      <FormControl height="50px" width="96%" m="1% 2% 10px 2%">
+        <InputGroup borderColor="#2E3035" bg="#2E3035" height="50px" borderRadius="5px">
+          <Input placeholder="Find a conversation" height="100%" />
+          <InputRightElement>
+            <IconButton
+              variant={"unstyled"}
+              mt="10px"
+              aria-label="Search User"
+              icon={<BsSearch  color="gray.400"/>}
+            />
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
       {rooms ? (
         <Stack width="96%" m="2%" overflowY="auto" spacing={0}>
           {rooms.map((room: any) => (
@@ -84,7 +89,7 @@ const ChatList = () => {
               mb="2px"
               display="flex"
               alignItems={"center"}
-              bg={selectedRoom === room ? "#EEEEEE" : "white"}
+              bg={selectedRoom === room ? "#36373D" : "#2B2D31"}
               borderRadius="5px"
               fontFamily="Inter"
               fontWeight="bold"
@@ -94,13 +99,13 @@ const ChatList = () => {
             >
               <Avatar
                 color="white"
-                bg="teal"
+                bg="gray"
                 ml="10px"
                 size={"md"}
                 border={
                   selectedRoom === room
-                    ? "5px solid #EEEEEE"
-                    : "5px solid white"
+                    ? "5px solid #36373D"
+                    : "5px solid #2B2D31"
                 }
                 name={room.name}
                 src={
@@ -111,19 +116,19 @@ const ChatList = () => {
                 }
               >
                 {thereIsSomeOneOnline(users, room) ? (
-                  <AvatarBadge boxSize="0.9em" bg="#00FF00" />
+                  <AvatarBadge boxSize="0.8em" bg="#00FF00" borderColor="#404249"/>
                 ) : (
-                  <AvatarBadge boxSize="0.9em" bg="#FF0000" />
+                  <AvatarBadge boxSize="0.8em" bg="#FF0000" borderColor="#2E3035"/>
                 )}
               </Avatar>
-              <Box ml="20px" display="flex" flexDirection="column">
-                <Text p="4px 0px" color="gray.500">
+              <Box ml="10px" display="flex" flexDirection="column">
+                <Text p="0px 0px" color="#F3F4F5">
                   {room.name}
                 </Text>
-                <Text fontSize="14px" fontFamily={"work sans"} color="gray.400">
+                {/* <Text fontSize="14px" fontFamily={"work sans"} color="gray.400">
                   {room.lastMsg && room.lastMsg.slice(0, 20)}
                   {room.lastMsg && room.lastMsg.length > 20 ? " ..." : ""}
-                </Text>
+                </Text> */}
               </Box>
             </Box>
           ))}

@@ -35,23 +35,26 @@ const ProfileBar = () => {
 
   return (
     <Box
-      backgroundImage="linear-gradient(teal 50%, white 0%)"
       display="flex"
       flexDir="column"
       alignItems="center"
-      justifyContent={"center"}
+      width="300px"
+      bg="#2B2D31"
+      // className="debug"
+      // justifyContent={"center"}
     >
       {userProfile && (
         <>
           <Box
-            height="70%"
+            height="fit-content"
             display="flex"
             flexDir="column"
             alignItems="center"
             borderRadius="lg"
-            justifyContent="center"
+            mt='30px'
+            // justifyContent="center"
           >
-            <Box width="13rem" height="13rem">
+            <Box width="10rem" height="10rem" mb='10px'>
               <Avatar
                 shadow="xl"
                 fontSize="9xl"

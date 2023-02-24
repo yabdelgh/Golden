@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import ChatHeader from "../Components/AppHeader";
 import FriendsList from "../Components/Friends/FriendsList";
 import ProfileBar from "../Components/Profile/ProfileBar";
 import ProfileGraph from "../Components/Profile/ProfileGraph";
@@ -8,18 +9,21 @@ const ProfilePage = () => {
   return (
     <Box
       width={"100%"}
-      display="grid"
-      // classNamdde="debug"
-      gridTemplateColumns={{ base: "1fr", xl: "1fr 1fr" }}
-      alignItems="stretch"
-      gridAutoRows="minmax(400px, auto)"
-      gap="2px"
-      p="2px"
+      // display="grid"
+      // gridTemplateColumns={{ base: "1fr", xl: "1fr 1fr" }}
+      // alignItems="stretch"
+      // gridAutoRows="minmax(400px, auto)"
+      // gap="2px"
+      display='flex'
     >
+      
       <ProfileBar />
-      <ProfileHistory />
-      <FriendsList />
-      <ProfileGraph />
+      <Box width="calc(100% - 300px)">
+        <ChatHeader />
+        {/* <ProfileHistory />
+        <FriendsList />
+        <ProfileGraph /> */}
+      </Box>
     </Box>
   );
 };

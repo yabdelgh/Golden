@@ -32,7 +32,7 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
     >
       <Box width="13rem" height="fit-content">
         <Avatar
-          shadow="xl"
+          // shadow="xl"
           fontSize="9xl"
           bg="chakra-placeholder-color"
           color="white"

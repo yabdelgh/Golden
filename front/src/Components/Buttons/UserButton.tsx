@@ -20,7 +20,7 @@ const UserButton = ({ user }: any) => {
         color="white"
         bg="teal"
         borderRadius="lg"
-        border="5px solid white"
+        border="5px solid #232428"
         size="md"
         name={user ? user.login : ""}
       />

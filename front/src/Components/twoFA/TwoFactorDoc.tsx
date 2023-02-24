@@ -13,32 +13,33 @@ const TwoFactorDoc = ({ barCode, verify, setBarCode, setVerify }: any) => {
     return (
       <Box
         ml="50px"
-        p="30px"
-        bg="#E9EBEE"
+        bg="#2B2D31"
         width="650px"
         height="450px"
         borderRadius="lg"
         display={(!barCode && !verify) ? 'flex' : 'none'}
         flexDir='column'
+        justifyContent="flex-end"
+        color="white"
       >
-        <Text fontWeight="bolder" fontSize="22px">
+        <Text fontWeight="bolder" fontSize="22px" color="gray.300">
           Protect your account with 2-Step Verification
         </Text>
-        <Text color="gray" m="10px" fontSize="18px">
+        <Text color="gray" fontSize="18px">
           Prevent hackers from accessing your account with an additional layer
           of security. When you sign in, 2-Step Verification helps make sure
           that your personal information stays private, safe and secure.
         </Text>
-        <Text fontWeight="bolder" fontSize="22px" mt="15px" mb="10px">
+        <Text fontWeight="bolder" fontSize="22px" mt="15px" mb="10px" color="gray.300">
           Available second steps
         </Text>
         <Box
           display="flex"
-          bg="white"
+          bg="#36373D"
           flexDir="column"
           alignItems="flex-start"
           p="15px"
-          borderRadius="lg"
+          borderRadius="5px"
         >
           <Text fontWeight="bold" mb="5px">
             Authenticator app
@@ -50,7 +51,7 @@ const TwoFactorDoc = ({ barCode, verify, setBarCode, setVerify }: any) => {
             Store
           </Text>
           <Box mt="15px" display="flex" justifyContent="flex-end" width="100%">
-            <Button m="3px">Change authenticator app </Button>
+            <Button m="3px" bg="gray">Change authenticator app </Button>
             <Button m="3px" colorScheme="teal" onClick={setTwoFactorAuthentication}>
               {user && user.isTwoFactorAuthenticationEnabled
                 ? "Turn Off"

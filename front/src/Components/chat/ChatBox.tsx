@@ -93,30 +93,31 @@ const ChatBox = () => {
   return (
     <Box
       width="100%"
-      bg="white"
+      bg="#232428"
       height="100%"
       // borderRadius="lg"
-      border="3px white solid"
+      // borderLeft="3px #232428 solid"
     >
       {selectedRoom ? (
         <>
           <Box
-            height="50px"
+            height="60px"
             pl="15px"
+            borderBottom="1px solid #232428"
             display="flex"
             alignItems="center"
-            bgColor="white"
+            bgColor="#2E3035"
             fontFamily="Inter"
             fontWeight="bold"
             fontSize="18px"
             width="100%"
             justifyContent="space-between"
+            color='#F3F4F5'
           >
             <Box display="flex" alignItems="center">
               <Avatar
-                border="6px solid white"
-                bg="teal"
-                color="white"
+                border="6px solid #2E3035"
+                bg="gray"
                 name={selectedRoom.name}
                 src={
                   selectedRoom.isGroupChat
@@ -125,18 +126,18 @@ const ChatBox = () => {
                 }
               >
                 {thereIsSomeOneOnline(users, selectedRoom) ? (
-                  <AvatarBadge boxSize="0.9em" bg="#00FF00" />
+                  <AvatarBadge boxSize="0.8em" bg="#00FF00" borderColor="#2E3035"/>
                 ) : (
-                  <AvatarBadge boxSize="0.9em" bg="#FF0000" />
+                  <AvatarBadge boxSize="0.8em" bg="#FF0000" borderColor="#2E3035" />
                 )}
               </Avatar>
-              <Text ml="10px">{selectedRoom.name}</Text>
+              <Text ml="7px">{selectedRoom.name}</Text>
             </Box>
             <ChatSettings />
           </Box>
           <Box
             width="100%"
-            height="calc(100% - 50px)"
+            height="calc(100% - 60px)"
             display={"flex"}
             flexDirection="row-reverse"
           >
@@ -150,9 +151,8 @@ const ChatBox = () => {
               flexGrow={1}
               wordBreak="break-word"
               height="100%"
-              borderRadius="5px"
-              bgColor="#BAD1C2"
-              border="3px solid white"
+              bgColor="#2E3035"
+              border="3px solid #2E3035"
             >
               <Box width="100%" height="calc(100% - 70px)" overflow={"hidden"}>
                 {msgs.length !== 0 &&
@@ -164,7 +164,7 @@ const ChatBox = () => {
                           <Box
                             key={msg.id}
                             pl="30px"
-                            color="gray"
+                            color="#A9AAAE"
                             fontWeight="bold"
                             pt="20px"
                             pr="30px"
@@ -173,7 +173,7 @@ const ChatBox = () => {
                               <Text
                                 fontSize="15px"
                                 fontWeight="bolder"
-                                color="black"
+                                color="white"
                               >
                                 {getUserName(msg.userId)}
                               </Text>
@@ -199,14 +199,16 @@ const ChatBox = () => {
                   pl="60px"
                   fontWeight="bolder"
                   width="99%"
-                  bg="white"
+                  bg="#383A40"
                   isDisabled={isMuted()}
                   height="40px"
                   minHeight="50px"
                   m="10px"
                   value={msg}
+
                   placeholder="Type a message"
-                  focusBorderColor="gray.100"
+                  focusBorderColor="#383A40"
+                  borderColor="#383A40"
                   onChange={(e) => setMsg(e.target.value)}
                   onKeyUp={(e) => {
                     if (e.key === "Enter") {

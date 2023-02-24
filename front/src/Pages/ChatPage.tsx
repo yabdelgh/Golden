@@ -7,8 +7,8 @@ const ChatPage = () => {
     <Box
       width="100%"
       display="flex"
-      height="calc(100vh - 60px)"
-      p="2px 0 0 2px"
+      //height="calc(100vh - 60px)"
+      // p="2px 0 0 0px"
       overflow="hidden"
     >
       <ChatList />

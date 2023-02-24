@@ -30,7 +30,7 @@ function DrawerExample() {
       <IconButton
         variant={"unstyled"}
         aria-label="Search database"
-        icon={<IoGameControllerOutline size="30px" />}
+        icon={<IoGameControllerOutline size="30px" color="white"/>}
         onClick={onOpen}
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
@@ -80,29 +80,25 @@ const ChatHeader = () => {
 
   return (
     <Box
-      border="5px white solid"
-      bg="white"
+      bg="#2E3035"
       height="60px"
       width="100%"
       display={user.login ? "flex" : "none"}
       justifyContent="space-between"
       px={"2rem"}
       alignItems="center"
-      position="fixed"
       minWidth={"700px"}
-      top="0"
-      left="0"
     >
-      <Text
+      {/* <Text
         color="teal"
         fontSize="2xl"
         fontFamily="Work sans"
         fontWeight="bold"
       >
         Golden
-      </Text>
+      </Text> */}
       <SearchModal>
-        <Button leftIcon={<BsSearch />} fontFamily="Inter" width="100%">
+        <Button leftIcon={<BsSearch />} fontFamily="Inter" width="100%" bg="#2B2D31" color="white">
           Search Golden
         </Button>
       </SearchModal>
@@ -113,7 +109,7 @@ const ChatHeader = () => {
         alignItems="center"
       >
         <DrawerExample />
-        <IoMdNotifications size="35px" />
+        <IoMdNotifications size="30px" color="white"/>
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
           <PopoverTrigger>
             <Avatar

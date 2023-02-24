@@ -21,18 +21,17 @@ const SecurityPage = () => {
 
   return (
     <Box
-      bg="teal"
-      mt='2px'
-      ml='2px'
+      bg="#2B2D31"
       width="full"
       display="flex"
+      pb='10%'
       justifyContent={"center"}
-      alignItems="center"
+      alignItems="flex-end"
       minWidth='700px'
       textAlign="justify"
     >
-      <Box width="450px" height="450px" display={{base: 'none', xl:'flex'}}>
-        <Lottie options={defaultOptions} style={{ backgroundColor: "teal" }} />
+      <Box width="550px" height="550px" display={{base: 'none', xl:'flex'}}>
+        <Lottie options={defaultOptions} style={{ backgroundColor: "#2B2D31" }} />
       </Box>
       <TwoFactorCode verify={verify} setVerify={setVerify} />
       <TwoFactorBarCode barCode={barCode} setVerify={setVerify} setBarCode={setBarCode} />

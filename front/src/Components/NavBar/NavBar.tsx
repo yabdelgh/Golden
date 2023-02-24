@@ -1,5 +1,5 @@
 import { Box, IconButton, Avatar } from "@chakra-ui/react";
-import { IoChatbubblesOutline } from "react-icons/io5";
+import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { MdExplore } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
@@ -11,12 +11,12 @@ const NavBar = () => {
 
   return (
     <Box
-      bg="white"
+      bg="#1E1F22"
       width="70px"
       // height="calc(100% - 80px)"
       height="100%"
       position="fixed"
-      top="62"
+      top="0"
       left="0"
       // borderRadius="lg"
       display={user.login ? "flex" : "none"}
@@ -53,19 +53,21 @@ const NavBar = () => {
       />
       <IconButton
         mt="20px"
-        colorScheme="gray"
+        bg="#36373D"
         width="50px"
         height="50px"
+        color="white"
         borderRadius="20px"
         aria-label="Search database"
-        icon={<IoChatbubblesOutline size="30px" />}
+        icon={<HiChatBubbleLeftRight size="25px" />}
         onClick={() => navigate("/chat")}
       />
       <IconButton
         mt="20px"
-        colorScheme="gray"
+        bg="#36373D"
         width="50px"
         height="50px"
+        color="gray"
         borderRadius="20px"
         aria-label="Search database"
         icon={<MdExplore size="30px" />}

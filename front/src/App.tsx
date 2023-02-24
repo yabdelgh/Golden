@@ -391,7 +391,7 @@ function App() {
   if (!user) return <></>;
   else if (user.isFirstLogin) return <EditProfile />;
   return (
-    <Box className="App" padding="60px 0 0 70px" minW={"700px"}>
+    <Box className="App" padding="0px 0 0 70px" minW={"700px"}>
       <Box
         position="fixed"
         zIndex="100"
@@ -418,7 +418,6 @@ function App() {
         <Route path="/security" element={<SecurityPage />} />
         <Route path="*" element={<div>404 not found</div>} />
       </Routes>
-      <ChatHeader />
       <NavBar />
       <EditProfile />
     </Box>

@@ -83,19 +83,19 @@ export class AuthController {
     res.redirect(`${this.configService.get<string>('FRONT_HOST')}/profile`);
   }
 
-  // @Get('2')
-  // async samira(@Res() res) {
-  //   const payload = {
-  //     id: 2,
-  //     authenticated: true
-  //   };
-  //   const token = await this.jwtService.signAsync(payload, {
-  //     expiresIn: '7d',
-  //     secret: this.configService.get<string>('JWT_SECRET'),
-  //   });
-  //   res.cookie('access_token', token, {
-  //     httpOnly: true,
-  //   });
-  //   res.redirect('http://localhost:3000/profile');
-  //}
+  @Get('2')
+  async samira(@Res() res) {
+    const payload = {
+      id: 2,
+      authenticated: true
+    };
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+    res.cookie('access_token', token, {
+      httpOnly: true,
+    });
+    res.redirect('http://localhost:3000/profile');
+  }
 }

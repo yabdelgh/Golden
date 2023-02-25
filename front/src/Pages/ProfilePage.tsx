@@ -15,14 +15,15 @@ const ProfilePage = () => {
       // gridAutoRows="minmax(400px, auto)"
       // gap="2px"
       display='flex'
+      height="100vh"
     >
       
       <ProfileBar />
       <Box width="calc(100% - 300px)">
         <ChatHeader />
+        <FriendsList />
         {/* <ProfileHistory /> */}
         {/* <ProfileHistory />
-        <FriendsList />
         <ProfileGraph /> */}
       </Box>
     </Box>

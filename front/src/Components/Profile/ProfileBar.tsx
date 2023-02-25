@@ -120,7 +120,7 @@ const ProfileBar = () => {
               fontSize="20px"
               bg={true ? "#36373D" : "#2B2D31"}
             >
-              Friends
+              Friend List
             </Button>
             <Button
               pl="20px"

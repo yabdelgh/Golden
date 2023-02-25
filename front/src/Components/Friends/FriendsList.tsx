@@ -1,45 +1,36 @@
-import { Box, Image, Text, Avatar } from "@chakra-ui/react";
-import { SlPeople } from "react-icons/sl";
+import { Box, Image, Text, Avatar, Button } from "@chakra-ui/react";
+import { FcFlashOn } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 
 const FriendsList = () => {
-  const { users, Friends, setUserProfile } = AppState();
+  const { users, Friends, setUserProfile, socket } = AppState();
   const navigate = useNavigate();
-  // const addFriend = (id: number) => {
-  //   socket.emit("addFriend", id);
-  // };
-  // const removeFriend = (id: number) => {
-  //   socket.emit("removeFriend", id);
-  // };
-  // const confirmFriend = (id: number) => {
-  //   socket.emit("acceptFriend", id);
-  // };
+  const addFriend = (id: number) => {
+    socket.emit("addFriend", id);
+  };
+  const removeFriend = (id: number) => {
+    socket.emit("removeFriend", id);
+  };
+  const confirmFriend = (id: number) => {
+    socket.emit("acceptFriend", id);
+  };
   return (
     <Box
-      display="flex"
-      flexDir="column"
-      // alignItems="center"
-      gap="1rem"
-      bg="white"
-      p="1rem"
-      height={"100%"}
+      // className="debug"
+      height="calc(100% - 70px)"
+      // overflow='scroll'
     >
-      <Text
-        // alignSelf={"flex-start"}
-        fontSize="25px"
-        fontWeight="bold"
-        color="gray.500"
-      >
+      <Text fontSize="25px" fontWeight="bold" color="#B8B9BF" m="35px">
         Friends List
       </Text>
       <Box
         display={"flex"}
-        gap="1rem"
         flexWrap={"wrap"}
-        overflow="auto"
-        width="100%"
-        // justifyContent="space-evenly"
+        ml="20px"
+        mr="30px"
+        // className="debug"
+        height="calc(100% - 120px)"
       >
         {Friends.length ? (
           users.map(
@@ -53,12 +44,18 @@ const FriendsList = () => {
                 <Box
                   display="flex"
                   flexDir="column"
-                  bg="white"
+                  bg="#2B2D31"
+                  color="gray.200"
+                  height="250px"
+                  width="230px"
+                  ml='20px'
+                  p="15px"
+                  borderRadius="lg"
                   alignItems="center"
-                  justifyContent="space-between"
                   key={value1.id}
                   cursor="pointer"
                   shadow="xl"
+                  // className="debug"
                   onClick={() => {
                     setUserProfile(value1);
                     navigate("/profile");
@@ -66,17 +63,35 @@ const FriendsList = () => {
                 >
                   <Avatar
                     fontSize="9xl"
-                    width="160px"
-                    height="160px"
+                    width="130px"
+                    height="130px"
                     bg="chakra-placeholder-color"
                     color="white"
                     size="full"
                     cursor="pointer"
-                    borderRadius="5px 5px 0 0 "
+                    borderRadius="full"
+                    m="10px"
+                    // borderRadius="5px 5px 0 0 "
                     name={value1.login}
                     src={value1.imageUrl || "/defaultProfilePic.png"}
                   />
-                  <Text fontWeight="bolder">{value1.login}</Text>
+                <Box display="flex" alignItems="center">
+                    <FcFlashOn size="15px"/>
+                    <Text fontWeight="bolder" ml='5px'>{value1.login}</Text>
+                  </Box>
+                  <Box display="flex" justifyContent="space-around" width='90%' mt='15px'>
+                    <Button
+                      bg="gray"
+                      borderRadius="3px"
+                      height="35px"
+                      onClick={() => removeFriend(value1.id)}
+                    >
+                      Unfriend
+                    </Button>
+                    <Button bg="teal" borderRadius="3px" height="35px">
+                      Msg
+                    </Button>
+                  </Box>
                 </Box>
               )
           )
@@ -84,16 +99,16 @@ const FriendsList = () => {
           <Box
             height="90%"
             width="100%"
-            color="gray.400"
+            color="#B8B9BF"
             display="flex"
             flexDir="column"
             alignItems="center"
             justifyContent="center"
             fontSize={"50px"}
           >
-            <SlPeople size="100px" />
+            {/* <SlPeople size="100px" /> */}
             <Text fontSize="25px" mt="50px">
-              You have no Friends for now.
+              You have no Friends.
             </Text>
           </Box>
         )}

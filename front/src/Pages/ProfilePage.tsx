@@ -20,6 +20,7 @@ const ProfilePage = () => {
       <ProfileBar />
       <Box width="calc(100% - 300px)">
         <ChatHeader />
+        {/* <ProfileHistory /> */}
         {/* <ProfileHistory />
         <FriendsList />
         <ProfileGraph /> */}

@@ -19,6 +19,7 @@ import SearchModal from "./SearchModal";
 import { Drawer, DrawerContent } from "@chakra-ui/react";
 import Challenge from "./game/Challenge";
 import { RiUserSettingsLine } from "react-icons/ri";
+import { GoSettings } from "react-icons/go";
 
 function DrawerExample() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,14 +30,17 @@ function DrawerExample() {
     <>
       <IconButton
         variant={"unstyled"}
+        color="#B8B9BF"
+        _hover={{ color: "white" }}
         aria-label="Search database"
-        icon={<IoGameControllerOutline size="30px" color="white"/>}
+        icon={<IoGameControllerOutline size="30px" />}
         onClick={onOpen}
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerContent
+          bg="#1E1F22"
           mt="70px"
-          mr="50px"
+          mr="20px"
           width="30px"
           height="fit-content"
           borderRadius="lg"
@@ -88,6 +92,7 @@ const ChatHeader = () => {
       px={"2rem"}
       alignItems="center"
       minWidth={"700px"}
+      borderBottom="2px solid #2B2D31"
     >
       {/* <Text
         color="teal"
@@ -98,21 +103,31 @@ const ChatHeader = () => {
         Golden
       </Text> */}
       <SearchModal>
-        <Button leftIcon={<BsSearch />} fontFamily="Inter" width="100%" bg="#2B2D31" color="white">
+        <Button
+          // leftIcon={<BsSearch />}
+          fontFamily="Inter"
+          width="150px"
+          height="40px"
+          bg="#2B2D31"
+          color="#B8B9BF"
+          variant="unstyled"
+        >
           Search Golden
         </Button>
       </SearchModal>
       <Box
-        width="170px"
+        width="140px"
         display="flex"
+        mr="20px"
         justifyContent="space-between"
         alignItems="center"
       >
         <DrawerExample />
-        <IoMdNotifications size="30px" color="white"/>
+        <IoMdNotifications size="25px" color="#B8B9BF" />
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
           <PopoverTrigger>
-            <Avatar
+            <GoSettings size="25px" cursor="pointer" color="#B8B9BF" />
+            {/* <Avatar
               bg="teal"
               color="white"
               size="md"
@@ -120,7 +135,7 @@ const ChatHeader = () => {
               cursor="pointer"
               name={user.login}
               src={user.imageUrl || "/defaultProfilePic.png"}
-            />
+            /> */}
           </PopoverTrigger>
           <PopoverContent
             width="150px"

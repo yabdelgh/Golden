@@ -57,7 +57,7 @@ const ChatSettings = () => {
       {selectedRoom.isGroupChat ? (
         <Popover placement="left-start">
           <PopoverTrigger>
-            <Button variant={"unstyled"}>
+            <Button variant={"unstyled"} _hover={{ color: "white" }}>
               <BsThreeDotsVertical size="25px" />
             </Button>
           </PopoverTrigger>
@@ -97,10 +97,11 @@ const ChatSettings = () => {
         </Popover>
       ) : (
         <IconButton
-          variant={"ghost"}
           aria-label="Member List"
           className="md-disabled"
-          ml="auto"
+            ml="auto"
+          variant={"unstyled"}
+            _hover={{color: "white"}}
           onClick={() => {
             setShowUP(undefined);
             setSelectedRoom(undefined);
@@ -109,7 +110,8 @@ const ChatSettings = () => {
         />
       )}
       <IconButton
-        variant={"ghost"}
+          variant={"unstyled"}
+            _hover={{color: "white"}}
         aria-label="Member List"
         className="md-disabled"
         ml="auto"

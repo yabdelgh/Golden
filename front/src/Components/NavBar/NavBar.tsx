@@ -56,9 +56,12 @@ const NavBar = () => {
         bg="#36373D"
         width="50px"
         height="50px"
-        color="white"
+        color="#B8B9BF"
+        display="flex"
+        variant="unstyled"
         borderRadius="20px"
         aria-label="Search database"
+        _hover={{ color: "white" }}
         icon={<HiChatBubbleLeftRight size="25px" />}
         onClick={() => navigate("/chat")}
       />
@@ -67,9 +70,12 @@ const NavBar = () => {
         bg="#36373D"
         width="50px"
         height="50px"
-        color="gray"
+        color="#B8B9BF"
+        display="flex"
+        variant="unstyled"
         borderRadius="20px"
         aria-label="Search database"
+        _hover={{ color: "white" }}
         icon={<MdExplore size="30px" />}
       />
     </Box>

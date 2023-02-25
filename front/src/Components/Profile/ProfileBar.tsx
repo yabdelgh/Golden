@@ -1,16 +1,18 @@
 import { Box, Avatar, Text, Button } from "@chakra-ui/react";
 import { useEffect } from "react";
+import { FaUserFriends } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
-
+import { FaClipboardList } from "react-icons/fa"
 type BlockUserDto = {
   blockedId: number;
 };
 
 const ProfileBar = () => {
-  const { userProfile, user, blockedUsers, socket, setUserProfile } = AppState();
+  const { userProfile, user, blockedUsers, socket, setUserProfile } =
+    AppState();
   const navigate = useNavigate();
   const BlockUser = async () => {
     socket.emit("blockUser", {
@@ -51,12 +53,13 @@ const ProfileBar = () => {
             flexDir="column"
             alignItems="center"
             borderRadius="lg"
-            mt='30px'
+            mt="30px"
             // justifyContent="center"
           >
-            <Box width="10rem" height="10rem" mb='10px'>
+            <Box width="10rem" height="10rem" mb="10px">
               <Avatar
                 shadow="xl"
+                border="3px solid #1E1F22"
                 fontSize="9xl"
                 bg="chakra-placeholder-color"
                 color="white"
@@ -94,40 +97,46 @@ const ProfileBar = () => {
                   ? "Unblock"
                   : "Block"}
               </Button>
-              {userProfile && userProfile.inGame && <Button height="35px" onClick={() => navigate(`/live-game/${userProfile?.gameId}`)}>
-                {"Watch Game"}
-              </Button> }
+              {userProfile && userProfile.inGame && (
+                <Button
+                  height="35px"
+                  onClick={() => navigate(`/live-game/${userProfile?.gameId}`)}
+                >
+                  {"Watch Game"}
+                </Button>
+              )}
             </Box>
           )}
-          {/* <Box display='flex' width='40%' justifyContent={'space-around'}>
-          <Box
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            color='gray'
-            mt="100px"
-          >
-            <IoIosPeople size="40px" />
-            <Text fontWeight="bold" mt="7px">
-              {Friends.length}
-            </Text>
-            <Text>Friends</Text>
+          <Box width="96%" mt="30px" display="flex" flexDir="column">
+            <Button
+              pl="20px"
+              display="flex"
+              justifyContent={"flex-start"}
+              leftIcon={<FaUserFriends size="20px"/>}
+              borderRadius="5px"
+              height="50px"
+              color="#B8B9BF"
+              variant="unstyled"
+              fontSize="20px"
+              bg={true ? "#36373D" : "#2B2D31"}
+            >
+              Friends
+            </Button>
+            <Button
+              pl="20px"
+              display="flex"
+              justifyContent={"flex-start"}
+              borderRadius="5px"
+              leftIcon={<FaClipboardList size="20px"/>}
+              height="50px"
+              color="#B8B9BF"
+              variant="unstyled"
+              fontSize="20px"
+              bg={false ? "#36373D" : "#2B2D31"}
+            >
+              Match History
+            </Button>
           </Box>
-
-          <Box
-            display="flex"
-            flexDir="column"
-            alignItems="center"
-            color='gray'
-            mt="100px"
-          >
-            <IoIosPeople size="40px" />
-            <Text fontWeight="bold" mt="7px">
-              {Friends.length}
-            </Text>
-            <Text>Games</Text>
-          </Box>
-          </Box> */}
         </>
       )}
     </Box>

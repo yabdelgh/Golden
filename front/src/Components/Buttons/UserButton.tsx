@@ -17,14 +17,14 @@ const UserButton = ({ user }: any) => {
       height="53px"
     >
       <Avatar
-        color="white"
-        bg="teal"
+        // color="white"
+        bg="gray"
         borderRadius="lg"
-        border="5px solid #232428"
+        border="5px solid #2B2D31"
         size="md"
         name={user ? user.login : ""}
       />
-      <Text fontWeight={"bold"} ml="5px" color="gray.500">
+      <Text fontWeight={"bold"} ml="5px" color="gray.200">
         {user.login}
       </Text>
     </Button>

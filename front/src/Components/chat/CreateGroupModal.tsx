@@ -81,7 +81,7 @@ const CreateGroupModal = ({ children }: any) => {
           fontFamily="Inter"
         >
           <ModalHeader>
-            <Text fontWeight="bold" color="gray.500">
+            <Text>
               Create a new group
             </Text>
           </ModalHeader>

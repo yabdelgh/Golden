@@ -23,19 +23,20 @@ const WaitAGame = () => {
       justifyContent={"center"}
       width="100%"
       height="100vh"
-      bg="white"
+      bg="#2E3035"
       mt="2px"
       ml="2px"
     >
       <Box width="50%" minW='600px'>
         <Lottie options={defaultOptions} />
       </Box>
-      <Text fontSize={"40px"} mb="30px">
+      <Text fontSize={"40px"} mb="30px" color="gray.200">
         waiting for opponent
       </Text>
       <Button
         variant={"solid"}
         colorScheme="red"
+        color="gray.200"
         width="120px"
         onClick={() => { socket.emit("cancelQuickPairing"); setUser((valu: any) => ({...user, WaitingAGame: false} ))}}
       >

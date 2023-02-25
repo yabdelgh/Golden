@@ -14,12 +14,11 @@ const Challenge = ({ challenge, onClose }: any) => {
         height="130px"
         width="95%"
         m="10px"
-        bg="gray.300"
+        bg='red'
         borderRadius={"lg"}
       >
         <Box display="flex" alignItems="center" m="15px">
           <Avatar
-            color="white"
             bg="teal"
             borderRadius="full"
             size="md"

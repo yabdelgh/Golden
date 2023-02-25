@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { AppState } from "../../Context/AppProvider";
 import { useState } from "react";
-import { TfiFaceSmile } from "react-icons/tfi";
+import { BsFillEmojiSunglassesFill } from "react-icons/bs";
 import { BsFillMicFill } from "react-icons/bs";
 import { RoomUser } from "../../../types";
 import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
@@ -93,7 +93,7 @@ const ChatBox = () => {
   return (
     <Box
       width="100%"
-      bg="#232428"
+      bg="#2E3035"
       height="100%"
       // borderRadius="lg"
       // borderLeft="3px #232428 solid"
@@ -103,7 +103,7 @@ const ChatBox = () => {
           <Box
             height="60px"
             pl="15px"
-            borderBottom="1px solid #232428"
+            borderBottom="2px solid #2B2D31"
             display="flex"
             alignItems="center"
             bgColor="#2E3035"
@@ -112,7 +112,7 @@ const ChatBox = () => {
             fontSize="18px"
             width="100%"
             justifyContent="space-between"
-            color='#F3F4F5'
+            color='#B8B9BF'
           >
             <Box display="flex" alignItems="center">
               <Avatar
@@ -126,9 +126,9 @@ const ChatBox = () => {
                 }
               >
                 {thereIsSomeOneOnline(users, selectedRoom) ? (
-                  <AvatarBadge boxSize="0.8em" bg="#00FF00" borderColor="#2E3035"/>
+                  <AvatarBadge boxSize="0.8em" bg="#5CB85C" borderColor="#2E3035"/>
                 ) : (
-                  <AvatarBadge boxSize="0.8em" bg="#FF0000" borderColor="#2E3035" />
+                  <AvatarBadge boxSize="0.8em" bg="#FF4136" borderColor="#2E3035" />
                 )}
               </Avatar>
               <Text ml="7px">{selectedRoom.name}</Text>
@@ -139,6 +139,7 @@ const ChatBox = () => {
             width="100%"
             height="calc(100% - 60px)"
             display={"flex"}
+            bg="#2B2D31"
             flexDirection="row-reverse"
           >
             {(showUP || usersList) && (
@@ -193,6 +194,7 @@ const ChatBox = () => {
                 alignItems={"center"}
                 justifyContent="center"
                 minHeight="50px"
+                  color='#E0E1E5'
               >
                 <Input
                   fontFamily={"Inter"}
@@ -205,10 +207,9 @@ const ChatBox = () => {
                   minHeight="50px"
                   m="10px"
                   value={msg}
-
-                  placeholder="Type a message"
                   focusBorderColor="#383A40"
                   borderColor="#383A40"
+                  placeholder="Type a message"
                   onChange={(e) => setMsg(e.target.value)}
                   onKeyUp={(e) => {
                     if (e.key === "Enter") {
@@ -222,7 +223,7 @@ const ChatBox = () => {
                     isDisabled={isMuted()}
                     variant={"unstyled"}
                     aria-label="emoji"
-                    icon={<TfiFaceSmile size="30px" color="gray" />}
+                  icon={<BsFillEmojiSunglassesFill size="25px" color="#B8B9BF" />}
                   />
                 </InputLeftElement>
                 <InputRightElement mr={"20px"} height="100%">
@@ -230,7 +231,7 @@ const ChatBox = () => {
                     isDisabled={isMuted()}
                     variant={"unstyled"}
                     aria-label="mic"
-                    icon={<BsFillMicFill size="25px" color="gray" />}
+                    icon={<BsFillMicFill size="25px" color="#B8B9BF" />}
                   />
                 </InputRightElement>
               </InputGroup>
@@ -240,14 +241,13 @@ const ChatBox = () => {
       ) : (
         <Box
           height="90%"
-          color="gray.400"
           display="flex"
+          color="#B8B9BF"
           flexDir="column"
           alignItems="center"
           justifyContent="center"
           fontSize={"50px"}
         >
-          <HiOutlineChatBubbleLeftRight size="100px" />
           <Text fontSize="25px" mt="50px">
             Select a room to start chatting
           </Text>

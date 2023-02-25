@@ -53,23 +53,27 @@ const ChatList = () => {
     >
       <CreateGroupModal>
         <Button
-          m="2%"
-          mt='5px'
-          mb="3px"
-          leftIcon={<AiOutlineUsergroupAdd size="25px" />}
+          m="5px 2% 3px 2%"
+          leftIcon={<AiOutlineUsergroupAdd size="25px"/>}
           width="96%"
           height="50px"
           bg="#2E3035"
+          display="flex"
+          _hover={{ color: "white" }}
+          // justifyContent={"flex-start"}
+          alignItems="center"
           borderRadius="5px"
+          variant={"unstyled"}
+          color="#B8B9BF"
         >
           <Text display="flex" width="fit-content">
             create new group
           </Text>
         </Button>
       </CreateGroupModal>
-      <FormControl height="50px" width="96%" m="1% 2% 10px 2%">
+      <FormControl height="50px" width="96%" m="1% 2% 10px 2%" color="#B8B9BF">
         <InputGroup borderColor="#2E3035" bg="#2E3035" height="50px" borderRadius="5px">
-          <Input placeholder="Find a conversation" height="100%" />
+          <Input placeholder="Find a conversation" height="100%"  focusBorderColor="#2E3035" color="gray.200"/>
           <InputRightElement>
             <IconButton
               variant={"unstyled"}
@@ -116,9 +120,9 @@ const ChatList = () => {
                 }
               >
                 {thereIsSomeOneOnline(users, room) ? (
-                  <AvatarBadge boxSize="0.8em" bg="#00FF00" borderColor="#404249"/>
+                  <AvatarBadge boxSize="0.8em" bg="#5CB85C" borderColor="#404249"/>
                 ) : (
-                  <AvatarBadge boxSize="0.8em" bg="#FF0000" borderColor="#2E3035"/>
+                  <AvatarBadge boxSize="0.8em" bg="#FF4136" borderColor="#2E3035"/>
                 )}
               </Avatar>
               <Box ml="10px" display="flex" flexDirection="column">

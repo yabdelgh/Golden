@@ -67,6 +67,8 @@ const UsersList = () => {
             <Input
               placeholder="Search"
               height="100%"
+              color="gray.200"
+              focusBorderColor="#2E3035"
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
             />

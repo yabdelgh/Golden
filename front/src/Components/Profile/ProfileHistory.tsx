@@ -51,30 +51,21 @@ const ProfileHistory = () => {
 
   return (
     <Box
-      bg="white"
-      display="flex"
-      flexDir="column"
-      alignItems="center"
-      overflow="auto"
+      // className="debug"
+      height="calc(100% - 70px)"
     >
-      <Text
-        p="10px 0 30px 20px"
-        pl="20px"
-        fontSize="25px"
-        fontWeight="bold"
-        color="gray.500"
-        width="100%"
-      >
+      <Text fontSize="25px" fontWeight="bold" color="#B8B9BF" m="35px">
         Match History
       </Text>
       {history.length ? (
         <VStack
           spacing="0"
           width="90%"
-          borderRadius="15px"
+          ml="30px"
+          mr="30px"
           display="flex"
           flexDir="column"
-          bg="gray.100"
+          height="calc(100% - 120px)"
         >
           <Box
             width="100%"
@@ -102,7 +93,8 @@ const ProfileHistory = () => {
                 pl="20px"
                 key={value.id}
                 fontSize="20px"
-                color="gray.500"
+                color="gray.200"
+                borderTop="2px solid #2B2D31"
                 fontWeight="bold"
               >
                 <Box display="flex" alignItems="center" width="40%">
@@ -134,7 +126,7 @@ const ProfileHistory = () => {
           justifyContent="center"
           fontSize={"50px"}
         >
-          <SlGameController size="100px" />
+          {/* <SlGameController size="100px" /> */}
           <Text fontSize="25px" mt="50px">
             You have no Games for now.
           </Text>

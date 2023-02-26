@@ -10,7 +10,7 @@ type BlockUserDto = {
   blockedId: number;
 };
 
-const ProfileBar = () => {
+const ProfileBar = (props: any) => {
   const { userProfile, user, blockedUsers, socket, setUserProfile } =
     AppState();
   const navigate = useNavigate();
@@ -112,13 +112,14 @@ const ProfileBar = () => {
               pl="20px"
               display="flex"
               justifyContent={"flex-start"}
-              leftIcon={<FaUserFriends size="20px"/>}
+              leftIcon={<FaUserFriends size="20px" />}
               borderRadius="5px"
               height="50px"
               color="#B8B9BF"
               variant="unstyled"
               fontSize="20px"
-              bg={true ? "#36373D" : "#2B2D31"}
+              bg={props.boxName === "Friend List" ? "#36373D" : "#2B2D31"}
+              onClick={() => props.setBoxName("Friend List")}
             >
               Friend List
             </Button>
@@ -132,7 +133,8 @@ const ProfileBar = () => {
               color="#B8B9BF"
               variant="unstyled"
               fontSize="20px"
-              bg={false ? "#36373D" : "#2B2D31"}
+              bg={props.boxName === "Match History" ? "#36373D" : "#2B2D31"}
+              onClick={() => props.setBoxName("Match History")}
             >
               Match History
             </Button>

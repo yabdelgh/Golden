@@ -1,11 +1,12 @@
 import { Box } from "@chakra-ui/react";
+import { useState } from "react";
 import ChatHeader from "../Components/AppHeader";
 import FriendsList from "../Components/Friends/FriendsList";
 import ProfileBar from "../Components/Profile/ProfileBar";
-import ProfileGraph from "../Components/Profile/ProfileGraph";
 import ProfileHistory from "../Components/Profile/ProfileHistory";
 
 const ProfilePage = () => {
+  const [boxName, setBoxName] = useState("Friend List");
   return (
     <Box
       width={"100%"}
@@ -18,13 +19,12 @@ const ProfilePage = () => {
       height="100vh"
     >
       
-      <ProfileBar />
+      <ProfileBar boxName={boxName} setBoxName={setBoxName} />
       <Box width="calc(100% - 300px)">
         <ChatHeader />
-        <FriendsList />
-        {/* <ProfileHistory /> */}
-        {/* <ProfileHistory />
-        <ProfileGraph /> */}
+        { boxName ==="Friend List" ?
+          <FriendsList /> :
+          <ProfileHistory /> }
       </Box>
     </Box>
   );

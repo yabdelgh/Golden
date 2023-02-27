@@ -2,10 +2,9 @@ import { Avatar, Box, Text, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { AppState } from "../../Context/AppProvider";
-import { SlGameController } from "react-icons/sl";
 const ProfileHistory = () => {
   const [history, setHistory]: any = useState([]);
-  const { userProfile, users, searchs, setSearchs } = AppState();
+  const { userProfile, users, searchs } = AppState();
 
   const getOpponent = async (match: any) => {
     const id =
@@ -32,7 +31,7 @@ const ProfileHistory = () => {
       ret.opponent.id === match.redCornerId
         ? [match.redCornerScore, match.blueCornerScore]
         : [match.blueCornerScore, match.redCornerScore];
-    ret.win = ret.score[0] > ret.score[1] ? false : true;
+    ret.win = ret.score[0] > ret.score[1] ? "win" : ret.score[0] < ret.score[1] ?  "lose" : "draw";
     ret.date = match.createdAt;
     setHistory((value: any) => [...value, ret]);
   };
@@ -112,8 +111,8 @@ const ProfileHistory = () => {
                 </Box>
                 <Text width="30%">{`${value.score[0]} - ${value.score[1]}`}</Text>
                 <Text width="20%">12-12-12</Text>
-                <Text color={value.win ? "green.400" : "red.400"}>
-                  {value.win ? "win" : "lose"}
+                <Text color={value.win === "win" ? "#5CB85C" : value.win === "lose" ?  "#FF4136" : "gray"}>
+                  {value.win}
                 </Text>
               </Box>
             ))}

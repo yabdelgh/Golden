@@ -1,18 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import {
-  Body,
-  Composite,
-  Engine,
-  Render,
-  Vector,
-  Events,
-} from "matter-js";
+import { Body, Composite, Engine, Render, Vector, Events } from "matter-js";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  GameData,
-  GameState,
-  GameBodies,
-} from "../../../types";
+import { GameData, GameState, GameBodies } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import _ from "lodash";
 import { removeNulls } from "../../Utils/cleanObject";
@@ -41,21 +30,21 @@ const Game = () => {
   );
   // let engine:Engine
   // let render:Render
-  
+
   const { socket } = AppState();
   const [engine, setEngine]: any = useState();
   const [render, setRender]: any = useState();
   const [gameState, setGameState] = useState<GameBodies>();
-  const [ avatar1, setAvatar1 ] = useState<string|null>(null);
-  const [ avatar2, setAvatar2 ] = useState<string|null>(null);
-  const [ name1, setName1 ] = useState<string|null>(null);
-  const [ name2, setName2 ] = useState<string|null>(null);
-  const [ score1, setScore1 ] = useState<number>(0);
-  const [ score2, setScore2 ] = useState<number>(0);
-  const [ width, setWidth ] = useState<number>(window.innerWidth);
+  const [avatar1, setAvatar1] = useState<string | null>(null);
+  const [avatar2, setAvatar2] = useState<string | null>(null);
+  const [name1, setName1] = useState<string | null>(null);
+  const [name2, setName2] = useState<string | null>(null);
+  const [score1, setScore1] = useState<number>(0);
+  const [score2, setScore2] = useState<number>(0);
+  const [width, setWidth] = useState<number>(window.innerWidth);
   const [height, setHeight] = useState<number>(window.innerHeight);
   const [scale, setScale] = useState<number>(window.innerHeight);
-  
+
   useEffect(() => {
     const updateWindowDimensions = () => {
       setWidth(window.innerWidth);
@@ -65,12 +54,11 @@ const Game = () => {
     return () => window.removeEventListener("resize", updateWindowDimensions);
   }, []);
 
-
   useEffect(() => {
     if (render && engine) {
-      let scaleFactor = window.innerHeight * 0.6/500;
+      let scaleFactor = (window.innerHeight * 0.6) / 500;
       if (window.innerWidth < 2 * window.innerHeight) {
-        scaleFactor = window.innerWidth * 0.7/1000;
+        scaleFactor = (window.innerWidth * 0.7) / 1000;
       }
       setScale(scaleFactor);
       render.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
@@ -105,7 +93,7 @@ const Game = () => {
 
   const countDownCallBack = () => {
     socket.emit("startGame");
-  }
+  };
 
   useEffect(() => {
     if (render) {
@@ -120,15 +108,20 @@ const Game = () => {
         const players = data.players.map((p) => {
           const clearP = removeNulls(p);
           if (clearP.parts.length > 0)
-            clearP.parts =  (clearP.parts as Body[]).map(part => Body.create(part))
-          return Body.create(clearP)
-      });
-        const obstacles = data.obstacles.map((o) => {
-          const clearP = removeNulls(o)
-          if (clearP.parts.length > 0)
-            clearP.parts =  (clearP.parts as Body[]).map(part => Body.create(part))
-          return Body.create(clearP)
-        }
+            clearP.parts = (clearP.parts as Body[]).map((part) =>
+              Body.create(part)
+            );
+          return Body.create(clearP);
+        });
+        const obstacles = data.obstacles.map(
+          (o) => {
+            const clearP = removeNulls(o);
+            if (clearP.parts.length > 0)
+              clearP.parts = (clearP.parts as Body[]).map((part) =>
+                Body.create(part)
+              );
+            return Body.create(clearP);
+          }
           // Body.create(removeNulls(o))
         );
         const ball = Body.create(removeNulls(data.ball));
@@ -136,10 +129,13 @@ const Game = () => {
         setGameState({ players, obstacles, ball });
       });
       socket.emit("getGameData");
-      socket.on("gameOver", (winner: {login: string, image: string | null}) => {
-        setWinner(winner);
-        setisWinnerOpen(true);
-      });
+      socket.on(
+        "gameOver",
+        (winner: { login: string; image: string | null }) => {
+          setWinner(winner);
+          setisWinnerOpen(true);
+        }
+      );
       socket.on("gameStarted", () => {
         setIsCountDownOpen(false);
       });
@@ -175,45 +171,44 @@ const Game = () => {
           // showAxes:true,
         },
       });
-      let scaleFactor = window.innerHeight * 0.6/500;
+      let scaleFactor = (window.innerHeight * 0.6) / 500;
       if (window.innerWidth < 2 * window.innerHeight) {
-        scaleFactor = window.innerWidth * 0.7/1000;
+        scaleFactor = (window.innerWidth * 0.7) / 1000;
       }
       constRender.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
       constRender.canvas.style.transformOrigin = "top center";
       setRender(constRender);
       Render.run(constRender);
-    
 
-    // render.canvas.style.transform = "scale(2,2)";
-    // render.bounds.min.x = 10;
+      // render.canvas.style.transform = "scale(2,2)";
+      // render.bounds.min.x = 10;
 
-    document.addEventListener("keydown", (e) => {
-      if (e.repeat) return;
-      if (e.code === KeyboardCodes.ArrowUp)
-        socket.emit("gamePlayerMove", {
-          direction: PlayerMove.Up,
-          action: MoveStat.Start,
-        });
-      else if (e.code === KeyboardCodes.ArrowDown)
-        socket.emit("gamePlayerMove", {
-          direction: PlayerMove.Down,
-          action: MoveStat.Start,
-        });
-    });
+      document.addEventListener("keydown", (e) => {
+        if (e.repeat) return;
+        if (e.code === KeyboardCodes.ArrowUp)
+          socket.emit("gamePlayerMove", {
+            direction: PlayerMove.Up,
+            action: MoveStat.Start,
+          });
+        else if (e.code === KeyboardCodes.ArrowDown)
+          socket.emit("gamePlayerMove", {
+            direction: PlayerMove.Down,
+            action: MoveStat.Start,
+          });
+      });
 
-    document.addEventListener("keyup", (e) => {
-      if (
-        e.code === KeyboardCodes.ArrowUp ||
-        e.code === KeyboardCodes.ArrowDown
-      )
-        socket.emit("gamePlayerMove", { action: MoveStat.Stop });
-    });
-  }
+      document.addEventListener("keyup", (e) => {
+        if (
+          e.code === KeyboardCodes.ArrowUp ||
+          e.code === KeyboardCodes.ArrowDown
+        )
+          socket.emit("gamePlayerMove", { action: MoveStat.Stop });
+      });
+    }
     return () => {
       if (render) {
-        Render.stop(render)
-        Engine.clear(engine)
+        Render.stop(render);
+        Engine.clear(engine);
         setRender(undefined);
         setEngine(undefined);
       }
@@ -223,39 +218,49 @@ const Game = () => {
   return (
     <Box
       width="100%"
-      bg='#2B2D31'
+      bg="#2B2D31"
       display="flex"
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
       className="debug"
     >
-  
-      <Box 
-      // className="debug"
-        width={ width * 0.6}
-      height="100px"
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-    >
-      <PlayerScore
-        name={name1}
-        image={avatar1 || "/defaultProfilePic.png"}
-        score={score1}
-        isLeft={true}
+      <Box
+        // className="debug"
+        width={width * 0.6}
+        height="100px"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <PlayerScore
+          name={name1}
+          image={avatar1 || "/defaultProfilePic.png"}
+          score={score1}
+          isLeft={true}
+        />
+        <Box w="1px" h="60px" bgColor="gray.600" m="0 5px" />
+        <PlayerScore
+          name={name2}
+          image={avatar2 || "/defaultProfilePic.png"}
+          score={score2}
+          isLeft={false}
+        />
+      </Box>
+      <div
+        id="render"
+        ref={divRef}
+        style={{
+          marginTop: "20px",
+          width: "100%",
+          border: "5px solid red",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       />
-      <Box w="1px" h="60px" bgColor="gray.600" m="0 5px"/>
-      <PlayerScore
-        name={name2}
-        image={avatar2 || "/defaultProfilePic.png"}
-        score={score2}
-        isLeft={false}
-      />
-    </Box>
-    <div id="render" ref={divRef} style={{marginTop: "20px" ,width:"100%", border: "5px solid red", display:"flex", justifyContent: 'center', alignItems: 'center'}}/>
-    {/* <CountDownModal isOpen={isCountDownOpen}  callback={countDownCallBack}/>
-    <WinnerModal winner={winner} isOpen={isWinnerOpen}/> */}
+      <CountDownModal isOpen={isCountDownOpen} callback={countDownCallBack} />
+      <WinnerModal winner={winner} isOpen={isWinnerOpen} />
     </Box>
   );
 };

@@ -14,15 +14,14 @@ import { Room } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import { FcIdea } from "react-icons/fc";
 import { useState } from "react";
-import { BiRightArrow } from "react-icons/bi";
 import { IoIosArrowForward } from "react-icons/io";
 
 const MessageButton = ({ target, icon }: any) => {
   const { rooms, setSelectedRoom, socket } = AppState();
   const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState('hello');
+  const [msg, setMsg] = useState("hello");
   const navigate = useNavigate();
-  const {user} = AppState();
+  const { user } = AppState();
   const message = () => {
     const room: Room = rooms.find((object: Room) => {
       return object.name === target.login && !object.isGroupChat;
@@ -32,10 +31,10 @@ const MessageButton = ({ target, icon }: any) => {
       navigate("/chat");
     }
   };
-  const send = () => { 
+  const send = () => {
     setIsLoading(true);
-    socket.emit('directMsg', {roomId: target.id, msg})
-  }
+    socket.emit("directMsg", { roomId: target.id, msg });
+  };
 
   const button = icon ? (
     <Button
@@ -50,34 +49,36 @@ const MessageButton = ({ target, icon }: any) => {
       message
     </Button>
   ) : (
-      <Button
-                height="45px"
-                width="100%"
-        display="flex"
-        borderRadius="3px"
-                p="0px 30px"
-                justifyContent={"space-between"}
-                alignItems="center"
-                variant="unstyled"
-                bg="#36373D"
-                rightIcon={<IoIosArrowForward/>}
-                color="gray.200"
+    <Button
+      height="45px"
+      mb="2px"
+      width="100%"
+      display="flex"
+      borderRadius="3px"
+      p="0px 30px"
+      justifyContent={"space-between"}
+      alignItems="center"
+      variant="unstyled"
+      bg="#36373D"
+      rightIcon={<IoIosArrowForward />}
+      color="gray.200"
       onClick={() => message()}
     >
       message
     </Button>
   );
   return (
-    <Popover gutter={-100} isLazy>
+    <Popover gutter={-92} isLazy>
       {({ onClose }) => (
         <>
           <PopoverTrigger>{button}</PopoverTrigger>
           <PopoverContent
             fontFamily="work sans"
-            width="296px"
-            borderRadius='3px'
-            height="150px"
-            bg="#B8B9BF"
+            width="350px"
+            border="2px solid #36373D"
+            borderRadius="3px"
+            height="186px"
+            bg="#36373D"
           >
             <Box
               display="flex"
@@ -86,8 +87,8 @@ const MessageButton = ({ target, icon }: any) => {
               pl="15px"
               pt="5px"
             >
-              <FcIdea size="20px" />
-              <Text fontSize="20px" ml="2px" color="gray.500">
+              <FcIdea size="10px" />
+              <Text fontSize="15px" ml="2px" color="#B8B9BF">
                 Please be nice in the chat!
               </Text>
             </Box>
@@ -98,18 +99,21 @@ const MessageButton = ({ target, icon }: any) => {
               justifyContent={"space-around"}
             >
               <Input
-                bg="white"
+                bg="#2C2D31"
                 fontFamily={"Inter"}
                 fontWeight="bold"
                 placeholder="Type a message"
                 p="15px"
-                color='gray.700'
+                color="gray.200"
                 fontSize="15px"
-                focusBorderColor="gray.200"
-                borderRadius="lg"
+                borderColor="#2C2D31"
+                focusBorderColor="#2C2D31"
+                borderRadius="3px"
                 height="45px"
                 width="95%"
-                onBlur={e => {setMsg(e.target.value)}}
+                onBlur={(e) => {
+                  setMsg(e.target.value);
+                }}
               />
               {/* <InputLeftElement height="100%" ml="7px">
                 <IconButton
@@ -129,29 +133,29 @@ const MessageButton = ({ target, icon }: any) => {
             <Box height="60px" display="flex" justifyContent={"flex-end"}>
               <Button
                 height="65%"
-                display={ isLoading ? 'none' : 'flex'}
+                display={isLoading ? "none" : "flex"}
                 colorScheme="gray"
-                bg="gray.300"
+                bg="#B8B9BF"
                 onClick={onClose}
                 mr="15px"
                 borderRadius="3px"
-                fontSize='15px'
+                fontSize="15px"
               >
-                  cancel
+                cancel
               </Button>
               <Button
-                mr="20px"
+                mr="10px"
                 height="65%"
                 isLoading={isLoading}
                 borderRadius="3px"
-                loadingText='send'
+                loadingText="send"
                 spinnerPlacement="end"
                 variant={"solid"}
                 colorScheme="teal"
                 onClick={send}
-                fontSize='15px'
+                fontSize="15px"
               >
-                  send
+                send
               </Button>
             </Box>
           </PopoverContent>

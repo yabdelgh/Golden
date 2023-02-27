@@ -43,7 +43,7 @@ const ProfileBar = (props: any) => {
       display="flex"
       flexDir="column"
       alignItems="center"
-      width="300px"
+      width="350px"
       bg="#2B2D31"
       // className="debug"
       // justifyContent={"center"}
@@ -111,7 +111,7 @@ const ProfileBar = (props: any) => {
           {userProfile.id !== user.id && (
             <Box
               display="flex"
-              height="141px"
+              height="fit-content"
               justifyContent="space-between"
               flexDir="column"
               alignItems="center"
@@ -123,6 +123,7 @@ const ProfileBar = (props: any) => {
                 width="100%"
                 display="flex"
                 p="0px 30px"
+                mb="2px"
                 justifyContent={"space-between"}
                 borderRadius="3px"
                 alignItems="center"
@@ -155,6 +156,7 @@ const ProfileBar = (props: any) => {
                   height="45px"
                   width="100%"
                   display="flex"
+                  mb="2px"
                   p="0px 30px"
                   justifyContent={"space-between"}
                   alignItems="center"

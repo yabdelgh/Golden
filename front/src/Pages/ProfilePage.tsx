@@ -20,7 +20,7 @@ const ProfilePage = () => {
     >
       
       <ProfileBar boxName={boxName} setBoxName={setBoxName} />
-      <Box width="calc(100% - 300px)">
+      <Box width="calc(100% - 350px)">
         <ChatHeader />
         { boxName ==="Friend List" ?
           <FriendsList /> :

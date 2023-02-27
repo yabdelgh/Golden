@@ -48,13 +48,13 @@ const ChatList = () => {
       flexDir="column"
       bg="#2B2D31"
       height="100%"
-      minW="300px"
-      color='gray.400'
+      minW="350px"
+      color="gray.400"
     >
       <CreateGroupModal>
         <Button
           m="5px 2% 3px 2%"
-          leftIcon={<AiOutlineUsergroupAdd size="25px"/>}
+          leftIcon={<AiOutlineUsergroupAdd size="25px" />}
           width="96%"
           height="50px"
           bg="#2E3035"
@@ -72,14 +72,24 @@ const ChatList = () => {
         </Button>
       </CreateGroupModal>
       <FormControl height="50px" width="96%" m="1% 2% 10px 2%" color="#B8B9BF">
-        <InputGroup borderColor="#2E3035" bg="#2E3035" height="50px" borderRadius="5px">
-          <Input placeholder="Find a conversation" height="100%"  focusBorderColor="#2E3035" color="gray.200"/>
+        <InputGroup
+          borderColor="#2E3035"
+          bg="#2E3035"
+          height="50px"
+          borderRadius="5px"
+        >
+          <Input
+            placeholder="Find a conversation"
+            height="100%"
+            focusBorderColor="#2E3035"
+            color="gray.200"
+          />
           <InputRightElement>
             <IconButton
               variant={"unstyled"}
               mt="10px"
               aria-label="Search User"
-              icon={<BsSearch  color="gray.400"/>}
+              icon={<BsSearch color="gray.400" />}
             />
           </InputRightElement>
         </InputGroup>
@@ -120,9 +130,17 @@ const ChatList = () => {
                 }
               >
                 {thereIsSomeOneOnline(users, room) ? (
-                  <AvatarBadge boxSize="0.8em" bg="#5CB85C" borderColor="#404249"/>
+                  <AvatarBadge
+                    boxSize="0.8em"
+                    bg="#5CB85C"
+                    borderColor="#404249"
+                  />
                 ) : (
-                  <AvatarBadge boxSize="0.8em" bg="#FF4136" borderColor="#2E3035"/>
+                  <AvatarBadge
+                    boxSize="0.8em"
+                    bg="#FF4136"
+                    borderColor="#2E3035"
+                  />
                 )}
               </Avatar>
               <Box ml="10px" display="flex" flexDirection="column">

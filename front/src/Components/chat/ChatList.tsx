@@ -126,7 +126,7 @@ const ChatList = () => {
                 )}
               </Avatar>
               <Box ml="10px" display="flex" flexDirection="column">
-                <Text p="0px 0px" color="#F3F4F5">
+                <Text p="0px 0px" color="#B8B9BF">
                   {room.name}
                 </Text>
                 {/* <Text fontSize="14px" fontFamily={"work sans"} color="gray.400">

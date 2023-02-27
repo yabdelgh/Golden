@@ -6,7 +6,8 @@ const PlayerScore = ({ name, score, image, isLeft }: any) => {
     <Box
       display="flex"
       flexDirection={isLeft ? "row" : "row-reverse"}
-      alignItems="center"
+      // alignItems="center"
+
       w="50%"
     >
       <Image
@@ -25,10 +26,10 @@ const PlayerScore = ({ name, score, image, isLeft }: any) => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Text fontSize="30px" fontWeight="bold" color="gray.800">
+        <Text fontSize="30px" fontWeight="bold" color="gray.200">
           {name}
         </Text>
-        <Text fontSize="30px" fontWeight="bold" color="gray.600">
+        <Text fontSize="30px" fontWeight="bold" color="gray.200">
           {score}
         </Text>
       </Box>

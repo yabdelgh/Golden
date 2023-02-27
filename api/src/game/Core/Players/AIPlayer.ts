@@ -8,7 +8,6 @@ export class AIPlayer extends APlayer {
   }
 
   public update_game_state(state: GameState): void {
-    // console.log("game state changed");
     this.follow_ball(state.ball);
   }
 

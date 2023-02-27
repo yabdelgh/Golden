@@ -21,8 +21,6 @@ export class Player extends APlayer {
   }
 
   public override update_game_state(): void {
-    // console.log("game state changed");
-    // call the callback that will send the new state to the client
     this.follow_ball();
   }
 

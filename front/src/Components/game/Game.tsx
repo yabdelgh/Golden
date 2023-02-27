@@ -1,11 +1,9 @@
 import { Box } from "@chakra-ui/react";
-import Matter, {
-  Bodies,
+import {
   Body,
   Composite,
   Engine,
   Render,
-  Runner,
   Vector,
   Events,
 } from "matter-js";
@@ -14,15 +12,12 @@ import {
   GameData,
   GameState,
   GameBodies,
-  SocketGamePlayerMoveData,
-  User,
 } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import _ from "lodash";
 import { removeNulls } from "../../Utils/cleanObject";
 import KeyboardCodes from "../../Utils/KeyboardCodes";
 import { MoveStat, PlayerMove } from "../../Utils/enums";
-import { Player } from "../../GameCore/Players/player";
 import PlayerScore from "./PlayerScore";
 import PriorityQueue from "ts-priority-queue";
 import WinnerModal from "./WinnerModal";
@@ -35,10 +30,10 @@ const gameDataqueue = new PriorityQueue<GameState>({
 });
 let FrameId = 0;
 const Game = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // const canvasRef = useRef<HTMLCanvasElement>(null);
   let divRef: any = React.createRef();
 
-  const { user, users, setUser } = AppState();
+  // const { user, users, setUser } = AppState();
   const [isWinnerOpen, setisWinnerOpen] = useState<boolean>(false);
   const [isCountDownOpen, setIsCountDownOpen] = useState<boolean>(true);
   const [winner, setWinner] = useState<{ login: string; image: string | null }>(
@@ -58,7 +53,8 @@ const Game = () => {
   const [ score1, setScore1 ] = useState<number>(0);
   const [ score2, setScore2 ] = useState<number>(0);
   const [ width, setWidth ] = useState<number>(window.innerWidth);
-  const [ height, setHeight ] = useState<number>(window.innerHeight);
+  const [height, setHeight] = useState<number>(window.innerHeight);
+  const [scale, setScale] = useState<number>(window.innerHeight);
   
   useEffect(() => {
     const updateWindowDimensions = () => {
@@ -76,6 +72,7 @@ const Game = () => {
       if (window.innerWidth < 2 * window.innerHeight) {
         scaleFactor = window.innerWidth * 0.7/1000;
       }
+      setScale(scaleFactor);
       render.canvas.style.transform = `scale(${scaleFactor},${scaleFactor})`;
     }
   }, [width, height]);
@@ -226,17 +223,19 @@ const Game = () => {
   return (
     <Box
       width="100%"
-      bg='white'
-      m="2px 0 0 2px"
+      bg='#2B2D31'
       display="flex"
       flexDirection="column"
       alignItems="center"
+      justifyContent="center"
+      className="debug"
     >
-    <Box 
-      width="85%"
+  
+      <Box 
+      // className="debug"
+        width={ width * 0.6}
       height="100px"
       display="flex"
-      flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
     >
@@ -254,9 +253,9 @@ const Game = () => {
         isLeft={false}
       />
     </Box>
-    <div id="render" ref={divRef} style={{marginTop: "50px"}} />
-    <CountDownModal isOpen={isCountDownOpen}  callback={countDownCallBack}/>
-    <WinnerModal winner={winner} isOpen={isWinnerOpen}/>
+    <div id="render" ref={divRef} style={{marginTop: "20px" ,width:"100%", border: "5px solid red", display:"flex", justifyContent: 'center', alignItems: 'center'}}/>
+    {/* <CountDownModal isOpen={isCountDownOpen}  callback={countDownCallBack}/>
+    <WinnerModal winner={winner} isOpen={isWinnerOpen}/> */}
     </Box>
   );
 };

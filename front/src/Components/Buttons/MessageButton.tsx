@@ -14,6 +14,8 @@ import { Room } from "../../../types";
 import { AppState } from "../../Context/AppProvider";
 import { FcIdea } from "react-icons/fc";
 import { useState } from "react";
+import { BiRightArrow } from "react-icons/bi";
+import { IoIosArrowForward } from "react-icons/io";
 
 const MessageButton = ({ target, icon }: any) => {
   const { rooms, setSelectedRoom, socket } = AppState();
@@ -48,9 +50,18 @@ const MessageButton = ({ target, icon }: any) => {
       message
     </Button>
   ) : (
-    <Button
-      height="35px"
-      display={user.id === target.id ? "none" : "flex"}
+      <Button
+                height="45px"
+                width="100%"
+        display="flex"
+        borderRadius="3px"
+                p="0px 30px"
+                justifyContent={"space-between"}
+                alignItems="center"
+                variant="unstyled"
+                bg="#36373D"
+                rightIcon={<IoIosArrowForward/>}
+                color="gray.200"
       onClick={() => message()}
     >
       message
@@ -63,9 +74,10 @@ const MessageButton = ({ target, icon }: any) => {
           <PopoverTrigger>{button}</PopoverTrigger>
           <PopoverContent
             fontFamily="work sans"
-            width={{base: '380px', md:'500px'}}
-            height="140px"
-            bg="#E9EBEE"
+            width="296px"
+            borderRadius='3px'
+            height="150px"
+            bg="#B8B9BF"
           >
             <Box
               display="flex"
@@ -122,6 +134,7 @@ const MessageButton = ({ target, icon }: any) => {
                 bg="gray.300"
                 onClick={onClose}
                 mr="15px"
+                borderRadius="3px"
                 fontSize='15px'
               >
                   cancel
@@ -130,6 +143,7 @@ const MessageButton = ({ target, icon }: any) => {
                 mr="20px"
                 height="65%"
                 isLoading={isLoading}
+                borderRadius="3px"
                 loadingText='send'
                 spinnerPlacement="end"
                 variant={"solid"}

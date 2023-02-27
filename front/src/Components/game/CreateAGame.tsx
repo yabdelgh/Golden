@@ -13,35 +13,44 @@ const CreateAGame = ({opponentType, setOpenentType, setMap, setInvit, send }: an
       width="100%"
       mt='2px'
       ml='2px'
-      bg="white"
+      bg="#2B2D31"
+      pl="20%"
       display="flex"
       flexDir="column"
-      alignItems="center"
+      alignItems="flex-start"
       justifyContent={"center"}
+      // className="debug"
     >
-      <Text fontSize="40px" color="gray.500">
+      {/* <Text fontSize="40px" color="#B8B9BF">
         Create a game
-      </Text>
-      <Box m="10px" maxW="1000px">
-        <Text fontSize="30px" color="gray.500">
-          Opponents
+      </Text> */}
+      <Box>
+        <Text fontSize="30px" color="#B8B9BF">
+          Opponent
         </Text>
         <PlayWith setOpenent={setOpenentType} />
       </Box>
-      <Box maxW='1000px' m="10px">
-        <Text fontSize="30px" color="gray.500">
-          Maps
+      <Box>
+        <Text fontSize="30px" color="#B8B9BF">
+          paddle
+        </Text>
+        <PlayWith setOpenent={setOpenentType} />
+      </Box>
+      <Box>
+        <Text fontSize="30px" color="#B8B9BF">
+          Map
         </Text>
         <Maps setMap={setMap} />
       </Box>
-      <Box width="50%" display="flex" justifyContent={"flex-end"}>
-        <Button width="100px" m="10px"
+      <Box width="490px" display="flex" justifyContent={"flex-end"}>
+        <Button width="100px" m="10px" borderRadius="3px"
         onClick={() => navigate('/profile')}
         >
           cancel
         </Button>
         <Button
           width="100px"
+          borderRadius="3px"
           m="10px"
           colorScheme={"teal"}
           onClick={() => (opponentType === "Friend" ? setInvit(true) : send())}

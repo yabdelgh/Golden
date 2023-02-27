@@ -14,7 +14,7 @@ const Challenge = ({ challenge, onClose }: any) => {
         height="130px"
         width="95%"
         m="10px"
-        bg='red'
+          bg="#2E3035"
         borderRadius={"lg"}
       >
         <Box display="flex" alignItems="center" m="15px">
@@ -61,7 +61,7 @@ const Challenge = ({ challenge, onClose }: any) => {
         width="95%"
         m="10px"
         borderRadius={"lg"}
-        bg="gray.100"
+        bg="#2E3035"
       >
         <Box display="flex" alignItems="center" mt="15px" ml="20px">
           <Avatar

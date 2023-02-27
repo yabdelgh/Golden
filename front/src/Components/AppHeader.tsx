@@ -38,10 +38,11 @@ function DrawerExample() {
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerContent
-          bg="#1E1F22"
+          bg="#2B2D31"
           mt="70px"
           mr="20px"
           width="30px"
+          color="gray.200"
           height="fit-content"
           borderRadius="lg"
           display="flex"
@@ -56,6 +57,7 @@ function DrawerExample() {
             m="10px"
             variant="solid"
             colorScheme="teal"
+            borderRadius="3px"
             width="95%"
             onClick={() => {
               onClose();

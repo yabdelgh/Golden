@@ -84,7 +84,6 @@ export class GameService {
         padelType,
         idx == 0 ? PlayerMove.Left : PlayerMove.Right,
       );
-      console.log('player-socket', player.user);
       const p = new Player(padel, player.user.id);
       p.GameUpdateCallback = (state: GameState) => {
         player.emit('game_update', state);
@@ -125,7 +124,6 @@ export class GameService {
     game.subscribeGameEnd((game: Game) => {
       // set the status and teh score to the database
       // remove the game from the map
-      console.log('game score : ', game.score);
       this.prisma.games
         .update({
           where: { id: game.id },

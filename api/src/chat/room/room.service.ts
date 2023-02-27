@@ -185,7 +185,6 @@ export class RoomService {
 
   async updateRoom(room: chatRoomDto, userId: number) {
     try {
-      console.log(room);
       const ret1 = await this.prisma.chatRooms.findFirst({
         where: {
           id: room.id,

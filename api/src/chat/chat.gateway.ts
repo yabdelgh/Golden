@@ -75,7 +75,6 @@ export class ChatGateway
   server: Server;
 
   afterInit() {
-    // console.log('init');
   }
 
   async getConnectedUsers(): Promise<UserDto[]> {
@@ -316,7 +315,6 @@ export class ChatGateway
     @ConnectedSocket() socket: mySocket,
     @MessageBody() payload: BanDto,
   ) {
-    console.log(payload);
     const ret = await this.roomService.banUser(
       socket.user.id,
       payload.roomId,
@@ -435,7 +433,6 @@ export class ChatGateway
     @MessageBody()
     payload: { roomId: number; userId: number; password?: string },
   ) {
-    console.log(payload);
     const blocked = await this.prismaService.blockedUser.findFirst({
       where: {
         blockedId: socket.user.id,
@@ -488,7 +485,6 @@ export class ChatGateway
       payload.userId,
       payload.roomId,
     );
-    console.log(action);
     this.server
       .in(`${payload.userId}`)
       .emit('deleteRoom', { id: payload.roomId });
@@ -564,7 +560,6 @@ export class ChatGateway
     } else {
       arenaType = oppSock.arenaType ?? socket.arenaType ?? ArenaType.Simple;
     }
-    console.log("arenaType", arenaType)
     const game = await this.gameService.newSimpleGame([socket, oppSock], arenaType);
     await oppSock.join(`Game${game.id}`);
     await socket.join(`Game${game.id}`);
@@ -657,7 +652,6 @@ export class ChatGateway
         socket.emit('gameData', safeStringify(data));
         return true;
       }
-      console.log('no game', gameId, game);
       return false;
     });
   }
@@ -671,7 +665,6 @@ export class ChatGateway
     const player: APlayer = game && game.get_player_by_id(socket.user.id);
     if (player) {
       if (move.action === MoveStat.Start) {
-        console.log('player try to move', player.id);
         (player as Player).start_moving(move.direction);
       } else if (move.action === MoveStat.Stop)
         (player as Player).stop_moving();

@@ -74,7 +74,6 @@ export abstract class APlayer {
 
   public get goal(): Body {
     if (!this._goal) {
-      console.log('left side', PlayerMove.Left, this._player_side);
       if (this._player_side == PlayerMove.Left)
         this._goal = Bodies.rectangle(
           0,

@@ -6,6 +6,9 @@ import { AppState } from "../../Context/AppProvider";
 import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
 import { FaClipboardList } from "react-icons/fa"
+import { BiRightArrow } from "react-icons/bi"
+import { IoIosArrowForward } from "react-icons/io";
+
 type BlockUserDto = {
   blockedId: number;
 };
@@ -73,40 +76,6 @@ const ProfileBar = (props: any) => {
               {userProfile.login}
             </Text>
           </Box>
-          {userProfile.id !== user.id && (
-            <Box display="flex" alignItems="center" gap="1rem">
-              {!isBlocked() && (
-                <>
-                  <MessageButton target={userProfile} icon={false} />
-                  <FriendButton target={userProfile} icon={false} />
-                </>
-              )}
-              <Button
-                height="35px"
-                onClick={
-                  blockedUsers.find(
-                    (blockedUser) => blockedUser.blockedId === userProfile.id
-                  )
-                    ? UnblockUser
-                    : BlockUser
-                }
-              >
-                {blockedUsers.find(
-                  (blockedUser) => blockedUser.blockedId === userProfile.id
-                )
-                  ? "Unblock"
-                  : "Block"}
-              </Button>
-              {userProfile && userProfile.inGame && (
-                <Button
-                  height="35px"
-                  onClick={() => navigate(`/live-game/${userProfile?.gameId}`)}
-                >
-                  {"Watch Game"}
-                </Button>
-              )}
-            </Box>
-          )}
           <Box width="96%" mt="30px" display="flex" flexDir="column">
             <Button
               pl="20px"
@@ -139,6 +108,63 @@ const ProfileBar = (props: any) => {
               Match History
             </Button>
           </Box>
+          {userProfile.id !== user.id && (
+        <Box display="flex" height="145px" justifyContent="space-between" flexDir="column" alignItems="center" width="96%" mt='50px'>
+              <Button
+                height="45px"
+                width="100%"
+                display="flex"
+                p="0px 30px"
+                justifyContent={"space-between"}
+        borderRadius="3px"
+                alignItems="center"
+                variant="unstyled"
+                bg="#36373D"
+                rightIcon={<IoIosArrowForward/>}
+                color="gray.200"
+                onClick={
+                  blockedUsers.find(
+                    (blockedUser) => blockedUser.blockedId === userProfile.id
+                  )
+                    ? UnblockUser
+                    : BlockUser
+                }
+              >
+                {blockedUsers.find(
+                  (blockedUser) => blockedUser.blockedId === userProfile.id
+                )
+                  ? "Unblock"
+                  : "Block"}
+              </Button>
+              {!isBlocked() && (
+                <>
+                  <MessageButton target={userProfile} icon={false}/>
+                  <FriendButton target={userProfile} icon={false} />
+                </>
+              )}
+              {userProfile && userProfile.inGame && (
+                <Button
+                  
+                height="45px"
+                width="100%"
+                display="flex"
+                p="0px 30px"
+                justifyContent={"space-between"}
+                alignItems="center"
+        borderRadius="3px"
+                
+                variant="unstyled"
+                bg="#36373D"
+                rightIcon={<IoIosArrowForward/>}
+                color="gray.200"
+
+                  onClick={() => navigate(`/live-game/${userProfile?.gameId}`)}
+                >
+                  {"Watch Game"}
+                </Button>
+              )}
+            </Box>
+          )}
         </>
       )}
     </Box>

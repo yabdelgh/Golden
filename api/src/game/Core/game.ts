@@ -83,7 +83,6 @@ export class Game {
   private subscribe_players_to_game_event() {
     for (const player of this._players) {
       this.subscribe(player.update_game_state.bind(player));
-      console.log();
     }
   }
 

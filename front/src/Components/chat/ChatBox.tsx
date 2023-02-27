@@ -15,7 +15,6 @@ import { BsFillEmojiSunglassesFill } from "react-icons/bs";
 import { BsFillMicFill } from "react-icons/bs";
 import { RoomUser } from "../../../types";
 import { getUserByName, thereIsSomeOneOnline } from "../../Utils/rooms";
-import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import UserProfile from "../UserProfile";
 import UsersList from "./UsersList";
 import { errorToast } from "../../Utils/Toast";

@@ -52,6 +52,8 @@ const ProfileHistory = () => {
   return (
     <Box
       // className="debug"
+      minW="600px"
+      minH="600px"
       height="calc(100% - 70px)"
     >
       <Text fontSize="25px" fontWeight="bold" color="#B8B9BF" m="35px">

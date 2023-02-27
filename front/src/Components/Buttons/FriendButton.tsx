@@ -1,5 +1,6 @@
 import { Box, Button } from "@chakra-ui/react";
 import { useEffect, useState, } from "react";
+import { IoIosArrowForward } from "react-icons/io";
 import { AppState } from "../../Context/AppProvider";
 
 const FriendButton = ({ target }: any) => {
@@ -20,15 +21,22 @@ const FriendButton = ({ target }: any) => {
 
 
     return (
-        <Box>
             <Button
-                height="35px"
-                display={'flex'}
+                height="45px"
+                width="100%"
+                display="flex"
+                p="0px 30px"
+                borderRadius="3px"
+                justifyContent={"space-between"}
+                alignItems="center"
+                variant="unstyled"
+                bg="#36373D"
+                rightIcon={<IoIosArrowForward/>}
+                color="gray.200"
                 onClick={() => socket.emit(action, target.id)}
             >
                 {action}
             </Button>
-        </Box>
     );
 };
 

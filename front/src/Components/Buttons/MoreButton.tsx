@@ -10,6 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaCog } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
 
 const MoreButton = ({ target }: any) => {
   const { selectedRoom, socket, user, setShowUP, setSelectedRoom } = AppState();
@@ -46,16 +47,19 @@ const MoreButton = ({ target }: any) => {
       <Popover>
         <PopoverTrigger>
           <Button
-            color="teal"
-            variant="unstyled"
-            height="70px"
-            width="110px"
-            display="flex"
-            flexDir="column"
-            justifyContent="space-around"
-            borderRadius="10px"
+             mb="2px"
+             height="45px"
+             width="100%"
+             display="flex"
+             p="0px 30px"
+             borderRadius="3px"
+             justifyContent={"space-between"}
+             alignItems="center"
+             variant="unstyled"
+             bg="#36373D"
+             rightIcon={<IoIosArrowForward/>}
+             color="gray.200"
           >
-            <FaCog size="38px" />
             <Text>more</Text>
           </Button>
         </PopoverTrigger>

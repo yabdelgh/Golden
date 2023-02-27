@@ -74,7 +74,7 @@ const MessageButton = ({ target, icon }: any) => {
           <PopoverTrigger>{button}</PopoverTrigger>
           <PopoverContent
             fontFamily="work sans"
-            width="350px"
+            width="320px"
             border="2px solid #36373D"
             borderRadius="3px"
             height="186px"

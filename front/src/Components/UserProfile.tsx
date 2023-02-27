@@ -46,8 +46,8 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
         display="flex"
         // className="debug"
         flexDir='column'
-        height={'85px'}
-        justifyContent="space-around"
+        height={'140px'}
+        justifyContent="center"
         width="90%"
         mt="50px"
       >

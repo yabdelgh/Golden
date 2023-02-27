@@ -43,7 +43,7 @@ const ProfileBar = (props: any) => {
       display="flex"
       flexDir="column"
       alignItems="center"
-      width="350px"
+      width="320px"
       bg="#2B2D31"
       // className="debug"
       // justifyContent={"center"}

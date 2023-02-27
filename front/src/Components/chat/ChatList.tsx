@@ -48,7 +48,7 @@ const ChatList = () => {
       flexDir="column"
       bg="#2B2D31"
       height="100%"
-      minW="350px"
+      minW="320px"
       color="gray.400"
     >
       <CreateGroupModal>

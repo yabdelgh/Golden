@@ -17,10 +17,11 @@ const ProfilePage = () => {
       // gap="2px"
       display='flex'
       height="100vh"
+      overflow="hidden"
     >
       
       <ProfileBar boxName={boxName} setBoxName={setBoxName} />
-      <Box width="calc(100% - 350px)">
+      <Box width="calc(100% - 320px)">
         <ChatHeader />
         { boxName ==="Friend List" ?
           <FriendsList /> :

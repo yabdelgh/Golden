@@ -31,7 +31,7 @@ const UsersList = () => {
   };
 
   useEffect(() => {
-    selectedRoom &&
+    selectedRoom && selectedRoom.isGroupChat &&
       setOnlineCounter(() => {
         const ret = users.filter(
           (user: User) =>

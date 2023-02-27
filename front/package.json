@@ -2,7 +2,7 @@
   "name": "front",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3333",
+  "proxy": "http://10.30.175.104:3333",
   "dependencies": {
     "@chakra-ui/react": "^2.3.7",
     "@emotion/react": "^11.10.5",

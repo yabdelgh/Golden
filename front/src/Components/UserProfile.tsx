@@ -20,33 +20,28 @@ const UserProfile = ({ showUP }: { showUP: any }) => {
       pl='10px'
       display="flex"
       flexDir="column"
-      // justifyContent="center"
-      // alignItems="center"
+      alignItems="center"
       height="100%"
       width="100%"
       minWidth="20rem"
       min-width="25rem"
       minHeight="400px"
-      mt="10px"
+    mt="40px"
       // className="debug"
     >
-      <Box width="13rem" height="fit-content">
         <Avatar
-          // shadow="xl"
           fontSize="9xl"
           bg="chakra-placeholder-color"
           color="white"
-          borderRadius='5px'
           size="2xl"
           cursor="pointer"
           name={showUP.login}
           src={showUP?.imageUrl || "/defaultProfilePic.png"}
         />
-      </Box>
-      <Text fontSize="30px" color="gray.600">
+      <Text fontSize="30px" color="#B8B9BF">
         {showUP.login}
       </Text>
-      <Text fontSize="15px">{getRole(selectedRoom, showUP?.id)}</Text>
+      <Text fontSize="15px" color="white">{getRole(selectedRoom, showUP?.id)}</Text>
       <Box
         display="flex"
         // className="debug"

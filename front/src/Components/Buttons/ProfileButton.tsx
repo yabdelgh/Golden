@@ -1,5 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { FaUser } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../../Context/AppProvider";
 
@@ -28,8 +29,18 @@ const ProfileButton = ({ target, icon }: any) => {
     </Button>
   ) : (
     <Button
-      bg="gray.100"
-      height="40px"
+        height="45px"
+        mb="2px"
+                width="100%"
+                display="flex"
+                p="0px 30px"
+                borderRadius="3px"
+                justifyContent={"space-between"}
+                alignItems="center"
+                variant="unstyled"
+                bg="#36373D"
+                rightIcon={<IoIosArrowForward/>}
+                color="gray.200"
       onClick={() => profile()}
     >
       profile 

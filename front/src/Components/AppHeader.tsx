@@ -38,13 +38,13 @@ function DrawerExample() {
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerContent
-          bg="#2B2D31"
-          mt="70px"
+          bg="#36373D"
+          mt="60px"
           mr="20px"
           width="30px"
-          color="gray.200"
+          color="gray.300"
           height="fit-content"
-          borderRadius="lg"
+          borderRadius="5px"
           display="flex"
           alignItems="center"
           justifyContent="space-around"
@@ -56,6 +56,7 @@ function DrawerExample() {
           <Button
             m="10px"
             variant="solid"
+            color="gray.200"
             colorScheme="teal"
             borderRadius="3px"
             width="95%"
@@ -89,11 +90,13 @@ const ChatHeader = () => {
       bg="#2E3035"
       height="60px"
       width="100%"
-      display={user.login ? "flex" : "none"}
+      // display={user.login ? "flex" : "none"}
+      display="flex"
       justifyContent="space-between"
       px={"2rem"}
       alignItems="center"
-      minWidth={"700px"}
+      minWidth={"500px"}
+      
       borderBottom="2px solid #2B2D31"
     >
       {/* <Text
@@ -120,7 +123,7 @@ const ChatHeader = () => {
       <Box
         width="140px"
         display="flex"
-        mr="20px"
+        mr="30px"
         justifyContent="space-between"
         alignItems="center"
       >
@@ -128,48 +131,55 @@ const ChatHeader = () => {
         <IoMdNotifications size="25px" color="#B8B9BF" />
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
           <PopoverTrigger>
-            <GoSettings size="25px" cursor="pointer" color="#B8B9BF" />
-            {/* <Avatar
-              bg="teal"
-              color="white"
-              size="md"
-              border="3px solid white"
-              cursor="pointer"
-              name={user.login}
-              src={user.imageUrl || "/defaultProfilePic.png"}
-            /> */}
+            <Button variant="unstyled" display='flex'>
+              <GoSettings size="25px" cursor="pointer" color="#B8B9BF" />
+            </Button>
           </PopoverTrigger>
           <PopoverContent
-            width="150px"
+            p="5px"
+            width="170px"
             boxShadow="none"
+            bg="#1E1F22"
+            borderColor="#2E3035"
+            color="#B8B9BF"
             _focus={{ boxShadow: "none" }}
           >
-            <PopoverArrow />
+            <PopoverArrow bg="#B8B9BF" />
             <PopoverBody>
-              <Button
+              {/* <Button
                 display="flex"
                 justifyContent="space-around"
                 variant="unstyled"
                 width="100%"
+                height="50px"
+                borderBottom="1px solid #2E3035"
+                borderRadius="0px"
                 onClick={() => {
                   navigate("/profile");
                   onClose();
                 }}
               >
                 Profile <CgProfile size="20px" />
-              </Button>
+              </Button> */}
               <Button
                 display="flex"
+                height="50px"
                 justifyContent="space-around"
-                variant={"unstyled"}
+                borderBottom="1px solid #2E3035"
+                variant="unstyled"
                 width="100%"
-                onClick={logoutHandler}
+                onClick={() => {
+                  setOpenEditProfile(true);
+                }}
               >
-                Log out <HiOutlineLogout size="20px" />
+                Settings
+                <RiUserSettingsLine size="20px" />
               </Button>
               <Button
                 display="flex"
+                height="50px"
                 justifyContent="space-around"
+                borderBottom="1px solid #2E3035"
                 variant="unstyled"
                 width="100%"
                 onClick={() => {
@@ -181,15 +191,13 @@ const ChatHeader = () => {
               </Button>
               <Button
                 display="flex"
+                height="50px"
                 justifyContent="space-around"
-                variant="unstyled"
+                variant={"unstyled"}
                 width="100%"
-                onClick={() => {
-                  setOpenEditProfile(true);
-                }}
+                onClick={logoutHandler}
               >
-                Settings
-                <RiUserSettingsLine size="20px" />
+                Log out <HiOutlineLogout size="20px" />
               </Button>
             </PopoverBody>
           </PopoverContent>

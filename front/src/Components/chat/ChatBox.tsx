@@ -180,7 +180,7 @@ const ChatBox = () => {
                               <Text fontSize="12px" color="gray.400" ml="3px">
                                 {isMember(msg.userId) ? "" : "(ExMember)"}
                               </Text>
-                              <Text pl="7px">{msg.createdAt}</Text>
+                              <Text pl="7px" fontSize="15px">{msg.createdAt}</Text>
                             </Box>
                             {msg.msg}
                           </Box>

@@ -18,7 +18,8 @@ const UsersList = () => {
   const [offlineCounter, setOfflineCounter] = useState(0);
 
   const getUsers = (status: boolean): User[] => {
-    if (!selectedRoom || !selectedRoom.isGroupChat || !selectedRoom.RoomUsers) return [];
+    if (!selectedRoom || !selectedRoom.isGroupChat || !selectedRoom.RoomUsers)
+      return [];
     return selectedRoom.RoomUsers.map((roomUser: RoomUser) => {
       if (roomUser.status === "Member")
         return users.find(
@@ -31,7 +32,7 @@ const UsersList = () => {
   };
 
   useEffect(() => {
-    selectedRoom && selectedRoom.isGroupChat &&
+    if (selectedRoom && selectedRoom.isGroupChat) {
       setOnlineCounter(() => {
         const ret = users.filter(
           (user: User) =>
@@ -42,16 +43,17 @@ const UsersList = () => {
         );
         return ret.length;
       });
-    setOfflineCounter(() => {
-      const ret = users.filter(
-        (user: User) =>
-          !user.isOnline &&
-          selectedRoom.RoomUsers.some(
-            (ele: any) => ele.userId === user.id && ele.status !== "ExMember"
-          )
-      );
-      return ret.length;
-    });
+      setOfflineCounter(() => {
+        const ret = users.filter(
+          (user: User) =>
+            !user.isOnline &&
+            selectedRoom.RoomUsers.some(
+              (ele: any) => ele.userId === user.id && ele.status !== "ExMember"
+            )
+        );
+        return ret.length;
+      });
+    }
   }, [users, selectedRoom, rooms]);
 
   return (
@@ -62,8 +64,13 @@ const UsersList = () => {
         justifyContent="space-between"
         width={"100%"}
       >
-      <FormControl height="50px" width="98%" m="1px 1% 10px 1%">
-        <InputGroup borderColor="#2E3035" bg="#2E3035" height="50px" borderRadius="5px">
+        <FormControl height="50px" width="98%" m="1px 1% 10px 1%">
+          <InputGroup
+            borderColor="#2E3035"
+            bg="#2E3035"
+            height="50px"
+            borderRadius="5px"
+          >
             <Input
               placeholder="Search"
               height="100%"
@@ -77,8 +84,8 @@ const UsersList = () => {
                 variant={"unstyled"}
                 aria-label="Search User"
                 color="gray.400"
-                pt='10px'
-                icon={<BsSearch/>}
+                pt="10px"
+                icon={<BsSearch />}
               />
             </InputRightElement>
           </InputGroup>

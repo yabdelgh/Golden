@@ -9,15 +9,9 @@ const ProfilePage = () => {
   const [boxName, setBoxName] = useState("Friend List");
   return (
     <Box
-      width={"100%"}
-      // display="grid"
-      // gridTemplateColumns={{ base: "1fr", xl: "1fr 1fr" }}
-      // alignItems="stretch"
-      // gridAutoRows="minmax(400px, auto)"
-      // gap="2px"
+      width="100%"
       display='flex'
       height="100vh"
-      overflow="hidden"
     >
       
       <ProfileBar boxName={boxName} setBoxName={setBoxName} />

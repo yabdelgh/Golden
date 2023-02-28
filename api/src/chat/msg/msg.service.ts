@@ -11,8 +11,9 @@ export class MsgService {
   formatDate(date: Date): string {
     const current: Date = new Date();
     if (date.toLocaleDateString() === current.toLocaleDateString())
-      return date.toLocaleTimeString();
-    return date.toLocaleDateString();
+      return (date.toLocaleTimeString().substring(0,4) + date.toLocaleTimeString().substring(7));
+    const data = (date.toLocaleDateString().slice(0, 4));
+    return data;
   }
 
   async addMsg(msg: chatMsgDto) {
@@ -39,6 +40,7 @@ export class MsgService {
         },
       });
       message.createdAt = this.formatDate(message.createdAt);
+      console.log(message);
       return message;
     } else throw new WsException('Unauthorized');
   }

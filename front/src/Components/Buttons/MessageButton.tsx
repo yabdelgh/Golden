@@ -85,7 +85,7 @@ const MessageButton = ({ target, icon }: any) => {
               alignItems={"center"}
               justifyContent="flex-start"
               pl="15px"
-              pt="5px"
+              pt="15px"
             >
               <FcIdea size="10px" />
               <Text fontSize="15px" ml="2px" color="#B8B9BF">

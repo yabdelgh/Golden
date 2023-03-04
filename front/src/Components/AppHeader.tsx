@@ -73,7 +73,7 @@ function DrawerExample() {
   );
 }
 
-const ChatHeader = () => {
+const AppHeader = () => {
   const navigate = useNavigate();
   const { user, setUser, socket, setOpenEditProfile } = AppState();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -90,26 +90,15 @@ const ChatHeader = () => {
       bg="#2E3035"
       height="60px"
       width="100%"
-      // display={user.login ? "flex" : "none"}
       display="flex"
       justifyContent="space-between"
-      px={"2rem"}
       alignItems="center"
-      minWidth={"500px"}
-      
       borderBottom="2px solid #2B2D31"
+      pl="2rem"
+      // className="debug"
     >
-      {/* <Text
-        color="teal"
-        fontSize="2xl"
-        fontFamily="Work sans"
-        fontWeight="bold"
-      >
-        Golden
-      </Text> */}
       <SearchModal>
         <Button
-          // leftIcon={<BsSearch />}
           fontFamily="Inter"
           width="150px"
           height="40px"
@@ -146,21 +135,6 @@ const ChatHeader = () => {
           >
             <PopoverArrow bg="#B8B9BF" />
             <PopoverBody>
-              {/* <Button
-                display="flex"
-                justifyContent="space-around"
-                variant="unstyled"
-                width="100%"
-                height="50px"
-                borderBottom="1px solid #2E3035"
-                borderRadius="0px"
-                onClick={() => {
-                  navigate("/profile");
-                  onClose();
-                }}
-              >
-                Profile <CgProfile size="20px" />
-              </Button> */}
               <Button
                 display="flex"
                 height="50px"
@@ -207,4 +181,4 @@ const ChatHeader = () => {
   );
 };
 
-export default ChatHeader;
+export default AppHeader;

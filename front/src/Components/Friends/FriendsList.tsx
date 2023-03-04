@@ -17,20 +17,19 @@ const FriendsList = () => {
   };
   return (
     <Box
+      height="calc(100% - 60px)"
       // className="debug"
-      height="calc(100% - 70px)"
-      // overflow='scroll'
     >
-      <Text fontSize="25px" fontWeight="bold" color="#B8B9BF" m="35px">
+      <Text fontSize="25px" fontWeight="bold" color="#B8B9BF" m="35px 0px 20px 35px">
         Friends List
       </Text>
       <Box
         display={"flex"}
         flexWrap={"wrap"}
-        ml="20px"
+        ml="35px"
         mr="30px"
-        // className="debug"
-        height="calc(100% - 120px)"
+        overflow="scroll"
+        height="calc(100% - 95px)"
       >
         {Friends.length ? (
           users.map(
@@ -48,7 +47,8 @@ const FriendsList = () => {
                   color="gray.200"
                   height="250px"
                   width="230px"
-                  ml='20px'
+                  mr='20px'
+                  mb='20px'
                   p="15px"
                   borderRadius="lg"
                   alignItems="center"

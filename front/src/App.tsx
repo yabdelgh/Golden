@@ -54,15 +54,15 @@ function App() {
     );
   }, [setSocket]);
 
-  useEffect(() => {
-    if (
-      location.pathname !== "/" &&
-      !user.login &&
-      location.pathname !== "/twoFA"
-    )
-      navigate("/");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     location.pathname !== "/" &&
+  //     !user.login &&
+  //     location.pathname !== "/twoFA"
+  //   )
+  //   navigate("/");
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     if (!socket) return;
@@ -391,20 +391,7 @@ function App() {
   if (!user) return <></>;
   else if (user.isFirstLogin) return <EditProfile />;
   return (
-    <Box className="App" padding="0px 0 0 70px" minW={"700px"}>
-      <Box
-        position="fixed"
-        zIndex="100"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
-        fontSize={12}
-        color="#00000039"
-        _hover={{ color: "#000000" }}
-        transition="all 0.5s ease-in-out 0.3s"
-      >
-        {/* {JSON.stringify({ user })} */}
-      </Box>
+    <Box className="App" minW={"700px"}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/loading" element={<LoadingPage />} />

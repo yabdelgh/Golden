@@ -133,13 +133,13 @@ const ChatList = () => {
                   <AvatarBadge
                     boxSize="0.8em"
                     bg="#5CB85C"
-                    borderColor="#404249"
+                    borderColor="#36373D"
                   />
                 ) : (
                   <AvatarBadge
                     boxSize="0.8em"
                     bg="#FF4136"
-                    borderColor="#2E3035"
+                    borderColor="#2B2D31"
                   />
                 )}
               </Avatar>

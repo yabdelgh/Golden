@@ -19,6 +19,7 @@ import UserProfile from "../UserProfile";
 import UsersList from "./UsersList";
 import { errorToast } from "../../Utils/Toast";
 import ChatSettings from "./chatSettings";
+import AppHeader from "../AppHeader";
 
 const ChatBox = () => {
   const {
@@ -91,11 +92,9 @@ const ChatBox = () => {
 
   return (
     <Box
-      width="100%"
+      width="calc(100% - 390px)"
       bg="#2E3035"
       height="100%"
-      // borderRadius="lg"
-      // borderLeft="3px #232428 solid"
     >
       {selectedRoom ? (
         <>
@@ -238,18 +237,14 @@ const ChatBox = () => {
           </Box>
         </>
       ) : (
-        <Box
-          height="90%"
+          <Box
+          height="100%"
           display="flex"
           color="#B8B9BF"
           flexDir="column"
           alignItems="center"
-          justifyContent="center"
-          fontSize={"50px"}
-        >
-          <Text fontSize="25px" mt="50px">
-            Select a room to start chatting
-          </Text>
+          >
+            <AppHeader />
         </Box>
       )}
     </Box>

@@ -12,10 +12,11 @@ const Challenge = ({ challenge, onClose }: any) => {
     return (
       <Box
         height="130px"
-        width="95%"
-        m="10px"
+        width="100%"
           bg="#2E3035"
-        borderRadius={"lg"}
+        borderRadius={"3px"}
+        pt="2px"
+        mt="10px"
       >
         <Box display="flex" alignItems="center" m="15px">
           <Avatar
@@ -23,7 +24,7 @@ const Challenge = ({ challenge, onClose }: any) => {
             borderRadius="full"
             size="md"
             name={opponent ? opponent.login : ""}
-            src={user.imageUrl}
+            src={opponent.imageUrl}
           />
           <Text ml="10px">{opponent.login}</Text>
         </Box>
@@ -57,11 +58,12 @@ const Challenge = ({ challenge, onClose }: any) => {
     );
     return (
       <Box
-        height="120px"
-        width="95%"
-        m="10px"
-        borderRadius={"lg"}
-        bg="#2E3035"
+        height="130px"
+        width="100%"
+          bg="#2E3035"
+        borderRadius={"3px"}
+        pt="2px"
+        mt="10px"
       >
         <Box display="flex" alignItems="center" mt="15px" ml="20px">
           <Avatar

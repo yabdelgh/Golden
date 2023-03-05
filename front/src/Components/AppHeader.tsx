@@ -28,47 +28,48 @@ function DrawerExample() {
 
   return (
     <>
-      <IconButton
-        variant={"unstyled"}
-        color="#B8B9BF"
-        _hover={{ color: "white" }}
-        aria-label="Search database"
-        icon={<IoGameControllerOutline size="30px" />}
-        onClick={onOpen}
-      />
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-        <DrawerContent
-          bg="#36373D"
-          mt="60px"
-          mr="20px"
-          width="30px"
-          color="gray.300"
-          height="fit-content"
-          borderRadius="5px"
-          display="flex"
-          alignItems="center"
-          justifyContent="space-around"
+      <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+        <PopoverTrigger>
+          <IconButton
+            variant={"unstyled"}
+            color="#B8B9BF"
+            _hover={{ color: "white" }}
+            aria-label="Search database"
+            icon={<IoGameControllerOutline size="30px" />}
+            onClick={onOpen}
+          />
+        </PopoverTrigger>
+        <PopoverContent
+          width="300px"
+          boxShadow="none"
+          bg="#1E1F22"
+          borderColor="#2E3035"
+              color="#B8B9BF"
+          _focus={{ boxShadow: "none" }}
         >
-          <Text mt="15px">Challenges ({challenges.length})</Text>
-          {challenges.length !== 0 && (
-            <Challenge challenge={challenges[0]} onClose={onClose} />
-          )}
-          <Button
-            m="10px"
-            variant="solid"
-            color="gray.200"
-            colorScheme="teal"
-            borderRadius="3px"
-            width="95%"
-            onClick={() => {
-              onClose();
-              navigate("/game");
-            }}
-          >
-            create a game
-          </Button>
-        </DrawerContent>
-      </Drawer>
+          <PopoverArrow bg="#B8B9BF" />
+          <PopoverBody>
+            <Text width="115px"  m="auto" mt="10px">Challenges ({challenges.length})</Text>
+            {challenges.length !== 0 && (
+              <Challenge challenge={challenges[0]} onClose={onClose} />
+            )}
+            <Button
+              mt="15px"
+              mb="7px"
+              variant="solid"
+              colorScheme="teal"
+              borderRadius="3px"
+              width="100%"
+              onClick={() => {
+                onClose();
+                navigate("/game");
+              }}
+            >
+              create a game
+            </Button>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
     </>
   );
 }
@@ -95,7 +96,6 @@ const AppHeader = () => {
       alignItems="center"
       borderBottom="2px solid #2B2D31"
       pl="2rem"
-      // className="debug"
     >
       <SearchModal>
         <Button
@@ -120,7 +120,7 @@ const AppHeader = () => {
         <IoMdNotifications size="25px" color="#B8B9BF" />
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
           <PopoverTrigger>
-            <Button variant="unstyled" display='flex'>
+            <Button variant="unstyled" display="flex">
               <GoSettings size="25px" cursor="pointer" color="#B8B9BF" />
             </Button>
           </PopoverTrigger>
@@ -140,6 +140,7 @@ const AppHeader = () => {
                 height="50px"
                 justifyContent="space-around"
                 borderBottom="1px solid #2E3035"
+                borderRadius="0px"
                 variant="unstyled"
                 width="100%"
                 onClick={() => {
@@ -156,6 +157,7 @@ const AppHeader = () => {
                 borderBottom="1px solid #2E3035"
                 variant="unstyled"
                 width="100%"
+                borderRadius="0px"
                 onClick={() => {
                   navigate("/security");
                   onClose();

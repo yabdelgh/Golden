@@ -2,29 +2,71 @@ import { Box, Button, Text } from "@chakra-ui/react";
 import PlayWith from "./PlayWith";
 import Maps from "../game/Maps";
 import { useNavigate } from "react-router-dom";
+import { RiAddLine } from "react-icons/ri";
 
-const CreateAGame = ({opponentType, setOpenentType, setMap, setInvit, send }: any) => {
-
+const CreateAGame = ({
+  opponentType,
+  setOpenentType,
+  setMap,
+  setInvit,
+  send,
+}: any) => {
   const navigate = useNavigate();
 
   return (
     <Box
       height="100vh"
       width="100%"
-      mt='2px'
-      ml='2px'
-      bg="#2B2D31"
-      pl="20%"
       display="flex"
-      flexDir="column"
-      alignItems="flex-start"
+      alignItems="center"
+      color="#B8B9BF"
       justifyContent={"center"}
       // className="debug"
     >
+     
+      <Box as="fieldset" border="2px solid #B8B9BF" borderRadius={"lg"} m="50px">
+        <Text as="legend" fontSize="30px" whiteSpace="pre" ml="30px">
+          {" "} Opponent{"  "}
+        </Text>
+        <Button
+          variant={"outline"}
+          width="300px"
+          height="300px"
+          m="30px"
+        >
+          <RiAddLine size="full" color="#B8B9BF" />
+        </Button>
+      </Box>
+      <Box as="fieldset" border="2px solid #B8B9BF" borderRadius={"lg"} m="50p">
+        <Text as="legend" fontSize="30px" whiteSpace="pre" ml="30px">
+          {" "} Paddle{"  "}
+        </Text>
+        <Button
+          variant={"outline"}
+          width="300px"
+          height="300px"
+          m="30px"
+        >
+          <RiAddLine size="full" color="#B8B9BF" />
+        </Button>
+      </Box>
+      <Box as="fieldset" border="2px solid #B8B9BF" borderRadius={"lg"} m="50px">
+        <Text as="legend" fontSize="30px" whiteSpace="pre" ml="30px">
+          {" "} Map{"  "}
+        </Text>
+        <Button
+          variant={"outline"}
+          width="300px"
+          height="300px"
+          m="30px"
+        >
+          <RiAddLine size="full" color="#B8B9BF" />
+        </Button>
+      </Box>
       {/* <Text fontSize="40px" color="#B8B9BF">
         Create a game
       </Text> */}
-      <Box>
+      {/* <Box>
         <Text fontSize="30px" color="#B8B9BF">
           Opponent
         </Text>
@@ -57,7 +99,7 @@ const CreateAGame = ({opponentType, setOpenentType, setMap, setInvit, send }: an
         >
           {opponentType === "Friend" ? "Next" : "Play"}
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

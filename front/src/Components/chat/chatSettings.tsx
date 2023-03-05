@@ -15,7 +15,7 @@ import { getUserByName } from "../../Utils/rooms";
 import { ImUsers, ImUser } from "react-icons/im";
 import { useEffect } from "react";
 import { RoomUser } from "../../../types";
-import { AiOutlineClose } from "react-icons/ai";
+import { BsFillReplyFill } from "react-icons/bs";
 
 const ChatSettings = () => {
   const {
@@ -106,7 +106,7 @@ const ChatSettings = () => {
             setShowUP(undefined);
             setSelectedRoom(undefined);
           }}
-          icon={<AiOutlineClose size="22px" />}
+          icon={<BsFillReplyFill size="22px" />}
         />
       )}
       <IconButton

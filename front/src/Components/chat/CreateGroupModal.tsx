@@ -76,7 +76,6 @@ const CreateGroupModal = ({ children }: any) => {
       <Modal size="md" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent
-          border="5px white solid"
           borderRadius="5px"
           fontFamily="Inter"
         >
@@ -90,6 +89,7 @@ const CreateGroupModal = ({ children }: any) => {
               <Input
                 placeholder="Group name"
                 focusBorderColor="gray.200"
+                    height="50px"
                 onBlur={(e) => setName(e.target.value)}
               />
             </FormControl>
@@ -98,6 +98,7 @@ const CreateGroupModal = ({ children }: any) => {
                 <InputGroup size="md">
                   <Input
                     onBlur={(e) => setPassword(e.target.value)}
+                    height="50px"
                     type={show ? "text" : "password"}
                     placeholder="Password"
                     focusBorderColor="gray.200"
@@ -118,19 +119,19 @@ const CreateGroupModal = ({ children }: any) => {
             <FormControl as="fieldset" m="15px 0px">
               <RadioGroup>
                 <HStack spacing="16px">
-                  <RadioEx {...getRadioProps({ value: "Private" })} bg='#BAD1C2'>
+                  <RadioEx {...getRadioProps({ value: "Private" })} bg='gray'>
                     <Box display={"flex"} alignItems={"center"} width='fit-content'>
                       <FcLock size="20px" />
                       <Text m="0px 5px">Private</Text>
                     </Box>
                   </RadioEx>
-                  <RadioEx {...getRadioProps({ value: "Protected" })} bg='#BAD1C2'>
+                  <RadioEx {...getRadioProps({ value: "Protected" })} bg='gray'>
                     <Box display={"flex"} alignItems={"center"}>
                       <FcKey size="20px" />
                       <Text m="0px 5px">Protected</Text>
                     </Box>
                   </RadioEx>
-                  <RadioEx {...getRadioProps({ value: "Public" })} bg='#BAD1C2'>
+                  <RadioEx {...getRadioProps({ value: "Public" })} bg='gray'>
                     <Box display={"flex"} alignItems={"center"}>
                       <GiWorld size="20px" />
                       <Text m='0px 5px'>public</Text>

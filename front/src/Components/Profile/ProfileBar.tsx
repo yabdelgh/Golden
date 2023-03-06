@@ -6,7 +6,7 @@ import { AppState } from "../../Context/AppProvider";
 import FriendButton from "../Buttons/FriendButton";
 import MessageButton from "../Buttons/MessageButton";
 import { FaClipboardList } from "react-icons/fa";
-import { BiRightArrow } from "react-icons/bi";
+import { HiHome } from "react-icons/hi";
 import { IoIosArrowForward } from "react-icons/io";
 
 type BlockUserDto = {
@@ -77,6 +77,21 @@ const ProfileBar = (props: any) => {
             </Text>
           </Box>
           <Box width="96%" mt="30px" display="flex" flexDir="column">
+            <Button
+              pl="20px"
+              display="flex"
+              justifyContent={"flex-start"}
+              leftIcon={<HiHome size="20px" />}
+              borderRadius="5px"
+              height="50px"
+              color="#B8B9BF"
+              variant="unstyled"
+              fontSize="20px"
+              bg={props.boxName === "Profile" ? "#36373D" : "#2B2D31"}
+              onClick={() => props.setBoxName("Profile")}
+            >
+              Home
+            </Button>
             <Button
               pl="20px"
               display="flex"

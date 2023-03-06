@@ -39,12 +39,12 @@ function App() {
     setSearchs,
     setChallenges,
     setBlockedUsers,
-    selectedRoom,
-    blockedUsers,
+    // selectedRoom,
+    // blockedUsers,
     user,
   } = AppState();
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   useEffect(() => {
     setSocket(() =>
       io(`${process.env.REACT_APP_BACK_HOST}/chat`, {
@@ -380,7 +380,7 @@ function App() {
 
     socket.on("disconnect", () => {
       setUser({});
-      navigate("/useHere");
+      // navigate("/useHere");
     });
 
     return () => {

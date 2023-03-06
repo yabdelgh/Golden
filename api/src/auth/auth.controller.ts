@@ -87,7 +87,7 @@ export class AuthController {
   async samira(@Res() res) {
     const payload = {
       id: 2,
-      authenticated: true
+      authenticated: true,
     };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '7d',

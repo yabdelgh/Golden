@@ -1,20 +1,16 @@
-import React, { useEffect } from "react";
-import {
-  Box,
-  Container,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import Login from "../Components/auth/login";
-import SignUp from "../Components/auth/signUp";
 
 const LoginPage = () => {
   return (
-<Box bg="#1E1F22" display="flex" width="100%" pt="10%" alignItems="flex-start" justifyContent="center">
+    <Box
+      bg="#1E1F22"
+      display="flex"
+      width="100%"
+      pt="10%"
+      alignItems="flex-start"
+      justifyContent="center"
+    >
       <Box fontFamily="Pathway Gothic One" mr="150px">
         <Text fontSize="70px" color="teal" fontWeight="bold">
           transcendence
@@ -23,9 +19,9 @@ const LoginPage = () => {
           Free, Fan and Ready To Play !
         </Text>
       </Box>
-              <Login />
-              {/* <SignUp /> */}
-      </Box>
+      <Login />
+      {/* <SignUp /> */}
+    </Box>
   );
 };
 // import { Box, Button, Text } from "@chakra-ui/react";

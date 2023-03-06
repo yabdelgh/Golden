@@ -20,7 +20,12 @@ const FriendsList = () => {
       height="calc(100% - 60px)"
       // className="debug"
     >
-      <Text fontSize="25px" fontWeight="bold" color="#B8B9BF" m="35px 0px 20px 35px">
+      <Text
+        fontSize="25px"
+        fontWeight="bold"
+        color="#B8B9BF"
+        m="35px 0px 20px 35px"
+      >
         Friends List
       </Text>
       <Box
@@ -29,7 +34,7 @@ const FriendsList = () => {
         ml="35px"
         mr="30px"
         overflow="scroll"
-        height="calc(100% - 95px)"
+        maxH="calc(100% - 95px)"
       >
         {Friends.length ? (
           users.map(
@@ -47,8 +52,8 @@ const FriendsList = () => {
                   color="gray.200"
                   height="250px"
                   width="230px"
-                  mr='20px'
-                  mb='20px'
+                  mr="20px"
+                  mb="20px"
                   p="15px"
                   borderRadius="lg"
                   alignItems="center"
@@ -75,11 +80,18 @@ const FriendsList = () => {
                     name={value1.login}
                     src={value1.imageUrl || "/defaultProfilePic.png"}
                   />
-                <Box display="flex" alignItems="center">
-                    <FcFlashOn size="15px"/>
-                    <Text fontWeight="bolder" ml='5px'>{value1.login}</Text>
+                  <Box display="flex" alignItems="center">
+                    <FcFlashOn size="15px" />
+                    <Text fontWeight="bolder" ml="5px">
+                      {value1.login}
+                    </Text>
                   </Box>
-                  <Box display="flex" justifyContent="space-around" width='90%' mt='15px'>
+                  <Box
+                    display="flex"
+                    justifyContent="space-around"
+                    width="90%"
+                    mt="15px"
+                  >
                     <Button
                       bg="gray"
                       borderRadius="3px"

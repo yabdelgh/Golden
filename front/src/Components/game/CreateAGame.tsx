@@ -1,28 +1,10 @@
-import {
-  Box,
-  Button,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import { RiAddLine } from "react-icons/ri";
 import { TfiGame } from "react-icons/tfi";
 
-import { useMediaQuery } from "@chakra-ui/react";
-import { RiMedal2Fill } from "react-icons/ri";
-
-const CreateAGame = ({
-  opponentType,
-  setOpenentType,
-  setMap,
-  setInvit,
-  send,
-}: any) => {
+const CreateAGame = ({ opponentType, setInvit, send }: any) => {
   return (
     <Box
-      // className="debug"
       height="fit-content"
       width="fit-content"
       display="flex"
@@ -32,9 +14,8 @@ const CreateAGame = ({
       color="#B8B9BF"
       borderRadius="lg"
       p="20px"
-      bg="#2C2D31"
+      bg="#2F3035"
       as="fieldset"
-      // className="debug"
     >
       <Box
         display="flex"
@@ -114,7 +95,7 @@ const CreateAGame = ({
           <RiAddLine size="full" color="#B8B9BF" />
         </Button>
       </Box>
-      <Box
+      {/* <Box
         ml="auto"
         mr="10px"
         width="30%"
@@ -130,7 +111,7 @@ const CreateAGame = ({
         >
           {opponentType === "Friend" ? "Challenge" : "Play"}
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

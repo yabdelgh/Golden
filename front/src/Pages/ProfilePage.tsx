@@ -5,11 +5,20 @@ import FriendsList from "../Components/Friends/FriendsList";
 import CreateAGame from "../Components/game/CreateAGame";
 import ProfileBar from "../Components/Profile/ProfileBar";
 import ProfileHistory from "../Components/Profile/ProfileHistory";
-import { SiStarship } from "react-icons/si";
+import {
+  GiEvilWings,
+  GiLibertyWing,
+  GiAngelWings,
+  GiFairyWings,
+} from "react-icons/gi";
 function PlayerLevel(props: any) {
   return (
     <Box display="flex" height="fit-content" width="fit-content" m="50px 70px">
-      <SiStarship size="200px" color="gold" />
+      {/* <SiStarship size="200px" color="gold" /> */}
+      <GiAngelWings size="200px" color="white" />
+      <GiEvilWings size="200px" color="gold" />
+      <GiFairyWings size="200px" color="silver" />
+      <GiLibertyWing size="200px" color="#b9f2ff" />
     </Box>
   );
 }
@@ -43,7 +52,7 @@ const ProfilePage = () => {
             // justifyContent="center"
           >
             <PlayerLevel level="20" />
-            {/* <CreateAGame /> */}
+            <CreateAGame />
           </Box>
         )}
       </Box>

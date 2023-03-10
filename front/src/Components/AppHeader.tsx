@@ -1,7 +1,5 @@
 import { Box, Text, Button, IconButton, useDisclosure } from "@chakra-ui/react";
 import { IoMdNotifications } from "react-icons/io";
-import { BsSearch } from "react-icons/bs";
-import { Avatar } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AppState } from "../Context/AppProvider";
 import axios from "axios";
@@ -13,10 +11,8 @@ import {
   PopoverBody,
   PopoverArrow,
 } from "@chakra-ui/react";
-import { CgProfile } from "react-icons/cg";
 import { IoGameControllerOutline } from "react-icons/io5";
 import SearchModal from "./SearchModal";
-import { Drawer, DrawerContent } from "@chakra-ui/react";
 import Challenge from "./game/Challenge";
 import { RiUserSettingsLine } from "react-icons/ri";
 import { GoSettings } from "react-icons/go";
@@ -44,12 +40,14 @@ function DrawerExample() {
           boxShadow="none"
           bg="#1E1F22"
           borderColor="#2E3035"
-              color="#B8B9BF"
+          color="#B8B9BF"
           _focus={{ boxShadow: "none" }}
         >
           <PopoverArrow bg="#B8B9BF" />
           <PopoverBody>
-            <Text width="115px"  m="auto" mt="10px">Challenges ({challenges.length})</Text>
+            <Text width="115px" m="auto" mt="10px">
+              Challenges ({challenges.length})
+            </Text>
             {challenges.length !== 0 && (
               <Challenge challenge={challenges[0]} onClose={onClose} />
             )}

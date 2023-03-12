@@ -12,10 +12,12 @@ const CreateAGame = ({ opponentType, setInvit, send }: any) => {
       alignItems="center"
       justifyContent="center"
       color="#B8B9BF"
+      mt="50px"
       borderRadius="lg"
-      p="20px"
-      bg="#2F3035"
+      p="10px"
+      bg="#36373D"
       as="fieldset"
+      // className="debug"
     >
       <Box
         display="flex"
@@ -24,75 +26,55 @@ const CreateAGame = ({ opponentType, setInvit, send }: any) => {
         justifyContent="center"
         ml="20px"
       >
-        <TfiGame size="40px" />
-        <Text fontSize="35px" ml="20px">
+        <TfiGame size="25px" />
+        <Text fontSize="25px" ml="20px">
           New Game
         </Text>
       </Box>
       <Box
         height="fit-content"
-        width="450px"
-        m="auto"
+        width="fit-content"
+        // m="auto"
         display="flex"
         alignItems="center"
         justifyContent={"space-around"}
       >
-        <Box
-          as="fieldset"
-          border="2px solid #B8B9BF"
-          borderRadius={"lg"}
-          display="flex"
-          alignItems="space-around"
-        >
-          {/* <Text as="legend" fontSize="30px" whiteSpace="pre" ml="15px">
-            {" "}
-            Opponent{"  "}
-          </Text> */}
-          <Button
-            variant={"outline"}
-            m="10px"
-            width="170px"
-            height="150px"
-            border="0px"
-          >
-            <RiAddLine size="full" color="#B8B9BF" />
-          </Button>
-        </Box>
-        <Box as="fieldset" border="2px solid #B8B9BF" borderRadius={"lg"}>
-          {/* <Text as="legend" fontSize="30px" whiteSpace="pre" ml="15px">
-            {" "}
-            Paddle{"  "}
-          </Text> */}
-          <Button
-            variant={"outline"}
-            width="170px"
-            height="150px"
-            border="0px"
-            m="10px"
-          >
-            <RiAddLine size="full" color="#B8B9BF" />
-          </Button>
-        </Box>
-      </Box>
-      <Box
-        as="fieldset"
-        border="2px solid #B8B9BF"
-        borderRadius={"lg"}
-        width="100px"
-        m="20px"
-      >
-        {/* <Text as="legend" fontSize="30px" whiteSpace="pre" ml="15px">
-          {" "}
-          Map{"  "}
-        </Text> */}
         <Button
           variant={"outline"}
-          border="0px"
-          width="395px"
-          height="200px"
-          m="10px"
+          ml="10px"
+          width="120px"
+          height="100px"
+          // border="0px"
         >
           <RiAddLine size="full" color="#B8B9BF" />
+        </Button>
+        <Button
+          variant={"outline"}
+          width="120px"
+          height="100px"
+          // border="0px"
+          ml="10px"
+        >
+          <RiAddLine size="full" color="#B8B9BF" />
+        </Button>
+        <Button
+          variant={"outline"}
+          // border="0px"
+          width="160px"
+          height="100px"
+          ml="10px"
+        >
+          <RiAddLine size="full" color="#B8B9BF" />
+        </Button>
+        <Button
+          variant={"solid"}
+          width="120px"
+          height="100px"
+          colorScheme={"green"}
+          ml="10px"
+          fontSize="25px"
+        >
+          Play
         </Button>
       </Box>
       {/* <Box

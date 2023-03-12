@@ -33,7 +33,7 @@ const FriendsList = () => {
         flexWrap={"wrap"}
         ml="35px"
         mr="30px"
-        overflow="scroll"
+        overflowY="scroll"
         maxH="calc(100% - 95px)"
       >
         {Friends.length ? (

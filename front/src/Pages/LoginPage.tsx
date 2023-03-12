@@ -7,18 +7,17 @@ const LoginPage = () => {
       bg="#1E1F22"
       display="flex"
       width="100%"
-      pt="10%"
-      alignItems="flex-start"
+      alignItems="center"
       justifyContent="center"
     >
-      <Box fontFamily="Pathway Gothic One" mr="150px">
+      {/* <Box fontFamily="Pathway Gothic One" mr="150px">
         <Text fontSize="70px" color="teal" fontWeight="bold">
           transcendence
         </Text>
         <Text fontSize="45px" color="#B8B9BF">
           Free, Fan and Ready To Play !
         </Text>
-      </Box>
+      </Box> */}
       <Login />
       {/* <SignUp /> */}
     </Box>

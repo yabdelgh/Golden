@@ -43,7 +43,7 @@ const ProfileBar = (props: any) => {
       display="flex"
       flexDir="column"
       alignItems="center"
-      width="320px"
+      minWidth="320px"
       bg="#2B2D31"
       // className="debug"
       // justifyContent={"center"}
@@ -87,8 +87,8 @@ const ProfileBar = (props: any) => {
               color="#B8B9BF"
               variant="unstyled"
               fontSize="20px"
-              bg={props.boxName === "Profile" ? "#36373D" : "#2B2D31"}
-              onClick={() => props.setBoxName("Profile")}
+              bg={props.boxName === "Home" ? "#36373D" : "#2B2D31"}
+              onClick={() => props.setBoxName("Home")}
             >
               Home
             </Button>
